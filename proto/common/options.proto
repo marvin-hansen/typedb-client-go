@@ -17,9 +17,6 @@
 
 syntax = "proto3";
 
-option java_package = "com.vaticle.typedb.protocol";
-option java_outer_classname = "OptionsProto";
-
 package typedb.protocol;
 
 // TODO: Replace 'oneof' with 'optional' when upgraded to Protobuf 3.13 everywhere

@@ -1,6 +1,7 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+load("@golink//proto:proto.bzl", "go_proto_link")
 
 proto_library(
     name = "typedb_protocol_proto",
@@ -9,10 +10,7 @@ proto_library(
         "core_service.proto",
     ],
     visibility = ["//visibility:public"],
-    deps = [
-        "//common:common_proto",
-        "//core:core_proto",
-    ],
+    deps = ["//proto/common:typedb_protocol_proto"],
 )
 
 go_proto_library(
@@ -21,16 +19,19 @@ go_proto_library(
     importpath = "go-typedb/proto/core",
     proto = ":typedb_protocol_proto",
     visibility = ["//visibility:public"],
-    deps = [
-        "//common:session_proto",
-        "//common:transaction_proto",
-        "//core:core_database_proto",
-    ],
+    deps = ["//proto/common"],
 )
 
 go_library(
     name = "core",
     embed = [":typedb_protocol_go_proto"],
     importpath = "go-typedb/proto/core",
+    visibility = ["//visibility:public"],
+)
+
+go_proto_link(
+    name = "core_go_proto_link",
+    dep = ":typedb_protocol_go_proto",
+    version = "v1",
     visibility = ["//visibility:public"],
 )

@@ -17,12 +17,9 @@
 
 syntax = "proto3";
 
-option java_package = "com.vaticle.typedb.protocol";
-option java_outer_classname = "QueryProto";
-
-import "common/answer.proto";
-import "common/logic.proto";
-import "common/options.proto";
+import "proto/common/answer.proto";
+import "proto/common/logic.proto";
+import "proto/common/options.proto";
 
 package typedb.protocol;
 

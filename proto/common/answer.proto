@@ -17,10 +17,7 @@
 
 syntax = "proto3";
 
-option java_package = "com.vaticle.typedb.protocol";
-option java_outer_classname = "AnswerProto";
-
-import "common/concept.proto";
+import "proto/common/concept.proto";
 
 package typedb.protocol;
 

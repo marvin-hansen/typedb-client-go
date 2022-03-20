@@ -17,13 +17,9 @@
 
 syntax = "proto3";
 
-option java_package = "com.vaticle.typedb.protocol";
-option java_outer_classname = "CoreServiceProto";
-option java_generic_services = true;
-
-import "core/core_database.proto";
-import "common/session.proto";
-import "common/transaction.proto";
+import "proto/core/core_database.proto";
+import "proto/common/session.proto";
+import "proto/common/transaction.proto";
 
 package typedb.protocol;
 

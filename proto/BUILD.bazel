@@ -1,0 +1,11 @@
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
+
+k8s_objects(
+    name = "link",
+    objects = [
+        "//proto/cluster:cluster_go_proto_link",
+        "//proto/common:common_go_proto_link",
+        "//proto/core:core_go_proto_link",
+    ],
+    visibility = ["//visibility:public"],
+)

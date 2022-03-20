@@ -22,3 +22,11 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
+
+k8s_objects(
+    name = "link",
+    objects = [
+        "//proto:link",
+    ],
+    visibility = ["//visibility:public"],
+)
