@@ -15,13 +15,13 @@ type Client struct {
 }
 
 func NewClient(conn *grpc.ClientConn) (*Client, error) {
-	// CheckConnection(conn, nil)
+	checkConnection(conn, nil)
 	client := pb.NewTypeDBClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	amdbClient := &Client{
+	typeDBclient := &Client{
 		client: client,
 		ctx:    ctx,
 		cnc:    cancel,
 	}
-	return amdbClient, nil
+	return typeDBclient, nil
 }

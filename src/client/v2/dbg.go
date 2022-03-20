@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-func DbgPrint(dbg bool, msg string) {
+func dbgPrint(dbg bool, msg string) {
 	if dbg {
 		log.Println(msg)
 	}
 }
 
-func DbgCheckPrintLog(dbg bool, main, mtd, msg string, err error) {
+func dbgCheckPrintLog(dbg bool, main, mtd, msg string, err error) {
 	if dbg {
 		if err != nil {
 			log.Print("Main: ", main)
@@ -23,14 +23,14 @@ func DbgCheckPrintLog(dbg bool, main, mtd, msg string, err error) {
 	}
 }
 
-func CheckPrintErr(err error, errorMsg string) {
+func checkPrintErr(err error, errorMsg string) {
 	if err != nil {
 		log.Println("Error:", err.Error())
 		log.Println("Error Message: ", errorMsg)
 	}
 }
 
-func CheckPrintErrStop(err error, errorMsg string) {
+func checkPrintErrStop(err error, errorMsg string) {
 	if err != nil {
 		log.Println("Error:", err.Error())
 		log.Println("Error Message: ", errorMsg)
@@ -38,9 +38,9 @@ func CheckPrintErrStop(err error, errorMsg string) {
 	}
 }
 
-func CheckConnection(conn *grpc.ClientConn, err error) {
+func checkConnection(conn *grpc.ClientConn, err error) {
 	if err != nil {
-		CheckPrintErr(err, connErr)
+		checkPrintErr(err, connErr)
 	}
 	if conn == nil {
 		log.Fatal(connErr)
