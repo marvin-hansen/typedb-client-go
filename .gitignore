@@ -1,9 +1,8 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# Bazel stuff
+bazel-out
+bazel-out/*.*
+dist
+dist/*.*
 
 # Test binary, built with `go test -c`
 *.test
@@ -13,3 +12,23 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+.idea
+.idea/*
+.idea/*.*
+
+# Emacs save files
+*~
+\#*\#
+.\#*
+
+# Vim-related files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# Crash & log files
+crash.log
+output.log
