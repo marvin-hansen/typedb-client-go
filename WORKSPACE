@@ -64,20 +64,6 @@ http_archive(
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 
-go_repository(
-    name = "org_golang_google_grpc",
-    importpath = "google.golang.org/grpc",
-    sum = "h1:EQyQC3sa8M+p6Ulc8yy9SWSS2GVwyRc83gAbG8lrl4o=",
-    version = "v1.33.2",
-)
-
-go_repository(
-    name = "org_golang_google_protobuf",
-    importpath = "google.golang.org/protobuf",
-    sum = "h1:SnqbnDw1V7RiZcXPx5MEeqPv2s79L9i7BJUlG/+RurQ=",
-    version = "v1.27.1",
-)
-
 rules_proto_dependencies()
 
 rules_proto_toolchains()
@@ -184,3 +170,17 @@ k8s_go_deps()
 ################################################################################
 #  go_repositories
 ################################################################################
+
+go_repository(
+    name = "org_golang_google_grpc",
+    importpath = "google.golang.org/grpc",
+    sum = "h1:EQyQC3sa8M+p6Ulc8yy9SWSS2GVwyRc83gAbG8lrl4o=",
+    version = "v1.33.2",
+)
+
+go_repository(
+    name = "org_golang_google_protobuf",
+    importpath = "google.golang.org/protobuf",
+    sum = "h1:SnqbnDw1V7RiZcXPx5MEeqPv2s79L9i7BJUlG/+RurQ=",
+    version = "v1.27.1",
+)

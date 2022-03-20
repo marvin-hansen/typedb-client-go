@@ -1,8 +1,7 @@
 filegroup(
     name = "build",
     srcs = [
-        "//src/client:build",
-        "//src/cmd:build",
+        "//src/client/v2:build",
     ],
     visibility = ["//visibility:public"],
 )

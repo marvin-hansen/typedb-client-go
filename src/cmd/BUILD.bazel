@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "cmd",
     srcs = ["main.go"],
-    importpath = "go-typedb/src/cmd",
+    importpath = "github.com/marvin-hansen/go-typedb/src/cmd",
     visibility = ["//visibility:public"],
 )
 

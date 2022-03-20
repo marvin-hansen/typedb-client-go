@@ -19,7 +19,7 @@ proto_library(
 
 go_proto_library(
     name = "typedb_protocol_go_proto",
-    importpath = "go-typedb/proto/common",
+    importpath = "github.com/marvin-hansen/go-typedb/proto/common",
     proto = ":typedb_protocol_proto",
     visibility = ["//visibility:public"],
 )
@@ -27,7 +27,7 @@ go_proto_library(
 go_library(
     name = "common",
     embed = [":typedb_protocol_go_proto"],
-    importpath = "go-typedb/proto/common",
+    importpath = "github.com/marvin-hansen/go-typedb/proto/common",
     visibility = ["//visibility:public"],
 )
 
