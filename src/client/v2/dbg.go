@@ -3,7 +3,6 @@ package v2
 import (
 	"google.golang.org/grpc"
 	"log"
-	"os"
 )
 
 func dbgPrint(dbg bool, msg string) {
@@ -27,14 +26,6 @@ func checkPrintErr(err error, errorMsg string) {
 	if err != nil {
 		log.Println("Error:", err.Error())
 		log.Println("Error Message: ", errorMsg)
-	}
-}
-
-func checkPrintErrStop(err error, errorMsg string) {
-	if err != nil {
-		log.Println("Error:", err.Error())
-		log.Println("Error Message: ", errorMsg)
-		os.Exit(42)
 	}
 }
 

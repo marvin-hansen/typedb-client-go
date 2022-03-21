@@ -13,3 +13,11 @@ const (
 	DBNotExists
 	DeleteError
 )
+
+type SchemaStatusType StatusType
+
+const (
+	SchemaReadError = iota + 1
+	ErrorOpenSession
+	ErrorCreateTransaction
+)

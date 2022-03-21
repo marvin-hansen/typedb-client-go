@@ -28,7 +28,6 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 go_rules_dependencies()
 
 go_register_toolchains(version = "1.18")
-
 ################################################################################
 #  gazelle
 ################################################################################
@@ -42,16 +41,13 @@ http_archive(
 )
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
-
 gazelle_dependencies()
-
 ################################################################################
 # Protobuf dependencies
 # https://github.com/bazelbuild/rules_proto
 # https://github.com/protocolbuffers/protobuf/releases
 ################################################################################
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 http_archive(
     name = "rules_proto",
     sha256 = "66bfdf8782796239d3875d37e7de19b1d94301e8972b3cbd2446b332429b4df1",
@@ -404,4 +400,11 @@ go_repository(
     importpath = "golang.org/x/xerrors",
     sum = "h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=",
     version = "v0.0.0-20191204190536-9bdfabe68543",
+)
+
+go_repository(
+    name = "com_github_segmentio_ksuid",
+    importpath = "github.com/segmentio/ksuid",
+    sum = "h1:sBo2BdShXjmcugAMwjugoGUdUV0pcxY5mW4xKRn3v4c=",
+    version = "v1.0.4",
 )
