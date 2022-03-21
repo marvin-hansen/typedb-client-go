@@ -14,13 +14,14 @@ func (c *Client) GetAllDatabases() (allDatabases []string, status DBStatusType, 
 	return databaseAllResult.Names, OK, nil
 }
 
-func (c *Client) CreateDatabase(dbName string) (res string, status DBStatusType, err error) {
+func (c *Client) CreateDatabase(dbName string) (ok bool, status DBStatusType, err error) {
 	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, &pb.CoreDatabaseManager_Create_Req{Name: dbName})
 	if err != nil {
+		log.Println(databaseCreateRes.String())
 		log.Println(err.Error())
-		return res, CreateError, err
+		return false, CreateError, err
 	}
-	return databaseCreateRes.String(), OK, nil
+	return true, OK, nil
 }
 
 func (c *Client) ExistsDatabase(dbName string) (exists bool, status DBStatusType, err error) {
