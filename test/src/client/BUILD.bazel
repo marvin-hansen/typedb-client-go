@@ -1,0 +1,18 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "client",
+    srcs = ["shared.go"],
+    importpath = "github.com/marvin-hansen/go-typedb/test/src/client",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "client_test",
+    srcs = ["workflow_db_test.go"],
+    embed = [":client"],
+    deps = [
+        "//src/client/v2:client",
+        "@com_github_stretchr_testify//assert",
+    ],
+)
