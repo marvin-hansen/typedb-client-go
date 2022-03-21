@@ -5,18 +5,6 @@ import (
 	"log"
 )
 
-type DBStatusType uint8 // 255 possible values
-
-const (
-	UnknownDBStatus DBStatusType = iota
-	OK
-	ReadAllDBError
-	CreateError
-	CheckExistsError
-	DBNotExists
-	DeleteError
-)
-
 func (c *Client) GetAllDatabases() (allDatabases []string, status DBStatusType, err error) {
 	databaseAllResult, err := c.client.DatabasesAll(c.ctx, &pb.CoreDatabaseManager_All_Req{})
 	if err != nil {
@@ -32,7 +20,6 @@ func (c *Client) CreateDatabase(dbName string) (res string, status DBStatusType,
 		log.Println(err.Error())
 		return res, CreateError, err
 	}
-
 	return databaseCreateRes.String(), OK, nil
 }
 
