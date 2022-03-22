@@ -1,7 +1,9 @@
 package v2
 
 import (
+	"github.com/marvin-hansen/go-typedb/proto/common"
 	pb "github.com/marvin-hansen/go-typedb/proto/core"
+	"log"
 )
 
 func NewTransactionClient(client *pb.TypeDB_TransactionClient, sessionId []byte) *TransactionClient {
@@ -16,8 +18,10 @@ type TransactionClient struct {
 }
 
 func (c TransactionClient) OpenTransaction() {
-	// err := c.client.Send(&common.Transaction_Client{Reqs: nil})
-
+	err := c.client.Send(&common.Transaction_Client{Reqs: nil})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 }
 
 func (c TransactionClient) CommitTransaction() {

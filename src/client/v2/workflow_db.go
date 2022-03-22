@@ -24,7 +24,7 @@ func (c *Client) CreateDatabase(dbName string) (ok bool, status DBStatusType, er
 	return true, OK, nil
 }
 
-func (c *Client) ExistsDatabase(dbName string) (exists bool, status DBStatusType, err error) {
+func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status DBStatusType, err error) {
 	databaseExistsRes, err := c.client.DatabasesContains(c.ctx, &pb.CoreDatabaseManager_Contains_Req{Name: dbName})
 	if err != nil {
 		log.Println("could not get database: %w", err)
@@ -38,7 +38,7 @@ func (c *Client) ExistsDatabase(dbName string) (exists bool, status DBStatusType
 }
 
 func (c *Client) DeleteDatabase(dbName string) (ok bool, status DBStatusType, err error) {
-	exists, status, err := c.ExistsDatabase(dbName)
+	exists, status, err := c.CheckDatabaseExists(dbName)
 	if err != nil {
 		return false, status, err
 	}
