@@ -5,6 +5,13 @@ import "github.com/marvin-hansen/go-typedb/proto/common"
 // QueryManager
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
+func getQueryTx(req *common.QueryManager_Req) *common.Transaction_Req {
+	r := &common.Transaction_Req_QueryManagerReq{QueryManagerReq: req}
+	return &common.Transaction_Req{
+		Req: r,
+	}
+}
+
 func getDefinedQueryReq(query string, options *common.Options) *common.QueryManager_Req {
 	req := &common.QueryManager_Req_DefineReq{DefineReq: &common.QueryManager_Define_Req{Query: query}}
 	return &common.QueryManager_Req{
