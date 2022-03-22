@@ -5,6 +5,7 @@ import "github.com/marvin-hansen/go-typedb/proto/common"
 // ConceptManager
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
+// getConceptManagerTx coverts a ConceptManager_Req into a Transaction_Req
 func getConceptManagerTx(req *common.ConceptManager_Req) *common.Transaction_Req {
 	r := &common.Transaction_Req_ConceptManagerReq{ConceptManagerReq: req}
 	return &common.Transaction_Req{Req: r}
