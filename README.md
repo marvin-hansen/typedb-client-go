@@ -10,6 +10,6 @@ DB Admin
 
 - [x] GetAllDatabases
 - [x] CreateDatabase
-- [x] ExistsDatabase (Check if a DB wit the name already exists)
+- [x] CheckDatabaseExists 
 - [x] DeleteDatabase
 
