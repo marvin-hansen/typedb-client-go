@@ -1,12 +1,12 @@
 package v2
 
 import (
-	pb "github.com/marvin-hansen/go-typedb/proto/core"
 	"log"
 )
 
 func (c *Client) GetAllDatabases() (allDatabases []string, status DBStatusType, err error) {
-	databaseAllResult, err := c.client.DatabasesAll(c.ctx, &pb.CoreDatabaseManager_All_Req{})
+	req := getAllDBReq()
+	databaseAllResult, err := c.client.DatabasesAll(c.ctx, req)
 	if err != nil {
 		log.Println(err.Error())
 		return allDatabases, ReadAllDBError, err
@@ -15,7 +15,8 @@ func (c *Client) GetAllDatabases() (allDatabases []string, status DBStatusType, 
 }
 
 func (c *Client) CreateDatabase(dbName string) (ok bool, status DBStatusType, err error) {
-	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, &pb.CoreDatabaseManager_Create_Req{Name: dbName})
+	req := getCreateDBReq(dbName)
+	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, req)
 	if err != nil {
 		log.Println(databaseCreateRes.String())
 		log.Println(err.Error())
@@ -25,7 +26,8 @@ func (c *Client) CreateDatabase(dbName string) (ok bool, status DBStatusType, er
 }
 
 func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status DBStatusType, err error) {
-	databaseExistsRes, err := c.client.DatabasesContains(c.ctx, &pb.CoreDatabaseManager_Contains_Req{Name: dbName})
+	req := getContainsDBReq(dbName)
+	databaseExistsRes, err := c.client.DatabasesContains(c.ctx, req)
 	if err != nil {
 		log.Println("could not get database: %w", err)
 		return false, CheckExistsError, err
@@ -43,7 +45,8 @@ func (c *Client) DeleteDatabase(dbName string) (ok bool, status DBStatusType, er
 		return false, status, err
 	}
 	if exists {
-		databaseDeleteRes, err := c.client.DatabaseDelete(c.ctx, &pb.CoreDatabase_Delete_Req{Name: dbName})
+		req := getDeleteDBReq(dbName)
+		databaseDeleteRes, err := c.client.DatabaseDelete(c.ctx, req)
 		if err != nil {
 			log.Println(databaseDeleteRes.String())
 			log.Println(err.Error())
