@@ -26,9 +26,9 @@ func getThingUnsetAbstractReq(label *Label) *common.Transaction_Req {
 	return getTypeTx(req, label)
 }
 
-func getThingSetSupertypeReq(label *Label, superType common.Type) *common.Transaction_Req {
-	ssr := &common.Type_SetSupertype_Req{Type: &superType}
-	req := &common.Type_Req{Req: &common.Type_Req_TypeSetSupertypeReq{TypeSetSupertypeReq: ssr}}
+func getThingSetSupertypeReq(label *Label, superType *common.Type) *common.Transaction_Req {
+	s := &common.Type_SetSupertype_Req{Type: superType}
+	req := &common.Type_Req{Req: &common.Type_Req_TypeSetSupertypeReq{TypeSetSupertypeReq: s}}
 	return getTypeTx(req, label)
 }
 
@@ -39,9 +39,9 @@ func getThingGetPlaysReq(label *Label) *common.Transaction_Req {
 
 // FIXME: ThingType_SetPlays_Req Doesn't have a overriddenRolType field
 func getThingSetPlaysReq(label *Label, roleType *common.Type, overriddenRolType *common.Type) *common.Transaction_Req {
-	spr := &common.ThingType_SetPlays_Req{}
-	spr.Role = roleType
-	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeSetPlaysReq{ThingTypeSetPlaysReq: spr}}
+	s := &common.ThingType_SetPlays_Req{}
+	s.Role = roleType
+	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeSetPlaysReq{ThingTypeSetPlaysReq: s}}
 	return getTypeTx(req, label)
 }
 
@@ -62,23 +62,23 @@ func getThingGetOwnsReq(label *Label, valueType *common.AttributeType_ValueType,
 }
 
 func getThingSetOwnsReq(label *Label, attributeType *common.Type, isKey bool) *common.Transaction_Req {
-	sor := &common.ThingType_SetOwns_Req{
+	s := &common.ThingType_SetOwns_Req{
 		AttributeType: attributeType,
 		Overridden:    nil,
 		IsKey:         isKey,
 	}
-	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeSetOwnsReq{ThingTypeSetOwnsReq: sor}}
+	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeSetOwnsReq{ThingTypeSetOwnsReq: s}}
 	return getTypeTx(req, label)
 }
 
 func getThingUnsetOwnsReq(label *Label, attributeType *common.Type) *common.Transaction_Req {
-	uor := &common.ThingType_UnsetOwns_Req{AttributeType: attributeType}
-	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeUnsetOwnsReq{ThingTypeUnsetOwnsReq: uor}}
+	s := &common.ThingType_UnsetOwns_Req{AttributeType: attributeType}
+	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeUnsetOwnsReq{ThingTypeUnsetOwnsReq: s}}
 	return getTypeTx(req, label)
 }
 
 func getThingGetInstanceReq(label *Label) *common.Transaction_Req {
-	r := &common.ThingType_GetInstances_Req{}
-	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeGetInstancesReq{ThingTypeGetInstancesReq: r}}
+	s := &common.ThingType_GetInstances_Req{}
+	req := &common.Type_Req{Req: &common.Type_Req_ThingTypeGetInstancesReq{ThingTypeGetInstancesReq: s}}
 	return getTypeTx(req, label)
 }
