@@ -17,49 +17,52 @@
 
 syntax = "proto3";
 
+option java_package = "com.vaticle.typedb.protocol";
+option java_outer_classname = "CoreDatabaseProto";
+
 package typedb.protocol;
 
 message CoreDatabaseManager {
 
-  message Contains {
-    message Req {
-      string name = 1;
+    message Contains {
+        message Req {
+            string name = 1;
+        }
+        message Res {
+            bool contains = 1;
+        }
     }
-    message Res {
-      bool contains = 1;
-    }
-  }
 
-  message Create {
-    message Req {
-      string name = 1;
+    message Create {
+        message Req {
+            string name = 1;
+        }
+        message Res {}
     }
-    message Res {}
-  }
 
-  message All {
-    message Req {}
-    message Res {
-      repeated string names = 1;
+    message All {
+        message Req {}
+        message Res {
+            repeated string names = 1;
+        }
     }
-  }
 }
 
 message CoreDatabase {
 
-  message Schema {
-    message Req {
-      string name = 1;
+    message Schema {
+        message Req {
+            string name = 1;
+        }
+        message Res {
+            string schema = 1;
+        }
     }
-    message Res {
-      string schema = 1;
-    }
-  }
 
-  message Delete {
-    message Req {
-      string name = 1;
+    message Delete {
+        message Req {
+            string name = 1;
+        }
+        message Res {}
     }
-    message Res {}
-  }
 }

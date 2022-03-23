@@ -3,35 +3,37 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 load("@golink//proto:proto.bzl", "go_proto_link")
 
+go_proto_link(
+    name = "common_go_proto_link",
+    dep = ":typedb_protocol_go_proto",
+    version = "v1",
+    visibility = ["//visibility:public"],
+)
+
 proto_library(
     name = "typedb_protocol_proto",
     srcs = [
-        "cluster_database.proto",
-        "cluster_server.proto",
-        "cluster_service.proto",
-        "cluster_user.proto",
+        "answer.proto",
+        "concept.proto",
+        "logic.proto",
+        "options.proto",
+        "query.proto",
+        "session.proto",
+        "transaction.proto",
     ],
     visibility = ["//visibility:public"],
 )
 
 go_proto_library(
     name = "typedb_protocol_go_proto",
-    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/marvin-hansen/go-typedb/proto/cluster",
+    importpath = "github.com/marvin-hansen/go-typedb/common",
     proto = ":typedb_protocol_proto",
     visibility = ["//visibility:public"],
 )
 
 go_library(
-    name = "cluster",
+    name = "common",
     embed = [":typedb_protocol_go_proto"],
-    importpath = "github.com/marvin-hansen/go-typedb/proto/cluster",
-    visibility = ["//visibility:public"],
-)
-
-go_proto_link(
-    name = "cluster_go_proto_link",
-    dep = ":typedb_protocol_go_proto",
-    version = "v1",
+    importpath = "github.com/marvin-hansen/go-typedb/common",
     visibility = ["//visibility:public"],
 )
