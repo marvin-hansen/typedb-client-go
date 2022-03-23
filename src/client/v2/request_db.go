@@ -1,6 +1,8 @@
 package v2
 
-import pb "github.com/marvin-hansen/go-typedb/proto/core"
+import (
+	pb "github.com/marvin-hansen/go-typedb/core"
+)
 
 // CoreDatabaseManager
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py

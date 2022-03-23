@@ -1,33 +1,35 @@
 package v2
 
-import "github.com/marvin-hansen/go-typedb/proto/common"
+import (
+	common2 "github.com/marvin-hansen/go-typedb/common"
+)
 
 // LogicManager
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
 // getLogicTx coverts a LogicManager_Req into a Transaction_Req
-func getLogicTx(req *common.LogicManager_Req) *common.Transaction_Req {
-	r := &common.Transaction_Req_LogicManagerReq{LogicManagerReq: req}
-	return &common.Transaction_Req{Req: r}
+func getLogicTx(req *common2.LogicManager_Req) *common2.Transaction_Req {
+	r := &common2.Transaction_Req_LogicManagerReq{LogicManagerReq: req}
+	return &common2.Transaction_Req{Req: r}
 }
 
-func getLogicPutRuleReq(label, when, then string) *common.LogicManager_Req {
-	req := &common.LogicManager_PutRule_Req{
+func getLogicPutRuleReq(label, when, then string) *common2.LogicManager_Req {
+	req := &common2.LogicManager_PutRule_Req{
 		Label: label,
 		When:  when,
 		Then:  then,
 	}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_PutRuleReq{PutRuleReq: req}}
+	return &common2.LogicManager_Req{Req: &common2.LogicManager_Req_PutRuleReq{PutRuleReq: req}}
 }
 
-func getLogicGetRuleReq(label string) *common.LogicManager_Req {
-	req := &common.LogicManager_GetRule_Req{
+func getLogicGetRuleReq(label string) *common2.LogicManager_Req {
+	req := &common2.LogicManager_GetRule_Req{
 		Label: label,
 	}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_GetRuleReq{GetRuleReq: req}}
+	return &common2.LogicManager_Req{Req: &common2.LogicManager_Req_GetRuleReq{GetRuleReq: req}}
 }
 
-func getLogicGetAllRulesReq(label string) *common.LogicManager_Req {
-	req := &common.LogicManager_GetRules_Req{}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_GetRulesReq{GetRulesReq: req}}
+func getLogicGetAllRulesReq(label string) *common2.LogicManager_Req {
+	req := &common2.LogicManager_GetRules_Req{}
+	return &common2.LogicManager_Req{Req: &common2.LogicManager_Req_GetRulesReq{GetRulesReq: req}}
 }

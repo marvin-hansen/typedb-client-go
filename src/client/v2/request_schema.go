@@ -1,6 +1,8 @@
 package v2
 
-import pb "github.com/marvin-hansen/go-typedb/proto/core"
+import (
+	pb "github.com/marvin-hansen/go-typedb/core"
+)
 
 // Schema
 

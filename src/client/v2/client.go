@@ -2,7 +2,7 @@ package v2
 
 import (
 	"context"
-	pb "github.com/marvin-hansen/go-typedb/proto/core"
+	pb "github.com/marvin-hansen/go-typedb/core"
 	"google.golang.org/grpc"
 	"log"
 	"sync"
