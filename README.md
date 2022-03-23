@@ -4,7 +4,7 @@ go client for [TypeDB](https://vaticle.com/typedb)
 
 Supports: TypeDB 2.7
 
-Implemented:
+Protocol: 2.6.1 
 
 DB Admin
 
