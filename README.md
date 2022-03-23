@@ -2,9 +2,9 @@
 
 go client for [TypeDB](https://vaticle.com/typedb)
 
-Supports: TypeDB 2.7
+Supports: TypeDB [2.8](https://github.com/vaticle/typedb/releases/tag/2.8.0)
 
-Protocol: 2.6.1 
+Protocol: [2.6.1](https://github.com/vaticle/typedb-protocol/releases/tag/2.6.1) 
 
 DB Admin
 
