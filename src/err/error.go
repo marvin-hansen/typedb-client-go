@@ -1,9 +1,11 @@
-package common
+package err
 
-import (
-	"github.com/pkg/errors"
-)
+// error handling in Golang
+// https://blog.logrocket.com/error-handling-in-golang/
+import "github.com/pkg/errors"
 
+// CustomErrorMessage defines custom error message inspired by the Python client custom exceptions
+// https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/exception.py
 type CustomErrorMessage struct {
 	CodePrefix    string
 	CodeNumber    uint
@@ -18,8 +20,8 @@ func (s CustomErrorMessage) Error() error {
 
 type ClientErrorMessage = CustomErrorMessage
 
-func NewClientErrorMessage(CodeNumber uint, MessageBody string) *ClientErrorMessage {
-	return &ClientErrorMessage{
+func NewClientErrorMessage(CodeNumber uint, MessageBody string) ClientErrorMessage {
+	return ClientErrorMessage{
 		CodePrefix:    "CLI",
 		MessagePrefix: "Client Error: ",
 		CodeNumber:    CodeNumber,
@@ -55,8 +57,8 @@ var (
 
 type ConceptErrorMessage = CustomErrorMessage
 
-func NewConceptErrorMessage(CodeNumber uint, MessageBody string) *ConceptErrorMessage {
-	return &ClientErrorMessage{
+func NewConceptErrorMessage(CodeNumber uint, MessageBody string) ConceptErrorMessage {
+	return ClientErrorMessage{
 		CodePrefix:    "CLI",
 		MessagePrefix: "Concept Error: ",
 		CodeNumber:    CodeNumber,
@@ -83,8 +85,8 @@ var (
 
 type QueryErrorMessage = CustomErrorMessage
 
-func NewQueryErrorMessage(CodeNumber uint, MessageBody string) *QueryErrorMessage {
-	return &ClientErrorMessage{
+func NewQueryErrorMessage(CodeNumber uint, MessageBody string) QueryErrorMessage {
+	return ClientErrorMessage{
 		CodePrefix:    "CLI",
 		MessagePrefix: "Query Error: ",
 		CodeNumber:    CodeNumber,
@@ -105,8 +107,8 @@ var (
 
 type InternalErrorMessage = CustomErrorMessage
 
-func NewInternalErrorMessage(CodeNumber uint, MessageBody string) *InternalErrorMessage {
-	return &ClientErrorMessage{
+func NewInternalErrorMessage(CodeNumber uint, MessageBody string) InternalErrorMessage {
+	return ClientErrorMessage{
 		CodePrefix:    "CLI",
 		MessagePrefix: "Internal Error: ",
 		CodeNumber:    CodeNumber,

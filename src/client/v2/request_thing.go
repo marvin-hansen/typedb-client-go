@@ -1,7 +1,8 @@
 package v2
 
 import (
-	common2 "github.com/marvin-hansen/go-typedb/common"
+	"github.com/marvin-hansen/go-typedb/common"
+	"github.com/marvin-hansen/go-typedb/src/err"
 	"strings"
 )
 
@@ -13,13 +14,23 @@ func convertStringToByte(str string) []byte {
 	return []byte(strings.TrimSpace(str))
 }
 
-func convertThingToProto(iid string) *common2.Thing {
-	return &common2.Thing{Iid: convertStringToByte(iid)}
+func convertThingToProto(iid string) *common.Thing {
+	return &common.Thing{Iid: convertStringToByte(iid)}
 }
 
 // getTypeTx coverts a ThingReq into a Transaction_Req
-func getThingTx(req *common2.Thing_Req, iid string) *common2.Transaction_Req {
+func getThingTx(req *common.Thing_Req, iid string) *common.Transaction_Req {
 	req.Iid = convertStringToByte(iid)
-	r := &common2.Transaction_Req_ThingReq{ThingReq: req}
-	return &common2.Transaction_Req{Req: r}
+	r := &common.Transaction_Req_ThingReq{ThingReq: req}
+	return &common.Transaction_Req{Req: r}
+}
+
+func getThingHasReq(iid string, attributeTypes *[]common.Type, onlyKey bool) (*common.Transaction_Req, error) {
+
+	if attributeTypes != nil && onlyKey {
+		return nil, err.TypeDBConceptError(err.GET_HAS_WITH_MULTIPLE_FILTERS)
+	}
+
+	return nil, nil
+
 }
