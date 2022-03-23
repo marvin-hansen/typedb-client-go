@@ -8,7 +8,7 @@ import (
 // Type
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
-// getTypeTx coverts a LogicManager_Req into a Transaction_Req
+// getTypeTx coverts a TypeReq into a Transaction_Req
 func getTypeTx(req *common.Type_Req, label *Label) *common.Transaction_Req {
 	req.Label = label.GetName()
 	if label.HasScope() {
