@@ -22,5 +22,5 @@ Setup:
 Dev: 
     make build                  Builds the code base incrementally (fast).
     make rebuild                Rebuilds all dependencies & the code base (slow). Use after go mod changes. 
-    make stats                  Crunches & shows the latest project stats. 
+    make stats                  Shows the latest project stats. 
 ```
