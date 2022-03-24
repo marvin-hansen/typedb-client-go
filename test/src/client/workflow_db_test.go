@@ -2,7 +2,7 @@
 package client
 
 import (
-	v2 "github.com/marvin-hansen/go-typedb/src/client/v2"
+	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
