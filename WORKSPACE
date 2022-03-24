@@ -1,4 +1,4 @@
-workspace(name = "go-typedb")
+workspace(name = "typedb-client-go")
 
 ################################################################################
 #  Bazel tools

@@ -1,4 +1,4 @@
-module github.com/marvin-hansen/go-typedb
+module github.com/marvin-hansen/typedb-client-go
 
 go 1.18
 
@@ -7,9 +7,6 @@ require (
 	github.com/stretchr/testify v1.7.1
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.27.1
-)
-
-require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
