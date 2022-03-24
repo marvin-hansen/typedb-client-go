@@ -29,5 +29,5 @@ Dev:
 
 * Marvin Hansen 
 * GPG key ID: 369D5A0B210D39BC
+* GPG Fingerprint: 4B18 F7B2 04B9 7A72 967E  663E 369D 5A0B 210D 39BC 
 * Public key: [key](pubkey.txt)
-* Commits are signed & verified after: [ed3d9c1](https://github.com/marvin-hansen/typedb-client-go/commits/main)
