@@ -13,23 +13,23 @@ func getLogicTx(req *common.LogicManager_Req) *common.Transaction_Req {
 	return &common.Transaction_Req{Req: r}
 }
 
-func getLogicPutRuleReq(label, when, then string) *common.LogicManager_Req {
+func getLogicPutRuleReq(label, when, then string) *common.Transaction_Req {
 	req := &common.LogicManager_PutRule_Req{
 		Label: label,
 		When:  when,
 		Then:  then,
 	}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_PutRuleReq{PutRuleReq: req}}
+	return getLogicTx(&common.LogicManager_Req{Req: &common.LogicManager_Req_PutRuleReq{PutRuleReq: req}})
 }
 
-func getLogicGetRuleReq(label string) *common.LogicManager_Req {
+func getLogicGetRuleReq(label string) *common.Transaction_Req {
 	req := &common.LogicManager_GetRule_Req{
 		Label: label,
 	}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_GetRuleReq{GetRuleReq: req}}
+	return getLogicTx(&common.LogicManager_Req{Req: &common.LogicManager_Req_GetRuleReq{GetRuleReq: req}})
 }
 
-func getLogicGetAllRulesReq(label string) *common.LogicManager_Req {
+func getLogicGetAllRulesReq(label string) *common.Transaction_Req {
 	req := &common.LogicManager_GetRules_Req{}
-	return &common.LogicManager_Req{Req: &common.LogicManager_Req_GetRulesReq{GetRulesReq: req}}
+	return getLogicTx(&common.LogicManager_Req{Req: &common.LogicManager_Req_GetRulesReq{GetRulesReq: req}})
 }
