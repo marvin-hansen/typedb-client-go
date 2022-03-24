@@ -1,3 +1,4 @@
+// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 package v2
 
 func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {

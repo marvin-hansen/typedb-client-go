@@ -1,4 +1,4 @@
-# Copyright (c) 2021. Marvin Friedrich Lars Hansen. All Rights Reserved. Contact: marvin.hansen@gmail.com
+# Copyright (c) 2021-2022. Marvin Hansen | marvin.hansen@gmail.com
 
 # bin/bash
 set -o errexit

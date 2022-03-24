@@ -1,7 +1,8 @@
+// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 package v2
 
 import (
-	common "github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
 // QueryManager

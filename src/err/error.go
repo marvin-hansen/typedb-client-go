@@ -1,3 +1,4 @@
+// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 package err
 
 // error handling in Golang
