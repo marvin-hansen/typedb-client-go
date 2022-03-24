@@ -1,4 +1,4 @@
-# go-typedb
+# typedb-client-go
 
 go client for [TypeDB](https://vaticle.com/typedb)
 
