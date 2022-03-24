@@ -23,7 +23,7 @@ proto_library(
 go_proto_library(
     name = "typedb_protocol_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/marvin-hansen/go-typedb/core",
+    importpath = "github.com/marvin-hansen/typedb-client-go/core",
     proto = ":typedb_protocol_proto",
     visibility = ["//visibility:public"],
     deps = ["//common"],
@@ -32,6 +32,6 @@ go_proto_library(
 go_library(
     name = "core",
     embed = [":typedb_protocol_go_proto"],
-    importpath = "github.com/marvin-hansen/go-typedb/core",
+    importpath = "github.com/marvin-hansen/typedb-client-go/core",
     visibility = ["//visibility:public"],
 )

@@ -1,16 +1,16 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
-go_library(
-    name = "cmd",
-    srcs = ["main.go"],
-    importpath = "github.com/marvin-hansen/go-typedb/src/cmd",
-    visibility = ["//visibility:public"],
-)
-
 filegroup(
     name = "build",
     srcs = [
         ":cmd",
     ],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "cmd",
+    srcs = ["main.go"],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/cmd",
     visibility = ["//visibility:public"],
 )

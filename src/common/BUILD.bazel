@@ -1,16 +1,16 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
-go_library(
-    name = "common",
-    srcs = ["label.go"],
-    importpath = "github.com/marvin-hansen/go-typedb/src/common",
-    visibility = ["//visibility:public"],
-)
-
 filegroup(
     name = "build",
     srcs = [
         ":common",
     ],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "common",
+    srcs = ["label.go"],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/common",
     visibility = ["//visibility:public"],
 )

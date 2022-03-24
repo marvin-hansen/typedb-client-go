@@ -24,7 +24,7 @@ proto_library(
 go_proto_library(
     name = "typedb_protocol_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/marvin-hansen/go-typedb/cluster",
+    importpath = "github.com/marvin-hansen/typedb-client-go/cluster",
     proto = ":typedb_protocol_proto",
     visibility = ["//visibility:public"],
 )
@@ -32,6 +32,6 @@ go_proto_library(
 go_library(
     name = "cluster",
     embed = [":typedb_protocol_go_proto"],
-    importpath = "github.com/marvin-hansen/go-typedb/cluster",
+    importpath = "github.com/marvin-hansen/typedb-client-go/cluster",
     visibility = ["//visibility:public"],
 )

@@ -1,5 +1,13 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
+filegroup(
+    name = "build",
+    srcs = [
+        ":client",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 go_library(
     name = "client",
     srcs = [
@@ -22,6 +30,7 @@ go_library(
         "request_type.go",
         "request_type_attribute.go",
         "request_type_er_relation.go",
+        "request_type_role.go",
         "request_type_thing.go",
         "statusType.go",
         "utils.go",
@@ -30,7 +39,7 @@ go_library(
         "workflow_schema.go",
         "workflow_transaction.go",
     ],
-    importpath = "github.com/marvin-hansen/go-typedb/src/client/v2",
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/client/v2",
     visibility = ["//visibility:public"],
     deps = [
         "//common",
@@ -39,12 +48,4 @@ go_library(
         "//src/err",
         "@org_golang_google_grpc//:go_default_library",
     ],
-)
-
-filegroup(
-    name = "build",
-    srcs = [
-        ":client",
-    ],
-    visibility = ["//visibility:public"],
 )

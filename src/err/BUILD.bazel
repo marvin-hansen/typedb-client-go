@@ -1,17 +1,17 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
-go_library(
-    name = "err",
-    srcs = ["error.go"],
-    importpath = "github.com/marvin-hansen/go-typedb/src/err",
-    visibility = ["//visibility:public"],
-    deps = ["@com_github_pkg_errors//:errors"],
-)
-
 filegroup(
     name = "build",
     srcs = [
         ":err",
     ],
     visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "err",
+    srcs = ["error.go"],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/err",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_pkg_errors//:errors"],
 )
