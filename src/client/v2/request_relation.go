@@ -1,6 +1,6 @@
 package v2
 
-import "github.com/marvin-hansen/go-typedb/common"
+import "github.com/marvin-hansen/typedb-client-go/common"
 
 // Relation
 // 675

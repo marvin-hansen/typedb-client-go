@@ -1,7 +1,7 @@
 package v2
 
 import (
-	common "github.com/marvin-hansen/go-typedb/common"
+	common "github.com/marvin-hansen/typedb-client-go/common"
 )
 
 // ConceptManager

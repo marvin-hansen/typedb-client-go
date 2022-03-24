@@ -1,6 +1,6 @@
 package v2
 
-import pb "github.com/marvin-hansen/go-typedb/core"
+import pb "github.com/marvin-hansen/typedb-client-go/core"
 
 func NewTransactionClient(client *pb.TypeDB_TransactionClient, sessionId []byte) *TransactionClient {
 	return &TransactionClient{}

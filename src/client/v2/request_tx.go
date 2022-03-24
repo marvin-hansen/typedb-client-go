@@ -1,7 +1,7 @@
 package v2
 
 import (
-	"github.com/marvin-hansen/go-typedb/common"
+	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
 // Transaction

@@ -1,7 +1,7 @@
 package v2
 
 import (
-	pb "github.com/marvin-hansen/go-typedb/core"
+	pb "github.com/marvin-hansen/typedb-client-go/core"
 )
 
 // CoreDatabaseManager

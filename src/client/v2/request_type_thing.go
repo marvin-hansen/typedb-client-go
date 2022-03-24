@@ -1,8 +1,8 @@
 package v2
 
 import (
-	common "github.com/marvin-hansen/go-typedb/common"
-	. "github.com/marvin-hansen/go-typedb/src/common"
+	common "github.com/marvin-hansen/typedb-client-go/common"
+	. "github.com/marvin-hansen/typedb-client-go/src/common"
 )
 
 // ThingType

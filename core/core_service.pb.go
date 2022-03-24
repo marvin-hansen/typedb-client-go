@@ -8,7 +8,7 @@ package core
 
 import (
 	context "context"
-	common "github.com/marvin-hansen/go-typedb/common"
+	common "github.com/marvin-hansen/typedb-client-go/common"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
