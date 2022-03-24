@@ -10,96 +10,64 @@ import (
 // getQueryTx coverts a QueryManager_Req into a Transaction_Req
 func getQueryTx(req *common.QueryManager_Req) *common.Transaction_Req {
 	r := &common.Transaction_Req_QueryManagerReq{QueryManagerReq: req}
-	return &common.Transaction_Req{
-		Req: r,
-	}
+	return &common.Transaction_Req{Req: r}
 }
 
-func getDefinedQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getDefinedQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_DefineReq{DefineReq: &common.QueryManager_Define_Req{Query: query}}
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getUndefinedQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getUndefinedQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_UndefineReq{}
 	req.UndefineReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getMatchQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getMatchQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_MatchReq{}
 	req.MatchReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getMatchAggregateQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getMatchAggregateQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_MatchAggregateReq{}
 	req.MatchAggregateReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getMatchGroupQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getMatchGroupQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_MatchGroupReq{}
 	req.MatchGroupReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getMatchGroupQueryAggregateReq(query string, options *common.Options) *common.QueryManager_Req {
+func getMatchGroupQueryAggregateReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_MatchGroupAggregateReq{}
 	req.MatchGroupAggregateReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getInsertQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getInsertQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_InsertReq{}
 	req.InsertReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getUpdateQueryReq(query string, options *common.Options) *common.QueryManager_Req {
+func getUpdateQueryReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_UpdateReq{}
 	req.UpdateReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getDeleteReq(query string, options *common.Options) *common.QueryManager_Req {
+func getDeleteReq(query string, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_DeleteReq{}
 	req.DeleteReq.Query = query
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
 
-func getExplainReq(explainableID int64, options *common.Options) *common.QueryManager_Req {
+func getExplainReq(explainableID int64, options *common.Options) *common.Transaction_Req {
 	req := &common.QueryManager_Req_ExplainReq{}
 	req.ExplainReq.ExplainableId = explainableID
-	return &common.QueryManager_Req{
-		Options: options,
-		Req:     req,
-	}
+	return getQueryTx(&common.QueryManager_Req{Options: options, Req: req})
 }
