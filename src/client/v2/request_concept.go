@@ -13,43 +13,43 @@ func getConceptTx(req *common.ConceptManager_Req) *common.Transaction_Req {
 	return &common.Transaction_Req{Req: r}
 }
 
-func getConceptPutEntityReq(label string) *common.ConceptManager_Req {
+func getConceptPutEntityReq(label string) *common.Transaction_Req {
 	req := &common.ConceptManager_Req_PutEntityTypeReq{}
 	req.PutEntityTypeReq = &common.ConceptManager_PutEntityType_Req{
 		Label: label,
 	}
-	return &common.ConceptManager_Req{Req: req}
+	return getConceptTx(&common.ConceptManager_Req{Req: req})
 }
 
-func getConceptPutRelationReq(label string) *common.ConceptManager_Req {
+func getConceptPutRelationReq(label string) *common.Transaction_Req {
 	req := &common.ConceptManager_Req_PutRelationTypeReq{}
 	req.PutRelationTypeReq = &common.ConceptManager_PutRelationType_Req{
 		Label: label,
 	}
-	return &common.ConceptManager_Req{Req: req}
+	return getConceptTx(&common.ConceptManager_Req{Req: req})
 }
 
-func getConceptPutAttributeReq(label string, valueType common.AttributeType_ValueType) *common.ConceptManager_Req {
+func getConceptPutAttributeReq(label string, valueType common.AttributeType_ValueType) *common.Transaction_Req {
 	req := &common.ConceptManager_Req_PutAttributeTypeReq{}
 	req.PutAttributeTypeReq = &common.ConceptManager_PutAttributeType_Req{
 		Label:     label,
 		ValueType: valueType,
 	}
-	return &common.ConceptManager_Req{Req: req}
+	return getConceptTx(&common.ConceptManager_Req{Req: req})
 }
 
-func getConceptGetThingTypeReq(label string) *common.ConceptManager_Req {
+func getConceptGetThingTypeReq(label string) *common.Transaction_Req {
 	req := &common.ConceptManager_Req_GetThingTypeReq{}
 	req.GetThingTypeReq = &common.ConceptManager_GetThingType_Req{
 		Label: label,
 	}
-	return &common.ConceptManager_Req{Req: req}
+	return getConceptTx(&common.ConceptManager_Req{Req: req})
 }
 
-func getConceptGetThingReq(iid string) *common.ConceptManager_Req {
+func getConceptGetThingReq(iid string) *common.Transaction_Req {
 	req := &common.ConceptManager_Req_GetThingReq{}
 	req.GetThingReq = &common.ConceptManager_GetThing_Req{
 		Iid: []byte(iid),
 	}
-	return &common.ConceptManager_Req{Req: req}
+	return getConceptTx(&common.ConceptManager_Req{Req: req})
 }
