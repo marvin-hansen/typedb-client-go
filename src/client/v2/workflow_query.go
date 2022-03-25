@@ -163,7 +163,11 @@ func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[str
 //		if transactionResponse.GetContinue() {
 // ...
 //
-// These methods aren't available in the 2.6.1 specification anymore.
+// code snippet above taken from:
+// https://github.com/taliesins/typedb-client-go/blob/main/v2/client/client.go#L300
+//
+//
+// The GetContinue() method isn't available in the 2.6.1 specification anymore.
 //
 // I suppose the for loop may have been replaced with the "stream" concept, but the spec's doesn't any indicator of that.
 //
