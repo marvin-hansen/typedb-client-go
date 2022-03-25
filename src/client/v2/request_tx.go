@@ -12,19 +12,31 @@ func getTransactionClient(reqs []*common.Transaction_Req) (req *common.Transacti
 	return &common.Transaction_Client{Reqs: reqs}
 }
 
-func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Open_Req) {
-	return &common.Transaction_Open_Req{
+// getQueryTx coverts a QueryManager_Req into a Transaction_Req
+func getTxReq(req *common.QueryManager_Req) *common.Transaction_Req {
+	r := &common.Transaction_Req_QueryManagerReq{QueryManagerReq: req}
+	return &common.Transaction_Req{Req: r}
+}
+
+func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
+
+	r := &common.Transaction_Open_Req{
 		SessionId:            sessionID,
 		Type:                 sessionType,
 		Options:              options,
 		NetworkLatencyMillis: netMillisecondLatency,
 	}
+
+	return &common.Transaction_Req{Req: &common.Transaction_Req_OpenReq{OpenReq: r}}
 }
 
-func getTransactionCommitReq() (req *common.Transaction_Commit_Req) {
-	return &common.Transaction_Commit_Req{}
+func getTransactionCommitReq() (req *common.Transaction_Req) {
+	r := &common.Transaction_Commit_Req{}
+	return &common.Transaction_Req{Req: &common.Transaction_Req_CommitReq{CommitReq: r}}
 }
 
-func getTransactionRollbackReq() (req *common.Transaction_Req_RollbackReq) {
-	return &common.Transaction_Req_RollbackReq{}
+func getTransactionRollbackReq() (req *common.Transaction_Req) {
+	r := &common.Transaction_Rollback_Req{}
+	return &common.Transaction_Req{Req: &common.Transaction_Req_RollbackReq{RollbackReq: r}}
+
 }
