@@ -33,6 +33,24 @@ func getUndefinedQueryReq(query string, options *common.Options, requestId []byt
 	return getQueryTx(req, requestId, metadata)
 }
 
+func getUpdateQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
+	r := &common.QueryManager_Req_UpdateReq{UpdateReq: &common.QueryManager_Update_Req{Query: query}}
+	req := &common.QueryManager_Req{Options: options, Req: r}
+	return getQueryTx(req, requestId, metadata)
+}
+
+func getExplainQueryReq(explainableID int64, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
+	r := &common.QueryManager_Req_ExplainReq{ExplainReq: &common.QueryManager_Explain_Req{ExplainableId: explainableID}}
+	req := &common.QueryManager_Req{Options: options, Req: r}
+	return getQueryTx(req, requestId, metadata)
+}
+
+func getDeleteQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
+	r := &common.QueryManager_Req_DeleteReq{DeleteReq: &common.QueryManager_Delete_Req{Query: query}}
+	req := &common.QueryManager_Req{Options: options, Req: r}
+	return getQueryTx(req, requestId, metadata)
+}
+
 func getMatchQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
 	r := &common.QueryManager_Req_MatchReq{MatchReq: &common.QueryManager_Match_Req{Query: query}}
 	req := &common.QueryManager_Req{Options: options, Req: r}
@@ -53,24 +71,6 @@ func getMatchGroupQueryReq(query string, options *common.Options, requestId []by
 
 func getMatchGroupQueryAggregateQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
 	r := &common.QueryManager_Req_MatchGroupAggregateReq{MatchGroupAggregateReq: &common.QueryManager_MatchGroupAggregate_Req{Query: query}}
-	req := &common.QueryManager_Req{Options: options, Req: r}
-	return getQueryTx(req, requestId, metadata)
-}
-
-func getUpdateQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
-	r := &common.QueryManager_Req_UpdateReq{UpdateReq: &common.QueryManager_Update_Req{Query: query}}
-	req := &common.QueryManager_Req{Options: options, Req: r}
-	return getQueryTx(req, requestId, metadata)
-}
-
-func getDeleteQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
-	r := &common.QueryManager_Req_DeleteReq{DeleteReq: &common.QueryManager_Delete_Req{Query: query}}
-	req := &common.QueryManager_Req{Options: options, Req: r}
-	return getQueryTx(req, requestId, metadata)
-}
-
-func getExplainQueryReq(explainableID int64, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
-	r := &common.QueryManager_Req_ExplainReq{ExplainReq: &common.QueryManager_Explain_Req{ExplainableId: explainableID}}
 	req := &common.QueryManager_Req{Options: options, Req: r}
 	return getQueryTx(req, requestId, metadata)
 }

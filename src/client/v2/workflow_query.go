@@ -66,10 +66,61 @@ func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[str
 	return matchResponses, recErr
 }
 
-func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+func (c *Client) RunDefinedQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
 
 	// Create a request and attach meta data & request ID
 	r1 := getDefinedQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunUnDefinedQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getUndefinedQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunUpdateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getUpdateQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunExplainQuery(requestId []byte, explainableID int64, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getExplainQueryReq(explainableID, options, requestId, metadata)
 	// Stuff req into slice/array
 	var req []*common.Transaction_Req
 	req[0] = r1
@@ -100,6 +151,8 @@ func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[str
 	}
 }
 
+// Match queries //
+
 func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
 
 	// Create a request and attach meta data & request ID
@@ -122,6 +175,24 @@ func (c *Client) RunMatchGroupQuery(requestId []byte, query string, metadata map
 
 	// Create a request and attach meta data & request ID
 	r1 := getMatchGroupQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getMatchAggregateQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	var req []*common.Transaction_Req
 	req[0] = r1
