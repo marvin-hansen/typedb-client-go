@@ -24,14 +24,14 @@ package typedb.protocol;
 
 message ServerManager {
 
-    message All {
-        message Req {}
-        message Res {
-            repeated Server servers = 1;
-        }
+  message All {
+    message Req {}
+    message Res {
+      repeated Server servers = 1;
     }
+  }
 }
 
 message Server {
-    string address = 1;
+  string address = 1;
 }

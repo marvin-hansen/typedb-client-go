@@ -24,56 +24,56 @@ package typedb.protocol;
 
 message ClusterUserManager {
 
-    message Contains {
-        message Req {
-            string username = 1;
-        }
-        message Res {
-            bool contains = 1;
-        }
+  message Contains {
+    message Req {
+      string username = 1;
     }
+    message Res {
+      bool contains = 1;
+    }
+  }
 
-    message Create {
-        message Req {
-            string username = 1;
-            string password = 2;
-        }
-        message Res {}
+  message Create {
+    message Req {
+      string username = 1;
+      string password = 2;
     }
+    message Res {}
+  }
 
-    message All {
-        message Req {}
-        message Res {
-            repeated string names = 1;
-        }
+  message All {
+    message Req {}
+    message Res {
+      repeated string names = 1;
     }
+  }
 }
 
 message ClusterUser {
 
-    message Password {
-        message Req {
-            string username = 1;
-            string password = 2;
-        }
-        message Res {}
+  message Password {
+    message Req {
+      string username = 1;
+      string password = 2;
+    }
+    message Res {}
+  }
+
+  message Token {
+    message Req {
+      string username = 1;
     }
 
-    message Token {
-        message Req {
-            string username = 1;
-        }
-
-        message Res {
-            string token = 1;
-        }
+    message Res {
+      string token = 1;
     }
+  }
 
-    message Delete {
-        message Req {
-            string username = 1;
-        }
-        message Res {}
+  message Delete {
+    message Req {
+      string username = 1;
     }
+    message Res {}
+  }
 }
 
