@@ -152,6 +152,22 @@ func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[str
 }
 
 // Match queries //
+//
+// The old golang client implemented match queries using a for-loop over continue flag i.e.
+// for {
+//		transactionResponse, err := transactionClient.Recv()
+//		if err != nil {
+//			return nil, fmt.Errorf("could not receive query response: %w", err)
+//		}
+//
+//		if transactionResponse.GetContinue() {
+// ...
+//
+// These methods aren't available in the 2.6.1 specification anymore.
+//
+// I suppose the for loop may have been replaced with the "stream" concept, but the spec's doesn't any indicator of that.
+//
+// The below implementation is just an initial proof of concept until things have been clarified.
 
 func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
 
