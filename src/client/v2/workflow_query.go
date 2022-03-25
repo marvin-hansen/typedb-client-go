@@ -38,23 +38,29 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 	return res, nil
 }
 
-func (c *Client) RunInsertQuery(requestId string,
+func (c *Client) RunInsertQuery(
+	requestId []byte,
 	query string,
 	metadata map[string]string,
-	explain bool,
-	batchSize int32,
-	latencyMillis int32) (matchResponses []*common.QueryManager_Insert_ResPart, recErr error) {
+	explain, infer, parallel bool,
+) (matchResponses []*common.QueryManager_Insert_ResPart, recErr error) {
 
-	if batchSize == 0 {
-		batchSize = 2147483647
+	// construct req options
+	var options = &common.Options{
+		InferOpt:    &common.Options_Infer{Infer: infer},
+		ExplainOpt:  &common.Options_Explain{Explain: explain},
+		ParallelOpt: &common.Options_Parallel{Parallel: parallel},
 	}
 
-	// @TODO: Construct req options. Skipped for now.
-	var options *common.Options = nil
+	// Create a Request i.e. insert request.
+	r1 := getInsertQueryReq(query, options)
+	// attach metadata  & request ID
+	r1.Metadata = metadata
+	r1.ReqId = requestId
 
-	// Create a Request i.e. insert request. cast it into an slice/array
+	// Stuff req into slice/array
 	var req []*common.Transaction_Req
-	req[0] = getInsertQueryReq(query, options)
+	req[0] = r1
 
 	// run query
 	res, queryErr := c.runQuery(req)
@@ -71,7 +77,7 @@ func (c *Client) RunInsertQuery(requestId string,
 	res.GetMatchAggregateRes()
 	res.GetUndefineRes()
 
-	// however there is no GetInsertRes() or similar to
+	// however, there is no GetInsertRes() or similar
 
 	return matchResponses, recErr
 
