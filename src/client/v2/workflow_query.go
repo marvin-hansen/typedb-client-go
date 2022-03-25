@@ -2,9 +2,7 @@
 
 package v2
 
-import (
-	"github.com/marvin-hansen/typedb-client-go/common"
-)
+import "github.com/marvin-hansen/typedb-client-go/common"
 
 func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_Res, error) {
 
