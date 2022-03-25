@@ -9,7 +9,9 @@ import (
 
 // NewTransaction creates one atomic transaction options with all methods
 // operating on that transaction. Each transaction must be opened & closed.
-// The recommended workflow would be:
+// Notice, one session may run multiple transactions.
+//
+// The recommended transaction workflow:
 //
 // tx := NewTransaction(client, sessionID)
 // tx.OpenTransaction(...)
