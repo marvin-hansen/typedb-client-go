@@ -13,6 +13,13 @@ DB Admin
 - [x] CheckDatabaseExists 
 - [x] DeleteDatabase
 
+Transaction:
+- [x] NewTransaction
+- [x] OpenTransaction
+- [x] CommitTransaction
+- [x] RollbackTransaction
+- [x] CloseTransaction
+
 ## Make reference
 
 ```bash 
