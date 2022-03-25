@@ -51,7 +51,6 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 }
 
 func (c *TransactionClient) executeTX(req []*common.Transaction_Req) error {
-
 	// Send request through
 	sendErr := c.tx.Send(getTransactionClient(req))
 	if sendErr != nil {
@@ -68,12 +67,9 @@ func (c *TransactionClient) executeTX(req []*common.Transaction_Req) error {
 }
 
 func (c TransactionClient) OpenTransaction(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
-
 	// Create a request with options & request ID
 	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
-
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
+	var req []*common.Transaction_Req // Stuff req into slice/array
 	req[0] = r1
 
 	execErr := c.executeTX(req)
@@ -82,15 +78,12 @@ func (c TransactionClient) OpenTransaction(sessionID []byte, sessionType common.
 	} else {
 		return nil // no execution error
 	}
-
 }
 
 func (c TransactionClient) CommitTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionCommitReq(transactionId, metadata)
-
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
+	var req []*common.Transaction_Req // Stuff req into slice/array
 	req[0] = r1
 
 	execErr := c.executeTX(req)
@@ -104,9 +97,7 @@ func (c TransactionClient) CommitTransaction(transactionId []byte, metadata map[
 func (c TransactionClient) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionRollbackReq(transactionId, metadata)
-
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
+	var req []*common.Transaction_Req // Stuff req into slice/array
 	req[0] = r1
 
 	execErr := c.executeTX(req)
@@ -118,8 +109,6 @@ func (c TransactionClient) RollbackTransaction(transactionId []byte, metadata ma
 }
 
 func (c TransactionClient) CloseTransaction() error {
-
-	// Close transaction
 	txCloseErr := c.tx.CloseSend()
 	if txCloseErr != nil {
 		return txCloseErr
