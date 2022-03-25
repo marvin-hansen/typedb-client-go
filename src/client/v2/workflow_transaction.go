@@ -1,4 +1,5 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
+
 package v2
 
 import pb "github.com/marvin-hansen/typedb-client-go/core"
