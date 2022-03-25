@@ -1,30 +1,37 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
+
 package v2
+
+import (
+	"github.com/marvin-hansen/typedb-client-go/common"
+)
 
 func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {
 
-	//	schemaSession, err := c.client.SessionOpen(c.ctx, &pb.Session_Open_Req{
-	//		Database: dbName,
-	//		Type:     pb.Session_SCHEMA,
-	//		Options:  &pb.Options{},
-	//	})
-	//	if err != nil {
-	//		return allEntries, ErrorOpenSession, err
-	//	}
-	//
-	//	query := `
-	//match
-	//	$x sub thing;
-	//get
-	//	$x;
-	//`
-	//
-	//	schemaTransaction, err := c.client.Transaction(c.ctx)
-	//	if err != nil {
-	//		return allEntries, ErrorCreateTransaction, err
-	//	}
-	//
-	//	transactionId := ksuid.New().String()
+	openReq := getSessionOpenReq(dbName, common.Session_SCHEMA, &common.Options{})
+	schemaSession, openErr := c.client.SessionOpen(c.ctx, openReq)
+	if openErr != nil {
+		return allEntries, SessionOpenError, openErr
+	}
 
-	return allEntries, SchemaReadError, nil
+	//query := getSchemaQuery()
+	//infer := c.config.Infer
+	//explain := c.config.Explain
+	//batchSize := int32(0)
+	//
+	//schemaTransaction, openTXErr := c.client.Transaction(c.ctx)
+	//if openErr != nil {
+	//	return allEntries, ErrorCreateTransaction, openTXErr
+	//}
+	//
+	//transactionId := ksuid.New().String()
+	//
+
+	closeReq := getSessionCloseReq(schemaSession.SessionId)
+	_, closeErr := c.client.SessionClose(c.ctx, closeReq)
+	if closeErr != nil {
+		return allEntries, SchemaReadError, closeErr
+	}
+
+	return allEntries, SessionCloseError, nil
 }
