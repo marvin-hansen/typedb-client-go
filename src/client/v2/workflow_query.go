@@ -36,20 +36,10 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 	return res, nil
 }
 
-func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[string]string, explain, infer, parallel bool,
-) (matchResponses []*common.QueryManager_Insert_ResPart, recErr error) {
-
-	// construct req options
-	var options = &common.Options{
-		InferOpt:    &common.Options_Infer{Infer: infer},
-		ExplainOpt:  &common.Options_Explain{Explain: explain},
-		ParallelOpt: &common.Options_Parallel{Parallel: parallel},
-	}
+func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (matchResponses []*common.QueryManager_Insert_ResPart, recErr error) {
 
 	// Create a request and attach meta data & request ID
-	r1 := getInsertQueryReq(query, options)
-	r1.Metadata = metadata
-	r1.ReqId = requestId
+	r1 := getInsertQueryReq(query, options, requestId, metadata)
 
 	// Stuff req into slice/array
 	var req []*common.Transaction_Req
@@ -76,20 +66,10 @@ func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[str
 	return matchResponses, recErr
 }
 
-func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, explain, infer, parallel bool) (queryResponses *common.QueryManager_Res, err error) {
-
-	// construct req options
-	var options = &common.Options{
-		InferOpt:    &common.Options_Infer{Infer: infer},
-		ExplainOpt:  &common.Options_Explain{Explain: explain},
-		ParallelOpt: &common.Options_Parallel{Parallel: parallel},
-	}
+func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
 
 	// Create a request and attach meta data & request ID
-	r1 := getDefinedQueryReq(query, options)
-	r1.Metadata = metadata
-	r1.ReqId = requestId
-
+	r1 := getDefinedQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	var req []*common.Transaction_Req
 	req[0] = r1
@@ -103,20 +83,10 @@ func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[str
 	return queryResponses, nil
 }
 
-func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[string]string, explain, infer, parallel bool) (queryResponses *common.QueryManager_Res, err error) {
-
-	// construct req options
-	var options = &common.Options{
-		InferOpt:    &common.Options_Infer{Infer: infer},
-		ExplainOpt:  &common.Options_Explain{Explain: explain},
-		ParallelOpt: &common.Options_Parallel{Parallel: parallel},
-	}
+func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
 
 	// Create a request and attach meta data & request ID
-	r1 := getDeleteQueryReq(query, options)
-	r1.Metadata = metadata
-	r1.ReqId = requestId
-
+	r1 := getDeleteQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	var req []*common.Transaction_Req
 	req[0] = r1
