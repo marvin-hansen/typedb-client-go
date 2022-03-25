@@ -1,5 +1,7 @@
 # typedb-client-go
 
+Status: Early stage work in progress! 
+
 go client for [TypeDB](https://vaticle.com/typedb)
 
 Supports: TypeDB [2.8](https://github.com/vaticle/typedb/releases/tag/2.8.0)
