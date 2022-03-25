@@ -30,13 +30,23 @@ func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type
 	return &common.Transaction_Req{Req: &common.Transaction_Req_OpenReq{OpenReq: r}}
 }
 
-func getTransactionCommitReq() (req *common.Transaction_Req) {
+func getTransactionCommitReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
 	r := &common.Transaction_Commit_Req{}
-	return &common.Transaction_Req{Req: &common.Transaction_Req_CommitReq{CommitReq: r}}
+	req = &common.Transaction_Req{
+		ReqId:    transactionId,
+		Metadata: metadata,
+		Req:      &common.Transaction_Req_CommitReq{CommitReq: r},
+	}
+	return req
 }
 
-func getTransactionRollbackReq() (req *common.Transaction_Req) {
+func getTransactionRollbackReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
 	r := &common.Transaction_Rollback_Req{}
-	return &common.Transaction_Req{Req: &common.Transaction_Req_RollbackReq{RollbackReq: r}}
+	req = &common.Transaction_Req{
+		ReqId:    transactionId,
+		Metadata: metadata,
+		Req:      &common.Transaction_Req_RollbackReq{RollbackReq: r},
+	}
+	return req
 
 }

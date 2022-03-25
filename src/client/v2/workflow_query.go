@@ -15,7 +15,7 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 	}
 
 	// Send request through
-	sendErr := tx.Send(&common.Transaction_Client{Reqs: req})
+	sendErr := tx.Send(getTransactionClient(req))
 	if sendErr != nil {
 		return nil, sendErr
 	}
@@ -76,7 +76,6 @@ func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[str
 	// should insert query just return QueryManager_Res ?
 
 	return matchResponses, recErr
-
 }
 
 func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, explain, infer, parallel bool) (queryResponses *common.QueryManager_Res, err error) {
