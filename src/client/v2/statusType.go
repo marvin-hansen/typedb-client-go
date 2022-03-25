@@ -19,6 +19,12 @@ type SchemaStatusType StatusType
 
 const (
 	SchemaReadError = iota + 1
-	ErrorOpenSession
 	ErrorCreateTransaction
+)
+
+type SessionStatusType StatusType
+
+const (
+	SessionOpenError = iota + 1
+	SessionCloseError
 )
