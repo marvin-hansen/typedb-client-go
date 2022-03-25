@@ -78,9 +78,9 @@ func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[str
 	queryResponses, queryErr := c.runQuery(req)
 	if queryErr != nil {
 		return nil, queryErr
+	} else {
+		return queryResponses, nil
 	}
-
-	return queryResponses, nil
 }
 
 func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
@@ -95,7 +95,61 @@ func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[str
 	queryResponses, queryErr := c.runQuery(req)
 	if queryErr != nil {
 		return nil, queryErr
+	} else {
+		return queryResponses, nil
 	}
+}
 
-	return queryResponses, nil
+func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getMatchQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunMatchGroupQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getMatchGroupQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
+}
+
+func (c *Client) RunMatchGroupAggregateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+
+	// Create a request and attach meta data & request ID
+	r1 := getMatchGroupQueryAggregateQueryReq(query, options, requestId, metadata)
+	// Stuff req into slice/array
+	var req []*common.Transaction_Req
+	req[0] = r1
+
+	// run query
+	queryResponses, queryErr := c.runQuery(req)
+
+	if queryErr != nil {
+		return nil, queryErr
+	} else {
+		return queryResponses, nil
+	}
 }
