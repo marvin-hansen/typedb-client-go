@@ -62,5 +62,11 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 			queryResults = append(queryResults, part)
 		}
 	}
+
+	closErr := tx.CloseSend()
+	if closErr != nil {
+		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
+	}
+
 	return queryResults, nil
 }
