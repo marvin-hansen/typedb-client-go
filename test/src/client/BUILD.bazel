@@ -15,7 +15,9 @@ go_test(
     ],
     embed = [":client"],
     deps = [
+        "//common",
         "//src/client/v2:client",
+        "@com_github_segmentio_ksuid//:ksuid",
         "@com_github_stretchr_testify//assert",
     ],
 )
