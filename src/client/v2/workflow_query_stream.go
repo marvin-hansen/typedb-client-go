@@ -21,23 +21,28 @@ import (
 //    }
 //  }
 
-func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
+func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
 	if options == nil {
 		options = &common.Options{}
 	}
 
-	// Create a request and attach meta data & request ID
-	r1 := getMatchQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	// open transaction request
+	netMillisecondLatency := int32(150)
+	sessionType := common.Transaction_READ
+	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
 
-	// Create a Transaction
+	// Create a request and attach meta data & request ID
+	r2 := getMatchQueryReq(query, options, requestId, metadata)
+
+	// Stuff req into slice/array
+	req := []*common.Transaction_Req{r1, r2}
+
+	// Create a new Transaction
 	tx, txErr := c.client.Transaction(c.ctx)
 	if txErr != nil {
 		return nil, txErr
 	}
-
 
 	// Send request through
 	sendErr := tx.Send(getTransactionClient(req))
@@ -80,6 +85,11 @@ func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[stri
 			queryResults = append(queryResults, part)
 		}
 
+	}
+
+	closErr := tx.CloseSend()
+	if closErr != nil {
+		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
 	}
 
 	return queryResults, nil
