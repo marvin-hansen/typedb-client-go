@@ -1,6 +1,14 @@
 package v2
 
-import "github.com/marvin-hansen/typedb-client-go/common"
+import (
+	"fmt"
+	"github.com/marvin-hansen/typedb-client-go/common"
+)
+
+const (
+	CONTINUE = common.Transaction_Stream_CONTINUE
+	DONE     = common.Transaction_Stream_DONE
+)
 
 //
 // Methods with streaming results i.e one initial request -> multiple partial stream results.
@@ -18,93 +26,7 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 //    }
 //  }
 
-func (c *Client) RunInsertQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (matchResponses []*common.QueryManager_Insert_ResPart, recErr error) {
-
-	// Create a request and attach meta data & request ID
-	r1 := getInsertQueryReq(query, options, requestId, metadata)
-
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
-
-	// run query
-	res, queryErr := c.runQuery(req)
-	if queryErr != nil {
-		return nil, queryErr
-	}
-
-	// FIXME:
-	// res is of type QueryManager_Res but for whatever reason I can only
-	// extract the types listed below..
-
-	res.GetDefineRes()
-	res.GetDeleteRes()
-	res.GetMatchAggregateRes()
-	res.GetUndefineRes()
-
-	// however, there is no GetInsertRes() or similar
-	// should insert query just return QueryManager_Res ?
-
-	return matchResponses, recErr
-}
-
-func (c *Client) RunUpdateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
-
-	// Create a request and attach meta data & request ID
-	r1 := getUpdateQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
-
-	// run query
-	queryResponses, queryErr := c.runQuery(req)
-	if queryErr != nil {
-		return nil, queryErr
-	} else {
-		return queryResponses, nil
-	}
-}
-
-func (c *Client) RunExplainQuery(requestId []byte, explainableID int64, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
-
-	// Create a request and attach meta data & request ID
-	r1 := getExplainQueryReq(explainableID, options, requestId, metadata)
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
-
-	// run query
-	queryResponses, queryErr := c.runQuery(req)
-	if queryErr != nil {
-		return nil, queryErr
-	} else {
-		return queryResponses, nil
-	}
-}
-
-// 	// FIXME: Match queries return type
-//
-// The old golang client implemented match queries using a for-loop over continue flag i.e.
-// for {
-//		transactionResponse, err := transactionClient.Recv()
-//		if err != nil {
-//			return nil, fmt.Errorf("could not receive query response: %w", err)
-//		}
-//
-//		if transactionResponse.GetContinue() {
-// ...
-//
-// code snippet above taken from:
-// https://github.com/taliesins/typedb-client-go/blob/main/v2/client/client.go#L300
-//
-//
-// The GetContinue() method isn't available in the 2.6.1 specification anymore.
-//
-// I suppose the for loop may have been replaced with the "stream" concept, but the spec's doesn't any indicator of that.
-//
-// The below implementation is just an initial proof of concept until things have been clarified.
-
-func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
 	// Create a request and attach meta data & request ID
 	r1 := getMatchQueryReq(query, options, requestId, metadata)
@@ -112,48 +34,54 @@ func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[stri
 	var req []*common.Transaction_Req
 	req[0] = r1
 
-	// run query
-	queryResponses, queryErr := c.runQuery(req)
-
-	if queryErr != nil {
-		return nil, queryErr
-	} else {
-		return queryResponses, nil
+	// Create a Transaction
+	tx, txErr := c.client.Transaction(c.ctx)
+	if txErr != nil {
+		return nil, txErr
 	}
-}
 
-func (c *Client) RunMatchGroupQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
-
-	// Create a request and attach meta data & request ID
-	r1 := getMatchGroupQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
-
-	// run query
-	queryResponses, queryErr := c.runQuery(req)
-
-	if queryErr != nil {
-		return nil, queryErr
-	} else {
-		return queryResponses, nil
+	// Send request through
+	sendErr := tx.Send(getTransactionClient(req))
+	if sendErr != nil {
+		return nil, sendErr
 	}
-}
 
-func (c *Client) RunMatchGroupAggregateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Res, err error) {
+	// process server stream
 
-	// Create a request and attach meta data & request ID
-	r1 := getMatchGroupQueryAggregateQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
+	for {
+		// get return value
+		recs, recErr := tx.Recv()
+		if recErr != nil {
+			return nil, fmt.Errorf("could not receive query response: %w", recErr)
+		}
 
-	// run query
-	queryResponses, queryErr := c.runQuery(req)
+		state := recs.GetResPart().GetStreamResPart().GetState()
 
-	if queryErr != nil {
-		return nil, queryErr
-	} else {
-		return queryResponses, nil
+		// When the server sends a Stream.ResPart with state = CONTINUE it indicates that there are more answers to fetch,
+		// so the client should respond with Stream.Req
+		if state == CONTINUE {
+			// Create a request and attach meta data & request ID
+			rc := getTransactionStreamReq()
+			// Stuff req into slice/array
+			var reqCont []*common.Transaction_Req
+			reqCont[0] = rc
+			// run query
+			_, queryErr := c.runQuery(req)
+			if queryErr != nil {
+				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
+			}
+
+		}
+
+		//  if the Stream.ResPart has state = DONE, it indicates that there are no more answers to fetch, so the client doesn't need to respond.
+		if state == DONE {
+			break
+		} else {
+			part := recs.GetResPart().GetQueryManagerResPart().GetMatchResPart()
+			queryResults = append(queryResults, part)
+		}
+
 	}
+
+	return queryResults, nil
 }
