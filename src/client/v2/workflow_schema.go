@@ -6,7 +6,13 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
-func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {
+func (c *Client) CreateDatabaseSchema(dbName, schema string, sessionID []byte) (allEntries []string, status DBStatusType, err error) {
+
+	return allEntries, SessionCloseError, nil
+
+}
+
+func (c *Client) GetDatabaseSchema(dbName string, sessionID []byte) (allEntries []string, status DBStatusType, err error) {
 
 	openReq := getSessionOpenReq(dbName, common.Session_SCHEMA, &common.Options{})
 	schemaSession, openErr := c.client.SessionOpen(c.ctx, openReq)
