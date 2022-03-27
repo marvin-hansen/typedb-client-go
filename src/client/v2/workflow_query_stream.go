@@ -23,6 +23,10 @@ import (
 
 func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
+	if options == nil {
+		options = &common.Options{}
+	}
+
 	// Create a request and attach meta data & request ID
 	r1 := getMatchQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
