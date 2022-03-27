@@ -12,6 +12,7 @@ go_test(
     srcs = [
         "workflow_db_test.go",
         "workflow_query_match_test.go",
+        "workflow_schema_test.go",
     ],
     embed = [":client"],
     deps = [

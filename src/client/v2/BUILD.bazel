@@ -12,6 +12,7 @@ go_library(
     name = "client",
     srcs = [
         "client.go",
+        "client_session.go",
         "config.go",
         "dbg.go",
         "flags.go",
