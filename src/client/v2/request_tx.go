@@ -20,6 +20,11 @@ func getTxReq(req *common.QueryManager_Req) *common.Transaction_Req {
 }
 
 func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
+
+	if options == nil {
+		options = &common.Options{}
+	}
+
 	r := &common.Transaction_Open_Req{
 		SessionId:            sessionID,
 		Type:                 sessionType,
