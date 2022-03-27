@@ -20,14 +20,12 @@ func getTxReq(req *common.QueryManager_Req) *common.Transaction_Req {
 }
 
 func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
-
 	r := &common.Transaction_Open_Req{
 		SessionId:            sessionID,
 		Type:                 sessionType,
 		Options:              options,
 		NetworkLatencyMillis: netMillisecondLatency,
 	}
-
 	return &common.Transaction_Req{Req: &common.Transaction_Req_OpenReq{OpenReq: r}}
 }
 
@@ -49,5 +47,4 @@ func getTransactionRollbackReq(transactionId []byte, metadata map[string]string)
 		Req:      &common.Transaction_Req_RollbackReq{RollbackReq: r},
 	}
 	return req
-
 }
