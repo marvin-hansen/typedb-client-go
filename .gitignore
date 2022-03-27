@@ -37,9 +37,7 @@ Session.vim
 # Crash & log files
 crash.log
 output.log
-/scripts/
 /dist/typedb-client-go/
-
 
 /dist/typedb-client-go/bazel-out/
 /dist/typedb-client-go/dist/
