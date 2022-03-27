@@ -9,7 +9,10 @@ go_library(
 
 go_test(
     name = "client_test",
-    srcs = ["workflow_db_test.go"],
+    srcs = [
+        "workflow_db_test.go",
+        "workflow_query_match_test.go",
+    ],
     embed = [":client"],
     deps = [
         "//src/client/v2:client",
