@@ -26,6 +26,18 @@ Transaction:
 - [x] RollbackTransaction
 - [x] CloseTransaction
 
+Query:
+- [x] RunInsertQuery
+- [x] RunUpdateQuery
+- [x] RunDeleteQuery
+- [x] RunExplainQuery
+- [x] RunDefineQuery
+- [x] RunUnDefineQuery
+- [x] RunMatchQuery
+- [x] RunMatchGroupQuery
+- [x] RunMatchAggregateQuery
+- [x] RunMatchGroupAggregateQuery
+
 ## Make reference
 
 ```bash 
