@@ -57,6 +57,25 @@ func (c *Client) RunUpdateQuery(sessionID, requestId []byte, query string, metad
 	return queryResults, nil
 }
 
+func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Explain_ResPart, err error) {
+
+	// Create query request
+	req := getMatchQueryReq(query, options, requestId, metadata)
+
+	// run query
+	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	// extract match results and stuff into queryResults collection
+	for _, item := range streamQuery {
+		queryResults = append(queryResults, item.GetExplainResPart())
+	}
+
+	return queryResults, nil
+}
+
 func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
 	// Create query request
