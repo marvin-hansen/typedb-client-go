@@ -5,6 +5,11 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
+const (
+	CONTINUE = common.Transaction_Stream_CONTINUE
+	DONE     = common.Transaction_Stream_DONE
+)
+
 //runStreamQuery util used by all other streaming return value query methods
 func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*common.QueryManager_ResPart, err error) {
 
@@ -30,7 +35,8 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 		// Extract state of current partial result
 		state := recs.GetResPart().GetStreamResPart().GetState()
 
-		// When the server sends a Stream.ResPart with state = CONTINUE it indicates that there are more answers to fetch,
+		// When the server sends a Stream.ResPart with state = CONTINUE
+		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
 			// Create a request and attach meta data & request ID
@@ -45,7 +51,9 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 			}
 		}
 
-		//  if the Stream.ResPart has state = DONE, it indicates that there are no more answers to fetch, so the client doesn't need to respond.
+		// If the Stream.ResPart has state = DONE,
+		// it indicates that there are no more answers to fetch,
+		// so the client doesn't need to respond.
 		if state == DONE {
 			break
 

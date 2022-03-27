@@ -5,11 +5,6 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
-const (
-	CONTINUE = common.Transaction_Stream_CONTINUE
-	DONE     = common.Transaction_Stream_DONE
-)
-
 //
 // Methods with streaming results i.e one initial request -> multiple partial stream results.
 //
