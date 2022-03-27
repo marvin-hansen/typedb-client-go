@@ -57,3 +57,21 @@ func (c *Client) RunMatchGroupQuery(sessionID, requestId []byte, query string, m
 	return queryResults, nil
 }
 
+func (c *Client) RunMatchGroupAggregateQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_MatchGroupAggregate_ResPart, err error) {
+
+	// Create query request
+	req := getMatchGroupQueryReq(query, options, requestId, metadata)
+
+	// run query
+	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	// extract match results and stuff into queryResults collection
+	for _, item := range streamQuery {
+		queryResults = append(queryResults, item.GetMatchGroupAggregateResPart())
+	}
+
+	return queryResults, nil
+}
