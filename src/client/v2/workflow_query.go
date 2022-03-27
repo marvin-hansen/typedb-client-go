@@ -24,8 +24,7 @@ func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[str
 	// Create a request and attach meta data & request ID
 	r1 := getDefinedQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
+	req := []*common.Transaction_Req{r1}
 
 	// run query
 	res, queryErr := c.runQuery(req)
@@ -41,8 +40,7 @@ func (c *Client) RunUnDefineQuery(requestId []byte, query string, metadata map[s
 	// Create a request and attach meta data & request ID
 	r1 := getUndefinedQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
+	req := []*common.Transaction_Req{r1}
 
 	// run query
 	res, queryErr := c.runQuery(req)
@@ -58,8 +56,7 @@ func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata
 	// Create a request and attach meta data & request ID
 	r1 := getMatchAggregateQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
+	req := []*common.Transaction_Req{r1}
 
 	// run query
 	res, queryErr := c.runQuery(req)
@@ -76,9 +73,8 @@ func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[str
 	// Create a request and attach meta data & request ID
 	r1 := getDeleteQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
-
+	req := []*common.Transaction_Req{r1}
+	
 	// run query
 	res, queryErr := c.runQuery(req)
 	if queryErr != nil {

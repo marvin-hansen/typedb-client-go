@@ -30,14 +30,14 @@ func (c *Client) RunMatchQuery(requestId []byte, query string, metadata map[stri
 	// Create a request and attach meta data & request ID
 	r1 := getMatchQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
-	var req []*common.Transaction_Req
-	req[0] = r1
+	req := []*common.Transaction_Req{r1}
 
 	// Create a Transaction
 	tx, txErr := c.client.Transaction(c.ctx)
 	if txErr != nil {
 		return nil, txErr
 	}
+
 
 	// Send request through
 	sendErr := tx.Send(getTransactionClient(req))
