@@ -8,7 +8,6 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-
 	conf := v2.NewLocalConfig("TestDB")
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
@@ -27,6 +26,7 @@ func TestCreateDatabase(t *testing.T) {
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true")
 	assert.Equal(t, int(status), v2.OK, "Should be OK == 0")
+
 }
 
 func TestExistsDatabase(t *testing.T) {
