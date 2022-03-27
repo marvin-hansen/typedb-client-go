@@ -35,3 +35,8 @@ build:
 .PHONY: rebuild
 rebuild:
 	@source scripts/dev/rebuild.sh
+
+
+.PHONY: stats
+stats:
+	@source scripts/dev/stats.sh
