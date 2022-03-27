@@ -8,10 +8,12 @@ import (
 const (
 	CONTINUE = common.Transaction_Stream_CONTINUE
 	DONE     = common.Transaction_Stream_DONE
+	READ     = common.Transaction_READ
+	WRITE    = common.Transaction_WRITE
 )
 
 //runStreamQuery util used by all other streaming return value query methods
-func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*common.QueryManager_ResPart, err error) {
+func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Create a Transaction
 	tx, txErr := c.client.Transaction(c.ctx)
@@ -19,8 +21,14 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 		return nil, fmt.Errorf("could not create transaction: %w", txErr)
 	}
 
+	// Create open transaction request
+	netMillisecondLatency := int32(150)
+	openReq := getTransactionOpenReq(sessionID, transactionType, options, netMillisecondLatency)
+	// Stuff req into slice/array
+	reqArray := []*common.Transaction_Req{openReq, req}
+
 	// Send request through
-	sendErr := tx.Send(getTransactionClient(req))
+	sendErr := tx.Send(getTransactionClient(reqArray))
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
@@ -40,12 +48,9 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
 			// Create a request and attach meta data & request ID
-			rc := getTransactionStreamReq()
-			// Stuff req into slice/array
-			var reqCont []*common.Transaction_Req
-			reqCont[0] = rc
+			reqCont := []*common.Transaction_Req{getTransactionStreamReq()}
 			// run query
-			_, queryErr := c.runQuery(req)
+			_, queryErr := c.runQuery(reqCont)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
 			}
@@ -63,6 +68,7 @@ func (c *Client) runStreamQuery(req []*common.Transaction_Req) (queryResults []*
 		}
 	}
 
+	// close transaction after the last part returned
 	closErr := tx.CloseSend()
 	if closErr != nil {
 		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
