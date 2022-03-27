@@ -35,3 +35,5 @@ Session.vim
 # Crash & log files
 crash.log
 output.log
+/scripts/
+/dist/typedb-client-go/
