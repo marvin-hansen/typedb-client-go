@@ -1,5 +1,3 @@
-.DS_Store
-
 .idea
 .idea/
 .idea/*
@@ -17,6 +15,7 @@ notes/*.*
 bazel-out
 bazel-out/
 bazel-out/*.*
+
 dist
 dist/
 dist/*.*
@@ -38,5 +37,3 @@ crash.log
 output.log
 /scripts/
 /dist/typedb-client-go/
-
-
