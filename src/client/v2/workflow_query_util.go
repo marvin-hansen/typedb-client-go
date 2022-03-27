@@ -2,7 +2,7 @@ package v2
 
 import "github.com/marvin-hansen/typedb-client-go/common"
 
-//runQuery util used by all other specific query methods below
+//runQuery util used by all other single return value query methods
 func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_Res, error) {
 
 	// Create a Transaction
@@ -17,18 +17,17 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 		return nil, sendErr
 	}
 
-	// Close send -  I suppose?
+	// Close send
 	txCloseErr := tx.CloseSend()
 	if txCloseErr != nil {
 		return nil, txCloseErr
 	}
 
-	// get return value - I assume grpc blocks until the result arrives.
+	// get return value
 	recv, recErr := tx.Recv()
 	if recErr != nil {
 		return nil, recErr
 	}
-
 	// Extract query result
 	res := recv.GetRes().GetQueryManagerRes()
 
