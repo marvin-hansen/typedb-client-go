@@ -8,13 +8,13 @@ import (
 )
 
 // dbCheck checks if a DB with the name exists
-func (c *Client) dbCheck(dbName string) (status DBStatusType, err error) {
+func (c *Client) dbCheck(dbName string) (status StatusType, err error) {
 	existsDatabase, status, dbExistErr := c.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
-		return CheckExistsError, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
+		return DBCheckExistsError, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 	if status != OK {
-		return CheckExistsError, fmt.Errorf("error checking whether database exists: %w", dbExistErr)
+		return DBCheckExistsError, fmt.Errorf("error checking whether database exists: %w", dbExistErr)
 	}
 	if !existsDatabase {
 		return DBNotExists, fmt.Errorf(" database does not exists: %w", dbExistErr)
@@ -24,7 +24,7 @@ func (c *Client) dbCheck(dbName string) (status DBStatusType, err error) {
 }
 
 // CreateDatabaseSchema creates schema fo the given DB
-func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusType, err error) {
+func (c *Client) CreateDatabaseSchema(dbName, schema string) (status StatusType, err error) {
 
 	status, dbExistErr := c.dbCheck(dbName)
 	if dbExistErr != nil {
@@ -33,7 +33,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusTyp
 
 	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
-		return SessionOpenError, fmt.Errorf("could not open schema session: %w", openErr)
+		return ErrorSessionOpen, fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
 	sessionID := session.GetSessionId()
@@ -77,14 +77,14 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusTyp
 
 	closeErr := session.Close()
 	if closeErr != nil {
-		return SchemaReadError, fmt.Errorf("could not close session: %w", closeErr)
+		return ErrorSessionClose, fmt.Errorf("could not close session: %w", closeErr)
 	}
 
 	return OK, nil
 }
 
 // GetDatabaseSchema returns the schema for the DB
-func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {
+func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status StatusType, err error) {
 
 	status, dbExistErr := c.dbCheck(dbName)
 	if dbExistErr != nil {
@@ -93,7 +93,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status D
 
 	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
-		return nil, SessionOpenError, fmt.Errorf("could not open schema session: %w", openErr)
+		return nil, ErrorSessionOpen, fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
 	sessionID := session.GetSessionId()
@@ -134,7 +134,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status D
 
 	closeErr := session.Close()
 	if closeErr != nil {
-		return nil, SessionCloseError, fmt.Errorf("could not close session: %w", closeErr)
+		return nil, ErrorSessionClose, fmt.Errorf("could not close session: %w", closeErr)
 	}
 
 	// converting each query result item into its string representation

@@ -4,35 +4,24 @@ package v2
 
 type StatusType uint8 // 255 possible values
 
-const OK = 0
-
-type DBStatusType StatusType
-
 const (
-	ReadAllDBError DBStatusType = iota + 1
-	CreateError
-	CheckExistsError
+	OK StatusType = iota + 1
+	DBReadAllError
+	DBCreateError
+	DBCheckExistsError
 	DBNotExists
-	DeleteError
-)
+	DBDeleteError
 
-type SchemaStatusType StatusType
+	ErrorSessionOpen
+	ErrorSessionClose
 
-const (
-	SchemaReadError = iota + 1
 	ErrorCreateTransaction
 	ErrorOpenTransaction
+
 	ErrorReadSchema
 	ErrorQuerySchema
 	ErrorWriteSchema
 	ErrorCommitSchemaTransaction
 	ErrorRollbackSchemaTransaction
 	ErrorCloseSchemaTransaction
-)
-
-type SessionStatusType StatusType
-
-const (
-	SessionOpenError = iota + 1
-	SessionCloseError
 )

@@ -6,33 +6,33 @@ import (
 	"log"
 )
 
-func (c *Client) GetAllDatabases() (allDatabases []string, status DBStatusType, err error) {
+func (c *Client) GetAllDatabases() (allDatabases []string, status StatusType, err error) {
 	req := getAllDBReq()
 	databaseAllResult, err := c.client.DatabasesAll(c.ctx, req)
 	if err != nil {
 		log.Println(err.Error())
-		return allDatabases, ReadAllDBError, err
+		return allDatabases, DBReadAllError, err
 	}
 	return databaseAllResult.Names, OK, nil
 }
 
-func (c *Client) CreateDatabase(dbName string) (ok bool, status DBStatusType, err error) {
+func (c *Client) CreateDatabase(dbName string) (ok bool, status StatusType, err error) {
 	req := getCreateDBReq(dbName)
 	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, req)
 	if err != nil {
 		log.Println(databaseCreateRes.String())
 		log.Println(err.Error())
-		return false, CreateError, err
+		return false, DBCreateError, err
 	}
 	return true, OK, nil
 }
 
-func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status DBStatusType, err error) {
+func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status StatusType, err error) {
 	req := getContainsDBReq(dbName)
 	databaseExistsRes, err := c.client.DatabasesContains(c.ctx, req)
 	if err != nil {
 		log.Println("could not get database: %w", err)
-		return false, CheckExistsError, err
+		return false, DBCheckExistsError, err
 	}
 	if databaseExistsRes.Contains {
 		return true, OK, nil
@@ -41,7 +41,7 @@ func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status DBStatu
 	}
 }
 
-func (c *Client) DeleteDatabase(dbName string) (ok bool, status DBStatusType, err error) {
+func (c *Client) DeleteDatabase(dbName string) (ok bool, status StatusType, err error) {
 	exists, status, err := c.CheckDatabaseExists(dbName)
 	if err != nil {
 		return false, status, err
@@ -52,7 +52,7 @@ func (c *Client) DeleteDatabase(dbName string) (ok bool, status DBStatusType, er
 		if err != nil {
 			log.Println(databaseDeleteRes.String())
 			log.Println(err.Error())
-			return false, DeleteError, err
+			return false, DBDeleteError, err
 		}
 		return true, OK, nil
 	} else {
