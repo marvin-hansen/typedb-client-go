@@ -20,12 +20,10 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 //
 
 func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
-
 	// Create a request and attach meta data & request ID
 	r1 := getDefinedQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
-
 	// run query
 	res, queryErr := c.runQuery(req)
 	if queryErr != nil {
@@ -35,13 +33,11 @@ func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[str
 	}
 }
 
-func (c *Client) RunUnDefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
-
+func (c *Client) RunUndefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
 	// Create a request and attach meta data & request ID
 	r1 := getUndefinedQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
-
 	// run query
 	res, queryErr := c.runQuery(req)
 	if queryErr != nil {
@@ -52,12 +48,10 @@ func (c *Client) RunUnDefineQuery(requestId []byte, query string, metadata map[s
 }
 
 func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
-
 	// Create a request and attach meta data & request ID
 	r1 := getMatchAggregateQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
-
 	// run query
 	res, queryErr := c.runQuery(req)
 
@@ -69,12 +63,10 @@ func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata
 }
 
 func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
-
 	// Create a request and attach meta data & request ID
 	r1 := getDeleteQueryReq(query, options, requestId, metadata)
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
-	
 	// run query
 	res, queryErr := c.runQuery(req)
 	if queryErr != nil {
