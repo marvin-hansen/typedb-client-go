@@ -3,6 +3,7 @@
 package v2
 
 import (
+	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/core"
 )
@@ -15,27 +16,28 @@ import (
 //
 // tx := NewTransaction(client, sessionID)
 // tx.OpenTransaction(...)
-// err :=tx.CommitTransaction(...)
+// ..
+// err := tx.CommitTransaction(...)
 // if err != nil{
 // 	tx.RollbackTransaction(...)
 // }
 // tx.CloseTransaction()
 //
-func NewTransaction(client *Client, sessionId []byte) (*TransactionClient, error) {
+func NewTransaction(client *Client, sessionId []byte) (*TransactionManager, error) {
 
 	t, err := newTx(client)
 	if err != nil {
 		return nil, err
 	}
 
-	return &TransactionClient{
+	return &TransactionManager{
 		client:    client,
 		sessionId: sessionId,
 		tx:        t,
 	}, nil
 }
 
-type TransactionClient struct {
+type TransactionManager struct {
 	client    *Client
 	tx        core.TypeDB_TransactionClient
 	sessionId []byte
@@ -44,74 +46,72 @@ type TransactionClient struct {
 func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	tx, txErr := client.client.Transaction(client.ctx)
 	if txErr != nil {
-		return nil, txErr
+		return nil, fmt.Errorf("could not create transaction: %w", txErr)
 	} else {
 		return tx, nil
 	}
 }
 
-func (c *TransactionClient) executeTX(req []*common.Transaction_Req) error {
+func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
+	// Create a request with options & request ID
+	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
+	// Stuff req into slice/array
+	req := []*common.Transaction_Req{r1}
+
+	execErr := c.executeTX(req)
+	if execErr != nil {
+		return fmt.Errorf("could not open transaction: %w", execErr)
+	} else {
+		return nil // no execution error
+	}
+}
+
+func (c *TransactionManager) executeTX(req []*common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(getTransactionClient(req))
 	if sendErr != nil {
-		return sendErr
+		return fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
-	// get return value - I assume grpc blocks until the result arrives.
+	// get return value
 	_, recErr := c.tx.Recv()
 	if recErr != nil {
-		return recErr
+		return fmt.Errorf("could not receive transaction response: %w", recErr)
 	}
-
 	return nil
 }
 
-func (c TransactionClient) OpenTransaction(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
-	// Create a request with options & request ID
-	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
-	var req []*common.Transaction_Req // Stuff req into slice/array
-	req[0] = r1
-
-	execErr := c.executeTX(req)
-	if execErr != nil {
-		return execErr
-	} else {
-		return nil // no execution error
-	}
-}
-
-func (c TransactionClient) CommitTransaction(transactionId []byte, metadata map[string]string) error {
+func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionCommitReq(transactionId, metadata)
-	var req []*common.Transaction_Req // Stuff req into slice/array
-	req[0] = r1
+	// Stuff req into slice/array
+	req := []*common.Transaction_Req{r1}
 
-	execErr := c.executeTX(req)
-	if execErr != nil {
-		return execErr
+	commitErr := c.executeTX(req)
+	if commitErr != nil {
+		return fmt.Errorf("could not commit transaction: %w", commitErr)
 	} else {
 		return nil // no execution error
 	}
 }
 
-func (c TransactionClient) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
+func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionRollbackReq(transactionId, metadata)
-	var req []*common.Transaction_Req // Stuff req into slice/array
-	req[0] = r1
-
-	execErr := c.executeTX(req)
-	if execErr != nil {
-		return execErr
+	// Stuff req into slice/array
+	req := []*common.Transaction_Req{r1}
+	rollbackErr := c.executeTX(req)
+	if rollbackErr != nil {
+		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)
 	} else {
 		return nil // no execution error
 	}
 }
 
-func (c TransactionClient) CloseTransaction() error {
-	txCloseErr := c.tx.CloseSend()
-	if txCloseErr != nil {
-		return txCloseErr
+func (c TransactionManager) CloseTransaction() error {
+	closeErr := c.tx.CloseSend()
+	if closeErr != nil {
+		return fmt.Errorf("could not close query transaction: %w", closeErr)
 	}
 	return nil
 }
