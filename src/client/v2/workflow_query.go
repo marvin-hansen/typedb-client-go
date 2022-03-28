@@ -19,13 +19,11 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 //  }
 //
 
-func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
+func (c *Client) RunDefineQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
 	// Create a request and attach meta data & request ID
-	r1 := getDefinedQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	req := getDefinedQueryReq(query, options, requestId, metadata)
 	// run query
-	res, queryErr := c.runQuery(req)
+	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {
@@ -33,13 +31,11 @@ func (c *Client) RunDefineQuery(requestId []byte, query string, metadata map[str
 	}
 }
 
-func (c *Client) RunUndefineQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
+func (c *Client) RunUndefineQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
 	// Create a request and attach meta data & request ID
-	r1 := getUndefinedQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	req := getUndefinedQueryReq(query, options, requestId, metadata)
 	// run query
-	res, queryErr := c.runQuery(req)
+	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {
@@ -47,13 +43,11 @@ func (c *Client) RunUndefineQuery(requestId []byte, query string, metadata map[s
 	}
 }
 
-func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
+func (c *Client) RunMatchAggregateQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
 	// Create a request and attach meta data & request ID
-	r1 := getMatchAggregateQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	req := getMatchAggregateQueryReq(query, options, requestId, metadata)
 	// run query
-	res, queryErr := c.runQuery(req)
+	res, queryErr := c.runQuery(sessionID, req, options)
 
 	if queryErr != nil {
 		return nil, queryErr
@@ -62,13 +56,11 @@ func (c *Client) RunMatchAggregateQuery(requestId []byte, query string, metadata
 	}
 }
 
-func (c *Client) RunDeleteQuery(requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
+func (c *Client) RunDeleteQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
 	// Create a request and attach meta data & request ID
-	r1 := getDeleteQueryReq(query, options, requestId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	req := getDeleteQueryReq(query, options, requestId, metadata)
 	// run query
-	res, queryErr := c.runQuery(req)
+	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {

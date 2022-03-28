@@ -6,7 +6,7 @@ import (
 )
 
 //runQuery util used by all other single return value query methods
-func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_Res, error) {
+func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options *common.Options) (*common.QueryManager_Res, error) {
 
 	// Create a Transaction
 	tx, txErr := c.client.Transaction(c.ctx)
@@ -14,8 +14,15 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 		return nil, fmt.Errorf("could not create transaction: %w", txErr)
 	}
 
+	// Create open transaction request
+	transactionType := READ
+	netMillisecondLatency := int32(150)
+	openReq := getTransactionOpenReq(sessionID, transactionType, options, netMillisecondLatency)
+	// Stuff req into slice/array
+	reqArray := []*common.Transaction_Req{openReq, req}
+
 	// Send request through
-	sendErr := tx.Send(getTransactionClient(req))
+	sendErr := tx.Send(getTransactionClient(reqArray))
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
