@@ -5,7 +5,7 @@ package v2
 type StatusType uint8 // 255 possible values
 
 const (
-	OK StatusType = iota + 1
+	OK StatusType = iota
 	DBReadAllError
 	DBCreateError
 	DBCheckExistsError

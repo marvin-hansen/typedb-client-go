@@ -16,7 +16,13 @@ func TestSchemaCreate(t *testing.T) {
 	assert.NotNil(t, client, ClientError)
 
 	dbErr := dbSetup(client, dbName)
-	assert.NoError(t, dbErr, "Should be no error")
+	assert.NoError(t, dbErr, "Should be no DB setup error")
+
+	testSchema := getPhoneCallsSchema()
+	status, err := client.CreateDatabaseSchema(dbName, testSchema)
+
+	assert.NoError(t, err, "Should be no schema error")
+	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
 
 }
 
@@ -28,6 +34,19 @@ func TestSchemaGet(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, ClientError)
 
+	println("* Run DB setup")
+
 	dbErr := dbSetup(client, dbName)
-	assert.NoError(t, dbErr, "Should be no error")
+	assert.NoError(t, dbErr, "Should be no DB error")
+
+	println("* Get Schema")
+	allEntries, status, err := client.GetDatabaseSchema(dbName)
+
+	assert.NoError(t, err, "Should be no schema error")
+	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
+	assert.NotNil(t, t, allEntries, "Should not be nil")
+
+	teardownErr := dbTeardown(client, dbName)
+	assert.NoError(t, teardownErr, "Should be no DB teardown error")
+
 }

@@ -45,7 +45,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (status StatusType,
 
 	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
-	options := &common.Options{InferOpt: &common.Options_Infer{Infer: true}, ExplainOpt: &common.Options_Explain{Explain: true}}
+	options := &common.Options{}
 	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_WRITE, options, latencyMillis)
 	if openTxErr != nil {
 		return ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
@@ -105,7 +105,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status S
 
 	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
-	options := &common.Options{InferOpt: &common.Options_Infer{Infer: true}, ExplainOpt: &common.Options_Explain{Explain: true}}
+	options := &common.Options{}
 	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_READ, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
@@ -118,12 +118,12 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status S
 
 	readErr := tx.ExecuteTransaction(req)
 	if readErr != nil {
-		return nil, ErrorReadSchema, fmt.Errorf("could not read schema: %w", openTxErr)
+		return nil, ErrorReadSchema, fmt.Errorf("could not read schema: %w", readErr)
 	}
 
 	queryResults, queryErr := c.runSchemaQuery(tx.tx, sessionID)
 	if queryErr != nil {
-		return nil, ErrorQuerySchema, fmt.Errorf("could not query schema: %w", openTxErr)
+		return nil, ErrorQuerySchema, fmt.Errorf("could not query schema: %w", queryErr)
 
 	}
 
