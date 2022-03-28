@@ -13,13 +13,7 @@ func getTransactionClient(reqs []*common.Transaction_Req) (req *common.Transacti
 	return &common.Transaction_Client{Reqs: reqs}
 }
 
-// getQueryTx coverts a QueryManager_Req into a Transaction_Req
-func getTxReq(req *common.QueryManager_Req) *common.Transaction_Req {
-	r := &common.Transaction_Req_QueryManagerReq{QueryManagerReq: req}
-	return &common.Transaction_Req{Req: r}
-}
-
-func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
+func getTransactionOpenReq(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
 
 	if options == nil {
 		options = &common.Options{}
@@ -31,25 +25,28 @@ func getTransactionOpenReq(sessionID []byte, sessionType common.Transaction_Type
 		Options:              options,
 		NetworkLatencyMillis: netMillisecondLatency,
 	}
-	return &common.Transaction_Req{Req: &common.Transaction_Req_OpenReq{OpenReq: r}}
+
+	req = &common.Transaction_Req{
+		ReqId: transactionId,
+		Req:   &common.Transaction_Req_OpenReq{OpenReq: r},
+	}
+	return req
 }
 
 func getTransactionCommitReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
-	r := &common.Transaction_Commit_Req{}
 	req = &common.Transaction_Req{
 		ReqId:    transactionId,
 		Metadata: metadata,
-		Req:      &common.Transaction_Req_CommitReq{CommitReq: r},
+		Req:      &common.Transaction_Req_CommitReq{CommitReq: &common.Transaction_Commit_Req{}},
 	}
 	return req
 }
 
 func getTransactionRollbackReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
-	r := &common.Transaction_Rollback_Req{}
 	req = &common.Transaction_Req{
 		ReqId:    transactionId,
 		Metadata: metadata,
-		Req:      &common.Transaction_Req_RollbackReq{RollbackReq: r},
+		Req:      &common.Transaction_Req_RollbackReq{RollbackReq: &common.Transaction_Rollback_Req{}},
 	}
 	return req
 }
