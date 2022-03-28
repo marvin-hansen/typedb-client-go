@@ -8,8 +8,7 @@ import (
 
 func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []string, status DBStatusType, err error) {
 
-	openReq := getSessionOpenReq(dbName, common.Session_SCHEMA, &common.Options{})
-	session, openErr := c.client.SessionOpen(c.ctx, openReq)
+	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return allEntries, SessionOpenError, openErr
 	}
@@ -23,8 +22,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 	//
 	//requestId := ksuid.New().String()
 
-	closeReq := getSessionCloseReq(sessionID)
-	_, closeErr := c.client.SessionClose(c.ctx, closeReq)
+	closeErr := session.Close()
 	if closeErr != nil {
 		return allEntries, SchemaReadError, closeErr
 	}
