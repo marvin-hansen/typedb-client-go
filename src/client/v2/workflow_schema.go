@@ -13,7 +13,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 		return allEntries, SessionOpenError, openErr
 	}
 
-	sessionID := session.GetSessionId()
+	//sessionID := session.GetSessionId()
 	//
 	//tx, newTxErr := NewTransaction(c, sessionID)
 	//if newTxErr != nil {

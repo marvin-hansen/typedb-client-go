@@ -17,6 +17,7 @@ go_library(
         "dbg.go",
         "flags.go",
         "manager_query.go",
+        "manager_session.go",
         "manager_transaction.go",
         "request_attribute.go",
         "request_concept.go",
