@@ -21,7 +21,7 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 
 func (c *Client) RunDefineQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
 	// Create a request and attach meta data & request ID
-	req := getDefinedQueryReq(query, options, requestId, metadata)
+	req := getDefinedQueryReq(query, requestId, options, metadata)
 	// run query
 	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {

@@ -3,6 +3,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/segmentio/ksuid"
 )
 
 //runQuery util used by all other single return value query methods
@@ -14,10 +15,12 @@ func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options
 		return nil, fmt.Errorf("could not create transaction: %w", txErr)
 	}
 
+	transactionId := ksuid.New().Bytes()
+
 	// Create open transaction request
 	transactionType := READ
 	netMillisecondLatency := int32(150)
-	openReq := getTransactionOpenReq(sessionID, transactionType, options, netMillisecondLatency)
+	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
 	reqArray := []*common.Transaction_Req{openReq, req}
 

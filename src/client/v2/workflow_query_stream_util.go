@@ -3,6 +3,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/segmentio/ksuid"
 )
 
 const (
@@ -21,9 +22,11 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 		return nil, fmt.Errorf("could not create transaction: %w", txErr)
 	}
 
+	transactionId := ksuid.New().Bytes()
+
 	// Create open transaction request
 	netMillisecondLatency := int32(150)
-	openReq := getTransactionOpenReq(sessionID, transactionType, options, netMillisecondLatency)
+	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
 	reqArray := []*common.Transaction_Req{openReq, req}
 

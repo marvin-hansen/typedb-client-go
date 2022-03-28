@@ -21,7 +21,7 @@ func getInsertQueryReq(query string, options *common.Options, requestId []byte, 
 	return getQueryTx(req, requestId, metadata)
 }
 
-func getDefinedQueryReq(query string, options *common.Options, requestId []byte, metadata map[string]string) *common.Transaction_Req {
+func getDefinedQueryReq(query string, requestId []byte, options *common.Options, metadata map[string]string) *common.Transaction_Req {
 	r := &common.QueryManager_Req_DefineReq{DefineReq: &common.QueryManager_Define_Req{Query: query}}
 	req := &common.QueryManager_Req{Options: options, Req: r}
 	return getQueryTx(req, requestId, metadata)
