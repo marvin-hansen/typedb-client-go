@@ -25,7 +25,7 @@ func (c *Client) RunInsertQuery(sessionID, requestId []byte, query string, metad
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -44,7 +44,7 @@ func (c *Client) RunUpdateQuery(sessionID, requestId []byte, query string, metad
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -63,7 +63,7 @@ func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, meta
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -82,7 +82,7 @@ func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string, metada
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -101,7 +101,7 @@ func (c *Client) RunMatchGroupQuery(sessionID, requestId []byte, query string, m
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -120,7 +120,7 @@ func (c *Client) RunMatchGroupAggregateQuery(sessionID, requestId []byte, query 
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, READ, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}

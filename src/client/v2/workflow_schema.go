@@ -7,24 +7,26 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
-func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []string, status DBStatusType, err error) {
+func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusType, err error) {
 
 	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
-		return allEntries, SessionOpenError, fmt.Errorf("could not open schema session: %w", openErr)
+		return SessionOpenError, fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
 	sessionID := session.GetSessionId()
 
 	tx, newTxErr := NewTransaction(c, sessionID)
 	if newTxErr != nil {
-		return allEntries, ErrorCreateTransaction, fmt.Errorf("could not create a new transaction: %w", newTxErr)
+		return ErrorCreateTransaction, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
 	transactionId := tx.GetTransactionId()
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, WRITE, nil, 250)
+	latencyMillis := int32(100)
+	options := &common.Options{InferOpt: &common.Options_Infer{Infer: true}, ExplainOpt: &common.Options_Explain{Explain: true}}
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_WRITE, options, latencyMillis)
 	if openTxErr != nil {
-		return nil, ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
+		return ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
 	requestId := tx.CreateNewRequestID()
@@ -33,17 +35,68 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 
 	writeErr := tx.ExecuteTransaction(req)
 	if writeErr != nil {
-		return nil, ErrorWriteSchema, fmt.Errorf("could not write schema into DB: %w", writeErr)
+		return ErrorWriteSchema, fmt.Errorf("could not write schema into DB: %w", writeErr)
 	}
 
 	commitErr := tx.CommitTransaction(transactionId)
 	if commitErr != nil {
 		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
 		if rollbackErr != nil {
-			return nil, ErrorRollbackSchemaTransaction, fmt.Errorf("could commit schema into DB AND could NOT Rolled back transaction: %w", commitErr)
+			return ErrorRollbackSchemaTransaction, fmt.Errorf("could commit schema into DB AND could NOT Rolled back transaction: %w", commitErr)
 		}
 
-		return nil, ErrorCommitSchemaTransaction, fmt.Errorf("could commit schema into DB. Rolled back transaction: %w", commitErr)
+		return ErrorCommitSchemaTransaction, fmt.Errorf("could commit schema into DB. Rolled back transaction: %w", commitErr)
+	}
+
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return ErrorCloseSchemaTransaction, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	}
+
+	closeErr := session.Close()
+	if closeErr != nil {
+		return SchemaReadError, fmt.Errorf("could not close session: %w", closeErr)
+	}
+
+	return OK, nil
+}
+
+func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {
+
+	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
+	if openErr != nil {
+		return nil, SessionOpenError, fmt.Errorf("could not open schema session: %w", openErr)
+	}
+
+	sessionID := session.GetSessionId()
+
+	tx, newTxErr := NewTransaction(c, sessionID)
+	if newTxErr != nil {
+		return nil, ErrorCreateTransaction, fmt.Errorf("could not create a new transaction: %w", newTxErr)
+	}
+
+	transactionId := tx.GetTransactionId()
+	latencyMillis := int32(100)
+	options := &common.Options{InferOpt: &common.Options_Infer{Infer: true}, ExplainOpt: &common.Options_Explain{Explain: true}}
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_READ, options, latencyMillis)
+	if openTxErr != nil {
+		return nil, ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
+	}
+
+	query := getSchemaQuery()
+	requestId := tx.CreateNewRequestID()
+	metadata := tx.CreateNewRequestMetadata()
+	req := getMatchQueryReq(query, options, requestId, metadata)
+
+	readErr := tx.ExecuteTransaction(req)
+	if readErr != nil {
+		return nil, ErrorReadSchema, fmt.Errorf("could not read schema: %w", openTxErr)
+	}
+
+	queryResults, queryErr := c.runSchemaQuery(tx.tx, sessionID)
+	if queryErr != nil {
+		return nil, ErrorQuerySchema, fmt.Errorf("could not query schema: %w", openTxErr)
+
 	}
 
 	closeTxErr := tx.CloseTransaction()
@@ -53,26 +106,13 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 
 	closeErr := session.Close()
 	if closeErr != nil {
-		return allEntries, SchemaReadError, fmt.Errorf("could not close session: %w", closeErr)
+		return nil, SchemaReadError, fmt.Errorf("could not close session: %w", closeErr)
 	}
+
+	// converting each query result item into its string representation
+	for _, item := range queryResults {
+		allEntries = append(allEntries, item.String())
+	}
+
 	return allEntries, OK, nil
-}
-
-func (c *Client) GetDatabaseSchema(dbName string, sessionID []byte) (allEntries []string, status DBStatusType, err error) {
-
-	openReq := getSessionOpenReq(dbName, common.Session_SCHEMA, &common.Options{})
-	schemaSession, openErr := c.client.SessionOpen(c.ctx, openReq)
-	if openErr != nil {
-		return allEntries, SessionOpenError, openErr
-	}
-
-	//query := getSchemaQuery()
-
-	closeReq := getSessionCloseReq(schemaSession.SessionId)
-	_, closeErr := c.client.SessionClose(c.ctx, closeReq)
-	if closeErr != nil {
-		return allEntries, SchemaReadError, closeErr
-	}
-
-	return allEntries, SessionCloseError, nil
 }

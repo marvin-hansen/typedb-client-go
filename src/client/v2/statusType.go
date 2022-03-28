@@ -22,6 +22,8 @@ const (
 	SchemaReadError = iota + 1
 	ErrorCreateTransaction
 	ErrorOpenTransaction
+	ErrorReadSchema
+	ErrorQuerySchema
 	ErrorWriteSchema
 	ErrorCommitSchemaTransaction
 	ErrorRollbackSchemaTransaction

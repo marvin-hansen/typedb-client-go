@@ -9,8 +9,8 @@ import (
 const (
 	CONTINUE = common.Transaction_Stream_CONTINUE
 	DONE     = common.Transaction_Stream_DONE
-	READ     = common.Transaction_READ
-	WRITE    = common.Transaction_WRITE
+	TX_READ  = common.Transaction_READ
+	TX_WRITE = common.Transaction_WRITE
 )
 
 //runStreamQuery util used by all other streaming return value query methods

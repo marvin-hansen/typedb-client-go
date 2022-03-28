@@ -50,7 +50,7 @@ type TransactionManager struct {
 	transactionId []byte
 }
 
-// CreateNewRequestMetadata returns a map of empty metadata
+// CreateNewRequestMetadata returns a new map of empty metadata
 func (c TransactionManager) CreateNewRequestMetadata() map[string]string {
 	return map[string]string{}
 }
