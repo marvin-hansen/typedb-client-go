@@ -21,6 +21,7 @@ DB Admin
 
 Schema:
 - [x] CreateDatabaseSchema
+- [x] GetDatabaseSchema
 
 Transaction (TransactionManager):
 - [x] NewTransaction
