@@ -31,13 +31,13 @@ func (s SessionManager) GetSessionId() []byte {
 	return s.session.GetSessionId()
 }
 
-// GetNewRequestID generates a new unique request ID to use in transactions
-func (s SessionManager) GetNewRequestID() []byte {
+// GetNewUID generates a new unique request ID to use in transactions
+func (s SessionManager) GetNewUID() []byte {
 	return ksuid.New().Bytes()
 }
 
-// GetNewStringRequestID generates a new unique request ID to use in transactions
-func (s SessionManager) GetNewStringRequestID() string {
+// GetNewStringUID generates a new unique request ID to use in transactions
+func (s SessionManager) GetNewStringUID() string {
 	return ksuid.New().String()
 }
 
