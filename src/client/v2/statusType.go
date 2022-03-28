@@ -21,6 +21,10 @@ type SchemaStatusType StatusType
 const (
 	SchemaReadError = iota + 1
 	ErrorCreateTransaction
+	ErrorWriteSchema
+	ErrorCommitSchemaTransaction
+	ErrorRollbackSchemaTransaction
+	ErrorCloseSchemaTransaction
 )
 
 type SessionStatusType StatusType
