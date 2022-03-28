@@ -19,6 +19,9 @@ DB Admin
 - [x] CheckDatabaseExists 
 - [x] DeleteDatabase
 
+Schema:
+- [x] CreateDatabaseSchema
+
 Transaction:
 - [x] NewTransaction
 - [x] OpenTransaction
