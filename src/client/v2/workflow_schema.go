@@ -14,9 +14,8 @@ func (c *Client) dbCheck(dbName string) (status DBStatusType, err error) {
 		return CheckExistsError, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 	if status != OK {
-		return CheckExistsError, fmt.Errorf("error checking if database exists: %w", dbExistErr)
+		return CheckExistsError, fmt.Errorf("error checking whether database exists: %w", dbExistErr)
 	}
-
 	if !existsDatabase {
 		return DBNotExists, fmt.Errorf(" database does not exists: %w", dbExistErr)
 	}
