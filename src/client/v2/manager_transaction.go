@@ -25,7 +25,7 @@ import (
 //
 func NewTransaction(client *Client, sessionId []byte) (*TransactionManager, error) {
 
-	t, err := newTx(client)
+	transactionClient, err := newTx(client)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +33,12 @@ func NewTransaction(client *Client, sessionId []byte) (*TransactionManager, erro
 	return &TransactionManager{
 		client:    client,
 		sessionId: sessionId,
-		tx:        t,
+		tx:        transactionClient,
 	}, nil
 }
 
+// TransactionManager encapsulates one single transaction for a specific session.
+// Note, a session may hold one or more transactions.
 type TransactionManager struct {
 	client    *Client
 	tx        core.TypeDB_TransactionClient
@@ -52,6 +54,7 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	}
 }
 
+// OpenTransaction needs to be called first to initiate a transaction on the server.
 func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
 	// Create a request with options & request ID
 	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
@@ -66,6 +69,7 @@ func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common
 	}
 }
 
+// ExecuteTransaction needs to be called each time to send a request to the server.
 func (c *TransactionManager) ExecuteTransaction(req []*common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(getTransactionClient(req))
@@ -81,6 +85,7 @@ func (c *TransactionManager) ExecuteTransaction(req []*common.Transaction_Req) e
 	return nil
 }
 
+// CommitTransaction needs to be called only once to finalize all previous steps.
 func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionCommitReq(transactionId, metadata)
@@ -95,6 +100,7 @@ func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map
 	}
 }
 
+// RollbackTransaction needs to be called whenever a commit fails to restore the previous state.
 func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	r1 := getTransactionRollbackReq(transactionId, metadata)
@@ -108,6 +114,7 @@ func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata m
 	}
 }
 
+// CloseTransaction call only once at the end to close the transaction.
 func (c TransactionManager) CloseTransaction() error {
 	closeErr := c.tx.CloseSend()
 	if closeErr != nil {
