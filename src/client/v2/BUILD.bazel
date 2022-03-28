@@ -53,6 +53,7 @@ go_library(
         "//core",
         "//src/common",
         "//src/err",
+        "@com_github_segmentio_ksuid//:ksuid",
         "@org_golang_google_grpc//:go_default_library",
     ],
 )
