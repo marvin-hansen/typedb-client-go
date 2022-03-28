@@ -48,9 +48,9 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
 			// Create a request and attach meta data & request ID
-			reqCont := []*common.Transaction_Req{getTransactionStreamReq()}
+			reqCont := getTransactionStreamReq()
 			// run query
-			_, queryErr := c.runQuery(reqCont)
+			_, queryErr := c.runQuery(sessionID, reqCont)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
 			}
