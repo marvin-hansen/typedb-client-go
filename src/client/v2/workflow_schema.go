@@ -4,7 +4,6 @@ package v2
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/segmentio/ksuid"
 )
 
 func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []string, status DBStatusType, err error) {
@@ -16,13 +15,13 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 	}
 
 	sessionID := session.GetSessionId()
-
-	tx, newTxErr := NewTransaction(c, sessionID)
-	if newTxErr != nil {
-		return allEntries, ErrorCreateTransaction, openErr
-	}
-
-	requestId := ksuid.New().String()
+	//
+	//tx, newTxErr := NewTransaction(c, sessionID)
+	//if newTxErr != nil {
+	//	return allEntries, ErrorCreateTransaction, openErr
+	//}
+	//
+	//requestId := ksuid.New().String()
 
 	closeReq := getSessionCloseReq(sessionID)
 	_, closeErr := c.client.SessionClose(c.ctx, closeReq)

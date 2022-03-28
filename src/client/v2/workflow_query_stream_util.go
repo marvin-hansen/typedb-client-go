@@ -50,7 +50,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 			// Create a request and attach meta data & request ID
 			reqCont := getTransactionStreamReq()
 			// run query
-			_, queryErr := c.runQuery(sessionID, reqCont)
+			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
 			}
