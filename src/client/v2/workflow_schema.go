@@ -7,7 +7,30 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
+// dbCheck checks if a DB with the name exists
+func (c *Client) dbCheck(dbName string) (status DBStatusType, err error) {
+	existsDatabase, status, dbExistErr := c.CheckDatabaseExists(dbName)
+	if dbExistErr != nil {
+		return CheckExistsError, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
+	}
+	if status != OK {
+		return CheckExistsError, fmt.Errorf("error checking if database exists: %w", dbExistErr)
+	}
+
+	if !existsDatabase {
+		return DBNotExists, fmt.Errorf(" database does not exists: %w", dbExistErr)
+	}
+
+	return OK, nil
+}
+
+// CreateDatabaseSchema creates schema fo the given DB
 func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusType, err error) {
+
+	status, dbExistErr := c.dbCheck(dbName)
+	if dbExistErr != nil {
+		return status, dbExistErr
+	}
 
 	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
@@ -61,7 +84,13 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (status DBStatusTyp
 	return OK, nil
 }
 
+// GetDatabaseSchema returns the schema for the DB
 func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status DBStatusType, err error) {
+
+	status, dbExistErr := c.dbCheck(dbName)
+	if dbExistErr != nil {
+		return nil, status, dbExistErr
+	}
 
 	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
 	if openErr != nil {
@@ -106,7 +135,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status D
 
 	closeErr := session.Close()
 	if closeErr != nil {
-		return nil, SchemaReadError, fmt.Errorf("could not close session: %w", closeErr)
+		return nil, SessionCloseError, fmt.Errorf("could not close session: %w", closeErr)
 	}
 
 	// converting each query result item into its string representation
