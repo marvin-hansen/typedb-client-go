@@ -4,7 +4,7 @@ go_library(
     name = "client",
     srcs = [
         "shared.go",
-        "utils.go",
+        "utils_query.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/test/src/client",
     visibility = ["//visibility:public"],
@@ -13,6 +13,7 @@ go_library(
 go_test(
     name = "client_test",
     srcs = [
+        "utils_test.go",
         "workflow_db_test.go",
         "workflow_query_match_test.go",
         "workflow_schema_test.go",

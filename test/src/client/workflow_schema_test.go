@@ -15,6 +15,9 @@ func TestSchemaCreate(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, ClientError)
 
+	dbErr := dbSetup(client, dbName)
+	assert.NoError(t, dbErr, "Should be no error")
+
 }
 
 func TestSchemaGet(t *testing.T) {
@@ -25,4 +28,6 @@ func TestSchemaGet(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, ClientError)
 
+	dbErr := dbSetup(client, dbName)
+	assert.NoError(t, dbErr, "Should be no error")
 }
