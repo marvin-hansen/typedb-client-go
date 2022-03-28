@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/core"
+	"github.com/segmentio/ksuid"
 )
 
 // NewTransaction creates one atomic transaction options with all methods
@@ -30,19 +31,23 @@ func NewTransaction(client *Client, sessionId []byte) (*TransactionManager, erro
 		return nil, err
 	}
 
+	transactionId := ksuid.New().Bytes()
+
 	return &TransactionManager{
-		client:    client,
-		sessionId: sessionId,
-		tx:        transactionClient,
+		client:        client,
+		sessionId:     sessionId,
+		transactionId: transactionId,
+		tx:            transactionClient,
 	}, nil
 }
 
 // TransactionManager encapsulates one single transaction for a specific session.
 // Note, a session may hold one or more transactions.
 type TransactionManager struct {
-	client    *Client
-	tx        core.TypeDB_TransactionClient
-	sessionId []byte
+	client        *Client
+	tx            core.TypeDB_TransactionClient
+	sessionId     []byte
+	transactionId []byte
 }
 
 func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
@@ -54,12 +59,16 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	}
 }
 
+// GetTransactionId returns the unique ID of the transaction
+func (c TransactionManager) GetTransactionId() []byte {
+	return c.transactionId
+}
+
 // OpenTransaction needs to be called first to initiate a transaction on the server.
-func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
+func (c TransactionManager) OpenTransaction(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
 	// Create a request with options & request ID
-	r1 := getTransactionOpenReq(sessionID, sessionType, options, netMillisecondLatency)
+	req := getTransactionOpenReq(sessionID, transactionId, sessionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
 
 	execErr := c.ExecuteTransaction(req)
 	if execErr != nil {
@@ -70,7 +79,7 @@ func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common
 }
 
 // ExecuteTransaction needs to be called each time to send a request to the server.
-func (c *TransactionManager) ExecuteTransaction(req []*common.Transaction_Req) error {
+func (c *TransactionManager) ExecuteTransaction(req ...*common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(getTransactionClient(req))
 	if sendErr != nil {
@@ -86,11 +95,10 @@ func (c *TransactionManager) ExecuteTransaction(req []*common.Transaction_Req) e
 }
 
 // CommitTransaction needs to be called only once to finalize all previous steps.
-func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map[string]string) error {
+func (c TransactionManager) CommitTransaction(transactionId []byte) error {
 	// Create a request with meta data & request ID
-	r1 := getTransactionCommitReq(transactionId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	metadata := map[string]string{}
+	req := getTransactionCommitReq(transactionId, metadata)
 
 	commitErr := c.ExecuteTransaction(req)
 	if commitErr != nil {
@@ -103,9 +111,7 @@ func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map
 // RollbackTransaction needs to be called whenever a commit fails to restore the previous state.
 func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
-	r1 := getTransactionRollbackReq(transactionId, metadata)
-	// Stuff req into slice/array
-	req := []*common.Transaction_Req{r1}
+	req := getTransactionRollbackReq(transactionId, metadata)
 	rollbackErr := c.ExecuteTransaction(req)
 	if rollbackErr != nil {
 		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)
