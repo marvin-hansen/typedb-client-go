@@ -2,7 +2,6 @@ package v2
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/segmentio/ksuid"
 )
 
 // NewSession creates a new session for the given client & DB
@@ -29,16 +28,6 @@ type SessionManager struct {
 // GetSessionId returns the current session ID
 func (s SessionManager) GetSessionId() []byte {
 	return s.session.GetSessionId()
-}
-
-// GetNewUID generates a new unique request ID to use in transactions
-func (s SessionManager) GetNewUID() []byte {
-	return ksuid.New().Bytes()
-}
-
-// GetNewStringUID generates a new unique request ID to use in transactions
-func (s SessionManager) GetNewStringUID() string {
-	return ksuid.New().String()
 }
 
 // Reset -  No idea what the reset function actually rests, but it's in the specs....

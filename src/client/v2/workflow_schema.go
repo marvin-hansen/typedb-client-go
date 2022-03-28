@@ -27,8 +27,8 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 		return nil, ErrorOpenTransaction, fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
-	requestId := session.GetNewUID()
-	metadata := map[string]string{}
+	requestId := tx.CreateNewRequestID()
+	metadata := tx.CreateNewRequestMetadata()
 	req := getDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
 
 	writeErr := tx.ExecuteTransaction(req)
@@ -67,17 +67,6 @@ func (c *Client) GetDatabaseSchema(dbName string, sessionID []byte) (allEntries 
 	}
 
 	//query := getSchemaQuery()
-	//infer := c.config.Infer
-	//explain := c.config.Explain
-	//batchSize := int32(0)
-	//
-	//schemaTransaction, openTXErr := c.client.Transaction(c.ctx)
-	//if openErr != nil {
-	//	return allEntries, ErrorCreateTransaction, openTXErr
-	//}
-	//
-	//transactionId := ksuid.New().String()
-	//
 
 	closeReq := getSessionCloseReq(schemaSession.SessionId)
 	_, closeErr := c.client.SessionClose(c.ctx, closeReq)
