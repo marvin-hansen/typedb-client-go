@@ -7,7 +7,6 @@ import (
 )
 
 func TestSchemaCreate(t *testing.T) {
-
 	println("* Create Client")
 	dbName := "TestDB"
 	conf := v2.NewLocalConfig(dbName)
@@ -15,15 +14,16 @@ func TestSchemaCreate(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, ClientError)
 
+	println("* Run DB setup")
 	dbErr := dbSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB setup error")
 
+	println("* Write Schema")
 	testSchema := getPhoneCallsSchema()
 	status, err := client.CreateDatabaseSchema(dbName, testSchema)
 
 	assert.NoError(t, err, "Should be no schema error")
 	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
-
 }
 
 func TestSchemaGet(t *testing.T) {
@@ -35,7 +35,6 @@ func TestSchemaGet(t *testing.T) {
 	assert.NotNil(t, client, ClientError)
 
 	println("* Run DB setup")
-
 	dbErr := dbSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB error")
 
@@ -48,5 +47,4 @@ func TestSchemaGet(t *testing.T) {
 
 	teardownErr := dbTeardown(client, dbName)
 	assert.NoError(t, teardownErr, "Should be no DB teardown error")
-
 }
