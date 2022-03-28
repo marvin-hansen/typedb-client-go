@@ -20,14 +20,42 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 		return allEntries, ErrorCreateTransaction, openErr
 	}
 
-	//requestId := ksuid.New().String()
+	transactionId := tx.GetTransactionId()
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, WRITE, nil, 250)
+	if openTxErr != nil {
+		return nil, 0, openTxErr
+	}
+
+	requestId := session.GetNewUID()
+	metadata := map[string]string{}
+	req := getDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
+
+	exErr := tx.ExecuteTransaction(req)
+	if exErr != nil {
+		return nil, ErrorWriteSchema, exErr
+	}
+
+	commitErr := tx.CommitTransaction(transactionId)
+	if commitErr != nil {
+		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+		if rollbackErr != nil {
+			return nil, ErrorRollbackSchemaTransaction, rollbackErr
+		}
+
+		return nil, ErrorCommitSchemaTransaction, exErr
+	}
+
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return nil, ErrorCloseSchemaTransaction, closeTxErr
+	}
 
 	closeErr := session.Close()
 	if closeErr != nil {
 		return allEntries, SchemaReadError, closeErr
 	}
 
-	return allEntries, SessionCloseError, nil
+	return allEntries, OK, nil
 }
 
 func (c *Client) GetDatabaseSchema(dbName string, sessionID []byte) (allEntries []string, status DBStatusType, err error) {
