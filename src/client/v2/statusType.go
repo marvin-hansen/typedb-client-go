@@ -21,6 +21,7 @@ type SchemaStatusType StatusType
 const (
 	SchemaReadError = iota + 1
 	ErrorCreateTransaction
+	ErrorOpenTransaction
 	ErrorWriteSchema
 	ErrorCommitSchemaTransaction
 	ErrorRollbackSchemaTransaction
