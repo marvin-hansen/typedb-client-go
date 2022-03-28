@@ -34,7 +34,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 	}
 
 	for {
-		// get return value
+		// Get return value
 		recs, recErr := tx.Recv()
 		if recErr != nil {
 			return nil, fmt.Errorf("could not receive query response: %w", recErr)
@@ -68,7 +68,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 		}
 	}
 
-	// close transaction after the last part returned
+	// Close transaction after the last part returned
 	closErr := tx.CloseSend()
 	if closErr != nil {
 		return nil, fmt.Errorf("could not close query transaction: %w", closErr)

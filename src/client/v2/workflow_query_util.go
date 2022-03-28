@@ -20,7 +20,7 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
-	// get return value
+	// Get return value
 	recv, recErr := tx.Recv()
 	if recErr != nil {
 		return nil, fmt.Errorf("could not receive query response: %w", recErr)
@@ -29,7 +29,7 @@ func (c *Client) runQuery(req []*common.Transaction_Req) (*common.QueryManager_R
 	// Extract query result
 	res := recv.GetRes().GetQueryManagerRes()
 
-	// close transaction
+	// Close transaction
 	closErr := tx.CloseSend()
 	if closErr != nil {
 		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
