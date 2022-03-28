@@ -45,6 +45,11 @@ func TestSchemaGet(t *testing.T) {
 	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
 	assert.NotNil(t, t, allEntries, "Should not be nil")
 
+	// TODO / FIXME: No items :-(
+	for _, item := range allEntries {
+		println(item)
+	}
+
 	teardownErr := dbTeardown(client, dbName)
 	assert.NoError(t, teardownErr, "Should be no DB teardown error")
 }
