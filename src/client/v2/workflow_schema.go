@@ -13,13 +13,13 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (allEntries []strin
 		return allEntries, SessionOpenError, openErr
 	}
 
-	//sessionID := session.GetSessionId()
-	//
-	//tx, newTxErr := NewTransaction(c, sessionID)
-	//if newTxErr != nil {
-	//	return allEntries, ErrorCreateTransaction, openErr
-	//}
-	//
+	sessionID := session.GetSessionId()
+
+	tx, newTxErr := NewTransaction(c, sessionID)
+	if newTxErr != nil {
+		return allEntries, ErrorCreateTransaction, openErr
+	}
+
 	//requestId := ksuid.New().String()
 
 	closeErr := session.Close()
