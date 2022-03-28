@@ -22,9 +22,10 @@ DB Admin
 Schema:
 - [x] CreateDatabaseSchema
 
-Transaction:
+Transaction (TransactionManager):
 - [x] NewTransaction
 - [x] OpenTransaction
+- [x] ExecuteTransaction
 - [x] CommitTransaction
 - [x] RollbackTransaction
 - [x] CloseTransaction
