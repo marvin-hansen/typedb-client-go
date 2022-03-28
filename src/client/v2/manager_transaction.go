@@ -16,7 +16,7 @@ import (
 //
 // tx := NewTransaction(client, sessionID)
 // tx.OpenTransaction(...)
-// ..
+// tx.ExecuteTransaction(...)
 // err := tx.CommitTransaction(...)
 // if err != nil{
 // 	tx.RollbackTransaction(...)
@@ -58,22 +58,22 @@ func (c TransactionManager) OpenTransaction(sessionID []byte, sessionType common
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
 
-	execErr := c.executeTX(req)
+	execErr := c.ExecuteTransaction(req)
 	if execErr != nil {
 		return fmt.Errorf("could not open transaction: %w", execErr)
 	} else {
-		return nil // no execution error
+		return nil
 	}
 }
 
-func (c *TransactionManager) executeTX(req []*common.Transaction_Req) error {
+func (c *TransactionManager) ExecuteTransaction(req []*common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(getTransactionClient(req))
 	if sendErr != nil {
 		return fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
-	// get return value
+	// check for return value error
 	_, recErr := c.tx.Recv()
 	if recErr != nil {
 		return fmt.Errorf("could not receive transaction response: %w", recErr)
@@ -87,11 +87,11 @@ func (c TransactionManager) CommitTransaction(transactionId []byte, metadata map
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
 
-	commitErr := c.executeTX(req)
+	commitErr := c.ExecuteTransaction(req)
 	if commitErr != nil {
 		return fmt.Errorf("could not commit transaction: %w", commitErr)
 	} else {
-		return nil // no execution error
+		return nil
 	}
 }
 
@@ -100,11 +100,11 @@ func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata m
 	r1 := getTransactionRollbackReq(transactionId, metadata)
 	// Stuff req into slice/array
 	req := []*common.Transaction_Req{r1}
-	rollbackErr := c.executeTX(req)
+	rollbackErr := c.ExecuteTransaction(req)
 	if rollbackErr != nil {
 		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)
 	} else {
-		return nil // no execution error
+		return nil
 	}
 }
 
