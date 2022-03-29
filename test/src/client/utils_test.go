@@ -9,13 +9,13 @@ import (
 func dbSetup(client *v2.Client, dbName string) error {
 	println("* Run DB setup")
 
-	existsDatabase, _, dbExistErr := client.CheckDatabaseExists(dbName)
+	existsDatabase, dbExistErr := client.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
 		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 
 	if !existsDatabase {
-		_, _, err := client.CreateDatabase(dbName)
+		_, err := client.CreateDatabase(dbName)
 		if err != nil {
 			log.Println(err.Error())
 			return err
@@ -30,13 +30,13 @@ func dbSetup(client *v2.Client, dbName string) error {
 func dbTeardown(client *v2.Client, dbName string) error {
 	println("* Run DB teardown")
 
-	existsDatabase, _, dbExistErr := client.CheckDatabaseExists(dbName)
+	existsDatabase, dbExistErr := client.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
 		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 
 	if existsDatabase {
-		_, _, err := client.DeleteDatabase(dbName)
+		_, err := client.DeleteDatabase(dbName)
 		if err != nil {
 			log.Println(err.Error())
 			return err

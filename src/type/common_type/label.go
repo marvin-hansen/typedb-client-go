@@ -6,18 +6,18 @@ import "fmt"
 
 func NewLabel(name, scope string) *Label {
 	return &Label{
-		name:  &name,
-		scope: &scope,
+		Name:  &name,
+		Scope: &scope,
 	}
 }
 
 type Label struct {
-	name  *string
-	scope *string
+	Name  *string `json:"Name,omitempty"`
+	Scope *string `json:"Scope,omitempty"`
 }
 
 func (s Label) HasName() bool {
-	if s.name != nil {
+	if s.Name != nil {
 		return true
 	} else {
 		return false
@@ -25,7 +25,7 @@ func (s Label) HasName() bool {
 }
 
 func (s Label) HasScope() bool {
-	if s.scope != nil {
+	if s.Scope != nil {
 		return true
 	} else {
 		return false
@@ -33,16 +33,16 @@ func (s Label) HasScope() bool {
 }
 
 func (s Label) GetName() string {
-	return *s.name
+	return *s.Name
 }
 
 func (s Label) GetScope() string {
-	return *s.scope
+	return *s.Scope
 }
 
 func (s Label) String() string {
 	return fmt.Sprintf("Name: %v, Scope: %v",
-		*s.name,
-		*s.scope,
+		*s.Name,
+		*s.Scope,
 	)
 }

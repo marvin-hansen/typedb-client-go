@@ -1,8 +1,8 @@
 package common_type
 
 type Thing[T Value] struct {
-	IID      []byte
-	Type     Type
-	Value    ValueItem[T]
-	Inferred bool
+	IID      []byte       `json:"Iid,omitempty"`
+	Type     Type         `json:"type,omitempty"`
+	Value    ValueItem[T] `json:"value,omitempty"`
+	Inferred bool         `json:"inferred,omitempty"`
 }
