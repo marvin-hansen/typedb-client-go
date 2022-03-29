@@ -4,7 +4,7 @@ package v2
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/marvin-hansen/typedb-client-go/src/err"
+	"github.com/marvin-hansen/typedb-client-go/src/type/err_type"
 	"strings"
 )
 
@@ -30,7 +30,7 @@ func getThingTx(req *common.Thing_Req, iid string) *common.Transaction_Req {
 func getThingHasReq(iid string, attributeTypes *[]*common.Type, onlyKey bool) (*common.Transaction_Req, error) {
 
 	if attributeTypes != nil && onlyKey {
-		return nil, err.TypeDBConceptError(err.GET_HAS_WITH_MULTIPLE_FILTERS)
+		return nil, err_type.TypeDBConceptError(err_type.GET_HAS_WITH_MULTIPLE_FILTERS)
 	}
 
 	s := &common.Thing_GetHas_Req{}

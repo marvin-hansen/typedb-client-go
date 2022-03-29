@@ -4,7 +4,7 @@ package v2
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
-	. "github.com/marvin-hansen/typedb-client-go/src/type"
+	. "github.com/marvin-hansen/typedb-client-go/src/type/common_type"
 )
 
 // EntityType

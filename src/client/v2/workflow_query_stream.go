@@ -94,6 +94,7 @@ func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string) (query
 	// extract match results and stuff into queryResults collection
 	for _, item := range streamQuery {
 		queryResults = append(queryResults, item.GetMatchResPart())
+		item.GetMatchResPart().GetAnswers()
 	}
 
 	return queryResults, nil
