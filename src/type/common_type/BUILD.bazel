@@ -21,6 +21,7 @@ go_library(
 go_library(
     name = "common_type",
     srcs = [
+        "attribute.go",
         "encoding.go",
         "label.go",
         "value_type.go",

@@ -1,7 +1,7 @@
 package common_type
 
-type Attribute struct {
-	Value ValueItem
+type Attribute[T Value] struct {
+	Value ValueItem[T]
 }
 
 type ValueItem[T Value] struct {
