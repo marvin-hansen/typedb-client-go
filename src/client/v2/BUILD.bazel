@@ -37,7 +37,6 @@ go_library(
         "request_type_er_relation.go",
         "request_type_role.go",
         "request_type_thing.go",
-        "statusType.go",
         "workflow_db.go",
         "workflow_query.go",
         "workflow_query_stream.go",

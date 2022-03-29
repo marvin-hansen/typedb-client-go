@@ -3,59 +3,59 @@
 package v2
 
 import (
+	"fmt"
 	"log"
 )
 
-func (c *Client) GetAllDatabases() (allDatabases []string, status StatusType, err error) {
+func (c *Client) GetAllDatabases() (allDatabases []string, err error) {
 	req := getAllDBReq()
 	databaseAllResult, err := c.client.DatabasesAll(c.ctx, req)
 	if err != nil {
 		log.Println(err.Error())
-		return allDatabases, DBReadAllError, err
+		return allDatabases, fmt.Errorf("could not read all database. Error: %w", err)
 	}
-	return databaseAllResult.Names, OK, nil
+	return databaseAllResult.Names, nil
 }
 
-func (c *Client) CreateDatabase(dbName string) (ok bool, status StatusType, err error) {
+func (c *Client) CreateDatabase(dbName string) (ok bool, err error) {
 	req := getCreateDBReq(dbName)
 	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, req)
 	if err != nil {
 		log.Println(databaseCreateRes.String())
 		log.Println(err.Error())
-		return false, DBCreateError, err
+		return false, fmt.Errorf("could not create database. Error: %w", err)
 	}
-	return true, OK, nil
+	return true, nil
 }
 
-func (c *Client) CheckDatabaseExists(dbName string) (exists bool, status StatusType, err error) {
+func (c *Client) CheckDatabaseExists(dbName string) (exists bool, err error) {
 	req := getContainsDBReq(dbName)
-	databaseExistsRes, err := c.client.DatabasesContains(c.ctx, req)
-	if err != nil {
-		log.Println("could not get database: %w", err)
-		return false, DBCheckExistsError, err
+	databaseExistsRes, dbExistErr := c.client.DatabasesContains(c.ctx, req)
+	if dbExistErr != nil {
+		return false, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 	if databaseExistsRes.Contains {
-		return true, OK, nil
+		return true, nil
 	} else {
-		return false, DBNotExists, nil
+		return false, fmt.Errorf(" database does not exists: %w", dbExistErr)
 	}
 }
 
-func (c *Client) DeleteDatabase(dbName string) (ok bool, status StatusType, err error) {
-	exists, status, err := c.CheckDatabaseExists(dbName)
+func (c *Client) DeleteDatabase(dbName string) (ok bool, err error) {
+	exists, err := c.CheckDatabaseExists(dbName)
 	if err != nil {
-		return false, status, err
+		return false, err
 	}
 	if exists {
 		req := getDeleteDBReq(dbName)
-		databaseDeleteRes, err := c.client.DatabaseDelete(c.ctx, req)
-		if err != nil {
+		databaseDeleteRes, dbDeleteErr := c.client.DatabaseDelete(c.ctx, req)
+		if dbDeleteErr != nil {
 			log.Println(databaseDeleteRes.String())
-			log.Println(err.Error())
-			return false, DBDeleteError, err
+			log.Println(dbDeleteErr.Error())
+			return false, fmt.Errorf("could not delete database. Error: %w", dbDeleteErr)
 		}
-		return true, OK, nil
+		return true, nil
 	} else {
-		return true, DBNotExists, nil
+		return true, nil
 	}
 }

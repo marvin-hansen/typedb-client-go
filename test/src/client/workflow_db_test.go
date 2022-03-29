@@ -22,10 +22,9 @@ func TestCreateDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, ClientError)
 
-	ok, status, err := c.CreateDatabase(dbName)
+	ok, err := c.CreateDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true")
-	assert.Equal(t, int(status), v2.OK, "Should be OK == 0")
 }
 
 func TestExistsDatabase(t *testing.T) {
@@ -35,10 +34,9 @@ func TestExistsDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, ClientError)
 
-	existsDatabase, status, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, existsDatabase, true, "Should be true i.e. exists")
-	assert.Equal(t, int(status), v2.OK, "Should be OK == 0")
 }
 
 func TestDeleteDatabase(t *testing.T) {
@@ -48,13 +46,11 @@ func TestDeleteDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, ClientError)
 
-	ok, status, err := c.DeleteDatabase(dbName)
+	ok, err := c.DeleteDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true i.e. exists")
-	assert.Equal(t, int(status), v2.OK, "Should be OK == 0")
 
-	existsDatabase, status, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, existsDatabase, false, "Should be true i.e. exists")
-	assert.Equal(t, int(status), int(v2.DBNotExists), "Should be OK == 0")
 }

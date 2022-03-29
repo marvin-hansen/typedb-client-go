@@ -19,10 +19,9 @@ func TestSchemaCreate(t *testing.T) {
 
 	println("* Write Schema")
 	testSchema := getPhoneCallsSchema()
-	status, err := client.CreateDatabaseSchema(dbName, testSchema)
+	err := client.CreateDatabaseSchema(dbName, testSchema)
 
 	assert.NoError(t, err, "Should be no schema error")
-	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
 }
 
 func TestSchemaGet(t *testing.T) {
@@ -37,10 +36,9 @@ func TestSchemaGet(t *testing.T) {
 	assert.NoError(t, dbErr, "Should be no DB error")
 
 	println("* Get Schema")
-	allEntries, status, err := client.GetDatabaseSchema(dbName)
+	allEntries, err := client.GetDatabaseSchema(dbName)
 
 	assert.NoError(t, err, "Should be no schema error")
-	assert.Equal(t, int(v2.OK), int(status), "Should be OK == 0")
 	assert.NotNil(t, t, allEntries, "Should not be nil")
 
 	if len(allEntries) > 0 {
