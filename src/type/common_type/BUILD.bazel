@@ -1,0 +1,30 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "build",
+    srcs = [
+        ":common_types",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "common_types",
+    srcs = [
+        "encoding.go",
+        "value_type.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/type/common_types",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "common_type",
+    srcs = [
+        "encoding.go",
+        "label.go",
+        "value_type.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/type/common_type",
+    visibility = ["//visibility:public"],
+)
