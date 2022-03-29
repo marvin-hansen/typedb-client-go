@@ -1,8 +1,8 @@
 package common_type
 
-type Thing struct {
+type Thing[T Value] struct {
 	IID      []byte
 	Type     Type
-	Vale     ValueItem
+	Value    ValueItem[T]
 	Inferred bool
 }

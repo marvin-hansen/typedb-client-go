@@ -22,8 +22,11 @@ go_library(
     name = "common_type",
     srcs = [
         "attribute.go",
+        "concept.go",
         "encoding.go",
         "label.go",
+        "thing.go",
+        "type.go",
         "value_type.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/src/type/common_type",
