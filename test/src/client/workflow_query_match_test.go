@@ -2,7 +2,6 @@ package client
 
 import (
 	"fmt"
-	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/segmentio/ksuid"
 	"github.com/stretchr/testify/assert"
@@ -32,21 +31,12 @@ get
 	$x;
 `
 
-	println("* Create Options")
-	options := &common.Options{
-		ExplainOpt:            &common.Options_Explain{Explain: true},
-		TransactionTimeoutOpt: &common.Options_TransactionTimeoutMillis{TransactionTimeoutMillis: 500},
-	}
-
-	println("* Create Metadata")
-	metadata := map[string]string{}
-
 	println("* Create session & request ID")
 	sessionID := session.GetSessionId()
 	requestId := ksuid.New().Bytes()
 
 	println("* Query TypeDB")
-	queryResults, queryErr := client.RunMatchQuery(sessionID, requestId, query, metadata, options)
+	queryResults, queryErr := client.RunMatchQuery(sessionID, requestId, query)
 	if queryErr != nil {
 		println(fmt.Errorf("could not create transaction: %w", queryErr))
 	}

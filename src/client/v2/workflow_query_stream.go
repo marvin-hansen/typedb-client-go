@@ -76,7 +76,11 @@ func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, meta
 	return queryResults, nil
 }
 
-func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
+func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string) (queryResults []*common.QueryManager_Match_ResPart, err error) {
+
+	// Create default parameters
+	options := &common.Options{}
+	metadata := map[string]string{}
 
 	// Create query request
 	req := getMatchQueryReq(query, options, requestId, metadata)
