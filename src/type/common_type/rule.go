@@ -6,11 +6,11 @@ type Rule struct {
 	Then  string `json:"then,omitempty"`
 }
 
-type Explanation struct {
-	Rule       Rule       `json:"rule,omitempty"`
-	VarMapping VarList    `json:"var_mapping,omitempty"`
-	Condition  ConceptMap `json:"condition,omitempty"`
-	Conclusion ConceptMap `json:"conclusion,omitempty"`
+type Explanation[T Value] struct {
+	Rule       Rule          `json:"rule,omitempty"`
+	VarMapping VarList       `json:"var_mapping,omitempty"`
+	Condition  ConceptMap[T] `json:"condition,omitempty"`
+	Conclusion ConceptMap[T] `json:"conclusion,omitempty"`
 }
 
 type VarList struct {

@@ -1,5 +1,5 @@
 package common_type
 
-type Answer struct {
-	Answers ConceptMap `json:"answers,omitempty"`
+type Answer[T Value] struct {
+	Answers ConceptMap[T] `json:"answers,omitempty"`
 }
