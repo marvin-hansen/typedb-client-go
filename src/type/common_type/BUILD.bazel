@@ -23,6 +23,7 @@ go_library(
     srcs = [
         "attribute.go",
         "concept.go",
+        "concept_map.go",
         "encoding.go",
         "label.go",
         "thing.go",

@@ -1,6 +1,6 @@
 package common_type
 
 // TODO: Add Thing type
-type Concept[T Type] struct {
+type Concept[T Value] struct {
 	Concept T
 }
