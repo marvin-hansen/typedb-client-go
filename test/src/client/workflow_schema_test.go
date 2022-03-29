@@ -33,8 +33,8 @@ func TestSchemaGet(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, ClientError)
 
-	//dbErr := dbSetup(client, dbName)
-	//assert.NoError(t, dbErr, "Should be no DB error")
+	dbErr := dbSetup(client, dbName)
+	assert.NoError(t, dbErr, "Should be no DB error")
 
 	println("* Get Schema")
 	allEntries, status, err := client.GetDatabaseSchema(dbName)
@@ -50,7 +50,6 @@ func TestSchemaGet(t *testing.T) {
 		println()
 	}
 
-	//teardownErr := dbTeardown(client, dbName)
-	//assert.NoError(t, teardownErr, "Should be no DB teardown error")
-
+	teardownErr := dbTeardown(client, dbName)
+	assert.NoError(t, teardownErr, "Should be no DB teardown error")
 }
