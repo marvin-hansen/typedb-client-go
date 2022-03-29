@@ -1,5 +1,15 @@
 package client
 
+func getTestQuery() string {
+	query := `
+match 
+	$x sub thing; 
+get 
+	$x;
+`
+	return query
+}
+
 func getPhoneCallsSchema() string {
 	// https://github.com/vaticle/typedb-examples/blob/master/schemas/phone-calls-schema.gql
 	return `define

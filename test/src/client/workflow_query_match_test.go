@@ -24,12 +24,7 @@ func TestQueryMatch(t *testing.T) {
 	}
 
 	// TEST MATCH QUERY
-	query := `
-match 
-	$x sub thing; 
-get 
-	$x;
-`
+	query := getTestQuery()
 
 	println("* Create session & request ID")
 	sessionID := session.GetSessionId()
