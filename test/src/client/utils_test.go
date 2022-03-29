@@ -7,6 +7,7 @@ import (
 )
 
 func dbSetup(client *v2.Client, dbName string) error {
+	println("* Run DB setup")
 
 	existsDatabase, _, dbExistErr := client.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
@@ -27,6 +28,7 @@ func dbSetup(client *v2.Client, dbName string) error {
 }
 
 func dbTeardown(client *v2.Client, dbName string) error {
+	println("* Run DB teardown")
 
 	existsDatabase, _, dbExistErr := client.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {

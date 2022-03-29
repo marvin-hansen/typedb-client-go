@@ -121,10 +121,39 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status S
 		return nil, ErrorReadSchema, fmt.Errorf("could not read schema: %w", readErr)
 	}
 
-	queryResults, queryErr := c.runSchemaQuery(tx.tx, sessionID)
-	if queryErr != nil {
-		return nil, ErrorQuerySchema, fmt.Errorf("could not query schema: %w", queryErr)
+	for {
+		// Get return value
+		recs, recErr := tx.tx.Recv()
+		if recErr != nil {
+			return nil, ErrorQuerySchema, fmt.Errorf("could not receive query response: %w", recErr)
+		}
 
+		// Extract state of current partial result
+		state := recs.GetResPart().GetStreamResPart().GetState()
+
+		// When the server sends a Stream.ResPart with state = CONTINUE
+		// it indicates that there are more answers to fetch,
+		// so the client should respond with Stream.Req
+		if state == CONTINUE {
+			// Create a request and attach meta data & request ID
+			reqCont := getTransactionStreamReq()
+			// run query
+			_, queryErr := c.runQuery(sessionID, reqCont, options)
+			if queryErr != nil {
+				return nil, ErrorQuerySchema, fmt.Errorf("could not send query request iterator: %w", queryErr)
+			}
+		}
+
+		// If the Stream.ResPart has state = DONE,
+		// it indicates that there are no more answers to fetch,
+		// so the client doesn't need to respond.
+		if state == DONE {
+			break
+
+		} else {
+			part := recs.GetResPart().GetQueryManagerResPart()
+			allEntries = append(allEntries, part.String())
+		}
 	}
 
 	closeTxErr := tx.CloseTransaction()
@@ -135,11 +164,6 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, status S
 	closeErr := session.Close()
 	if closeErr != nil {
 		return nil, ErrorSessionClose, fmt.Errorf("could not close session: %w", closeErr)
-	}
-
-	// converting each query result item into its string representation
-	for _, item := range queryResults {
-		allEntries = append(allEntries, item.String())
 	}
 
 	return allEntries, OK, nil
