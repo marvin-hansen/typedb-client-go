@@ -1,5 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
-package err
+
+package err_type
 
 // error handling in Golang
 // https://blog.logrocket.com/error-handling-in-golang/
