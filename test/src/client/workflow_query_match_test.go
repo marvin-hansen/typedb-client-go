@@ -34,7 +34,6 @@ get
 
 	println("* Create Options")
 	options := &common.Options{
-		InferOpt:              &common.Options_Infer{Infer: true},
 		ExplainOpt:            &common.Options_Explain{Explain: true},
 		TransactionTimeoutOpt: &common.Options_TransactionTimeoutMillis{TransactionTimeoutMillis: 500},
 	}

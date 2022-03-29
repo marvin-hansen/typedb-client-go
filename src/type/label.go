@@ -1,5 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
-package common
+
+package _type
 
 import "fmt"
 

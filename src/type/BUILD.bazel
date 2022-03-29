@@ -3,14 +3,14 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 filegroup(
     name = "build",
     srcs = [
-        ":common",
+        ":type",
     ],
     visibility = ["//visibility:public"],
 )
 
 go_library(
-    name = "common",
+    name = "type",
     srcs = ["label.go"],
-    importpath = "github.com/marvin-hansen/typedb-client-go/src/common",
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/type",
     visibility = ["//visibility:public"],
 )
