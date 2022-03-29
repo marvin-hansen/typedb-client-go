@@ -51,8 +51,8 @@ go_library(
     deps = [
         "//common",
         "//core",
-        "//src/err",
-        "//src/type",
+        "//src/type/common_type",
+        "//src/type/err_type",
         "@com_github_segmentio_ksuid//:ksuid",
         "@org_golang_google_grpc//:go_default_library",
     ],

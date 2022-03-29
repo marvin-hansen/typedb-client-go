@@ -3,7 +3,6 @@ filegroup(
     srcs = [
         "//src/client:build",
         "//src/cmd:build",
-        "//src/err:build",
         "//src/type:build",
     ],
     visibility = ["//visibility:public"],
