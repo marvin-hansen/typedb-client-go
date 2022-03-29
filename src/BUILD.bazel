@@ -4,6 +4,7 @@ filegroup(
         "//src/client:build",
         "//src/cmd:build",
         "//src/type:build",
+        "//src/utils:build",
     ],
     visibility = ["//visibility:public"],
 )

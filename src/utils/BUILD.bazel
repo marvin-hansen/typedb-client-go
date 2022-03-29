@@ -1,0 +1,7 @@
+filegroup(
+    name = "build",
+    srcs = [
+        "//src/utils/proto_utils:build",
+    ],
+    visibility = ["//visibility:public"],
+)

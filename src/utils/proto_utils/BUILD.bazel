@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "build",
+    srcs = [
+        ":proto_utils",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "proto_utils",
+    srcs = [
+        "concept_util.go",
+        "option_util.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/utils/proto_utils",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//common",
+        "//src/type/common_type",
+    ],
+)
