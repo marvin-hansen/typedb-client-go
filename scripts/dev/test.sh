@@ -11,9 +11,11 @@ set -o pipefail
 # Means Bazel test is basically useless.
 
 # Replaced with Go Test b/c it's actually working
-# The  -count=1 flag disables caching. Forces all tests to run. 
-# Caching causing problems when the DeleteDB test has been cached,
-# reported as passed when in fact no delete operation was executed.
+# The  -count=1 flag disables caching. Forces all tests to run.
+# https://stackoverflow.com/questions/48882691/force-retesting-or-disable-test-caching
+
+# Caching causing problems when the DeleteDB or CreateDB test has been cached,
+# then reported as passed when, in fact, no operation was executed and subsequent tests fail.
 
 # Testing create & delete DB
 cd test/client/db_admin/
