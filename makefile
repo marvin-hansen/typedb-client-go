@@ -16,7 +16,7 @@ help:
 	@echo 'Dev: '
 	@echo '    make build   		Builds the code base incrementally (fast). Use for coding.'
 	@echo '    make rebuild   		Rebuilds dependencies, build files, & code base (slow). Use after go mod changes.  '
-	@echo '    make tests        		Runs all tests. See scripts/dev/test.shell for details.'
+	@echo '    make tests        		Runs all tests. See scripts/dev/test.sh for details.'
 	@echo '    make stats        		Shows the latest project stats.'
 
 # "---------------------------------------------------------"
