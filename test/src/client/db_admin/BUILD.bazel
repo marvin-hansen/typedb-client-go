@@ -1,0 +1,11 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "db_admin_test",
+    srcs = ["workflow_db_test.go"],
+    deps = [
+        "//src/client/v2:client",
+        "//test/src/client/utils",
+        "@com_github_stretchr_testify//assert",
+    ],
+)

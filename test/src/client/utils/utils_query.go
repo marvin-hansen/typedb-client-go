@@ -1,8 +1,8 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package client
+package utils
 
-func getTestQuery() string {
+func GetTestQuery() string {
 	query := `
 match 
 	$x sub thing; 
@@ -12,7 +12,7 @@ get
 	return query
 }
 
-func getPhoneCallsSchema() string {
+func GetPhoneCallsSchema() string {
 	// https://github.com/vaticle/typedb-examples/blob/master/schemas/phone-calls-schema.gql
 	return `define
 

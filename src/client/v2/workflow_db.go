@@ -37,7 +37,7 @@ func (c *Client) CheckDatabaseExists(dbName string) (exists bool, err error) {
 	if databaseExistsRes.Contains {
 		return true, nil
 	} else {
-		return false, fmt.Errorf(" database does not exists: %w", dbExistErr)
+		return false, nil
 	}
 }
 

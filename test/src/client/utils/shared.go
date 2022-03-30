@@ -1,3 +1,5 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package client
+package utils
+
+const ClientError = "NPE: Client is nil"

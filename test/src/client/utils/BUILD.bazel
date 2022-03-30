@@ -1,0 +1,11 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "utils",
+    srcs = [
+        "shared.go",
+        "utils_query.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/test/src/client/utils",
+    visibility = ["//visibility:public"],
+)

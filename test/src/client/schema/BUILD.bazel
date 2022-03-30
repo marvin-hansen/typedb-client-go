@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "schema_test",
+    srcs = [
+        "utils_test.go",
+        "workflow_schema_test.go",
+    ],
+    deps = [
+        "//src/client/v2:client",
+        "//test/src/client/utils",
+        "@com_github_stretchr_testify//assert",
+    ],
+)

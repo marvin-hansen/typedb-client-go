@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package client
+package schema
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func dbSetup(client *v2.Client, dbName string) error {
+func DBSetup(client *v2.Client, dbName string) error {
 	println("* Run DB setup")
 
 	existsDatabase, dbExistErr := client.CheckDatabaseExists(dbName)
@@ -29,7 +29,7 @@ func dbSetup(client *v2.Client, dbName string) error {
 	return nil
 }
 
-func dbTeardown(client *v2.Client, dbName string) error {
+func DBTeardown(client *v2.Client, dbName string) error {
 	println("* Run DB teardown")
 
 	existsDatabase, dbExistErr := client.CheckDatabaseExists(dbName)

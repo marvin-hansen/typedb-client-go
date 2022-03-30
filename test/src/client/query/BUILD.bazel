@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "query_test",
+    srcs = [
+        "workflow_query_stream_test.go",
+        "workflow_query_test.go",
+    ],
+    deps = [
+        "//src/client/v2:client",
+        "//test/src/client/utils",
+        "@com_github_segmentio_ksuid//:ksuid",
+        "@com_github_stretchr_testify//assert",
+    ],
+)
