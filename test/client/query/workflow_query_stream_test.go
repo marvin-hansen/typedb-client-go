@@ -5,6 +5,7 @@ package query
 import (
 	"context"
 	"fmt"
+	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/data"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
@@ -40,7 +41,7 @@ func TestInsertBulkQuery(t *testing.T) {
 	assert.NotNil(t, gql, "Data should not be nil")
 
 	testPrint("* Create Session")
-	session, sessionOpenErr := client.OpenNewDataSession(dbName)
+	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA) //client.OpenNewDataSession(dbName)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	testPrint("* Insert into TypeDB")
@@ -58,7 +59,7 @@ func TestInsertBulkQuery(t *testing.T) {
 	}
 
 	testPrint("* Close Session")
-	closeSessionErr := client.CloseSession(session.SessionId)
+	closeSessionErr := session.Close() //client.CloseSession(session.GetSessionId())
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
@@ -68,7 +69,7 @@ func TestInsertQuery(t *testing.T) {
 	defer cancel()
 
 	testPrint("* Create Session")
-	session, sessionOpenErr := client.OpenNewDataSession(dbName)
+	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	testPrint("* Get Test Insert")
@@ -83,7 +84,7 @@ func TestInsertQuery(t *testing.T) {
 	assert.NotNil(t, insertResults, "Query should return some results")
 
 	testPrint("* Close Session")
-	closeSessionErr := client.CloseSession(session.SessionId)
+	closeSessionErr := session.Close()
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
@@ -92,7 +93,7 @@ func TestMatchQuery(t *testing.T) {
 	defer cancel()
 
 	testPrint("* Create Session")
-	session, sessionOpenErr := client.OpenNewDataSession(dbName)
+	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA) //client.OpenNewDataSession(dbName)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	testPrint("* Create session & request ID")
@@ -118,6 +119,6 @@ func TestMatchQuery(t *testing.T) {
 	}
 
 	testPrint("* Close Session")
-	closeSessionErr := client.CloseSession(session.SessionId)
+	closeSessionErr := session.Close() //client.CloseSession(session.SessionId)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }

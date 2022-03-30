@@ -110,6 +110,8 @@ func (c *Client) runStreamQuery(tx *TransactionManager, transactionType common.T
 	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
 
 	// Send request through
+	
+	// TODO / FIXME: RETURNS ERROR: Invalid Session Operation: Session with UUID '58ee856e-e161-4255-b5f7-57184521416d' does not exist.
 	sendErr := tx.ExecuteTransaction(openReq, req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
@@ -124,26 +126,22 @@ func (c *Client) runStreamQuery(tx *TransactionManager, transactionType common.T
 
 		// Extract state of current partial result
 		state := recs.GetResPart().GetStreamResPart().GetState()
+		println(state)
 
 		// When the server sends a Stream.ResPart with state = CONTINUE
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			// Create a request and attach meta data & request ID
 			reqCont := getTransactionStreamReq()
-			// run query
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
 			}
-		}
-
-		// If the Stream.ResPart has state = DONE,
-		// it indicates that there are no more answers to fetch,
-		// so the client doesn't need to respond.
-		if state == DONE {
+		} else if state == DONE {
+			// If the Stream.ResPart has state = DONE,
+			// it indicates that there are no more answers to fetch,
+			// so the client doesn't need to respond.
 			break
-
 		} else {
 			part := recs.GetResPart().GetQueryManagerResPart()
 			queryResults = append(queryResults, part)
