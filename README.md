@@ -51,7 +51,8 @@ Setup:
      
 Dev: 
     make build                  Builds the code base incrementally (fast).
-    make rebuild                Rebuilds all dependencies & the code base (slow). Use after go mod changes. 
+    make rebuild                Rebuilds dependencies, build files, & code base (slow). Use after go mod changes.
+    make tests                  Runs all tests. See scripts/dev/test.shell for details.
     make stats                  Shows the latest project stats. 
 ```
 
