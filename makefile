@@ -16,6 +16,7 @@ help:
 	@echo 'Dev: '
 	@echo '    make build   		Builds the code base incrementally (fast). Use for coding.'
 	@echo '    make rebuild   		Rebuilds all dependencies & the code base (slow). Use after go mod changes. '
+	@echo '    make test        		Runs all tests.'
 	@echo '    make stats        		Shows the latest project stats.'
 
 # "---------------------------------------------------------"
@@ -36,6 +37,10 @@ build:
 rebuild:
 	@source scripts/dev/rebuild.sh
 
+
+.PHONY: test
+test:
+	@source scripts/dev/test.sh
 
 .PHONY: stats
 stats:
