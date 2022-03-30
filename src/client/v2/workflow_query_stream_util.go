@@ -12,6 +12,53 @@ const (
 	TX_WRITE = common.Transaction_WRITE
 )
 
+func (c *Client) runStreamBulkTx(sessionID []byte, transactionType common.Transaction_Type, requests []*common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+
+	// Create a Transaction
+	tx, newTxErr := NewTransaction(c, sessionID)
+	if newTxErr != nil {
+		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
+	}
+
+	// Create request meta data
+	metadata := CreateNewRequestMetadata()
+
+	for _, req := range requests {
+		streamQuery, queryErr := c.runStreamQuery(tx, transactionType, req, options)
+		if queryErr != nil {
+			return nil, queryErr
+		}
+
+		for _, response := range streamQuery {
+			queryResults = append(queryResults, response)
+		}
+	}
+
+	// Only write transactions can be committed
+	if transactionType == TX_WRITE {
+		// Commit transaction
+		transactionId := tx.GetSessionId()
+		commitErr := tx.CommitTransaction(transactionId)
+		if commitErr != nil {
+			// Rollback commit in case of error
+			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+			if rollbackErr != nil {
+				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
+			}
+
+			return nil, fmt.Errorf("could commit into DB. Rolled back transaction: %w", commitErr)
+		}
+	}
+
+	// close transaction
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	}
+
+	return queryResults, nil
+}
+
 func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Create a Transaction
@@ -23,25 +70,30 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 	// Create request meta data
 	metadata := CreateNewRequestMetadata()
 
-	// run request in query
+	// Run query
 	streamQuery, queryErr := c.runStreamQuery(tx, transactionType, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
 
-	// commit transaction
-	transactionId := tx.GetSessionId()
-	commitErr := tx.CommitTransaction(transactionId)
-	if commitErr != nil {
-		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
-		if rollbackErr != nil {
-			return nil, fmt.Errorf("could commit insert into DB AND could NOT Rolled back transaction: %w", commitErr)
-		}
+	// Only write transactions can be committed
+	if transactionType == TX_WRITE {
 
-		return nil, fmt.Errorf("could commit insert into DB. Rolled back transaction: %w", commitErr)
+		// Commit transaction
+		transactionId := tx.GetSessionId()
+		commitErr := tx.CommitTransaction(transactionId)
+		if commitErr != nil {
+			// Rollback commit in case of error
+			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+			if rollbackErr != nil {
+				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
+			}
+
+			return nil, fmt.Errorf("could commit into DB. Rolled back transaction: %w", commitErr)
+		}
 	}
 
-	// close transaction
+	// Close transaction
 	closeTxErr := tx.CloseTransaction()
 	if closeTxErr != nil {
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
@@ -99,12 +151,6 @@ func (c *Client) runStreamQuery(tx *TransactionManager, transactionType common.T
 			part := recs.GetResPart().GetQueryManagerResPart()
 			queryResults = append(queryResults, part)
 		}
-	}
-
-	// Close transaction after the last part returned
-	closErr := tx.CloseTransaction()
-	if closErr != nil {
-		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
 	}
 
 	return queryResults, nil

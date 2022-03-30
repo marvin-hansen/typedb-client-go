@@ -1,7 +1,6 @@
 package v2
 
 import (
-	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 )
 
@@ -22,65 +21,35 @@ import (
 //    }
 //  }
 
-func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
+func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options *common.Options) (insertResults []*common.QueryManager_Insert_ResPart, err error) {
 
-	// Create a Transaction
-	tx, newTxErr := NewTransaction(c, sessionID)
-	if newTxErr != nil {
-		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
-	}
-
-	// Create request meta data
+	// Create request collection
+	var requests []*common.Transaction_Req
 	metadata := CreateNewRequestMetadata()
-
-	// run each query from the collection
 	for _, query := range queries {
-		// create new request ID
 		requestId := CreateNewRequestID()
-
-		// Create query request
 		req := getMatchQueryReq(query, options, requestId, metadata)
-
-		insertResponses, insertErr := c.runStreamQuery(tx, TX_WRITE, req, options)
-		if insertErr != nil {
-			return nil, fmt.Errorf("could not insert transaction: %w", insertErr)
-		}
-
-		for _, response := range insertResponses {
-			queryResults = append(queryResults, response.GetInsertResPart())
-		}
+		requests = append(requests, req)
 	}
 
-	// commit entire transaction
-	transactionId := tx.GetSessionId()
-	commitErr := tx.CommitTransaction(transactionId)
-	if commitErr != nil {
-		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
-		if rollbackErr != nil {
-			return nil, fmt.Errorf("could commit insert into DB AND could NOT Rolled back transaction: %w", commitErr)
-		}
-
-		return nil, fmt.Errorf("could commit insert into DB. Rolled back transaction: %w", commitErr)
+	// run request collection
+	queryResults, queryErr := c.runStreamBulkTx(sessionID, TX_WRITE, requests, options)
+	if queryErr != nil {
+		return nil, queryErr
 	}
 
-	// close transaction
-	closeTxErr := tx.CloseTransaction()
-	if closeTxErr != nil {
-		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	// extract match results and stuff into queryResults collection
+	for _, item := range queryResults {
+		insertResults = append(insertResults, item.GetInsertResPart())
 	}
 
-	return queryResults, nil
+	return insertResults, nil
 }
 
 func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
 
-	// create new request ID
-	requestId := CreateNewRequestID()
-
-	// Create request meta data
-	metadata := CreateNewRequestMetadata()
-
-	// Create request
+	// create request & meta data
+	requestId, metadata := CreateNewRequestIDOptions()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run request
@@ -97,9 +66,10 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 	return queryResults, nil
 }
 
-func (c *Client) RunUpdateQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
+func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
 
-	// Create query request
+	// create query request
+	requestId, metadata := CreateNewRequestIDOptions()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
@@ -116,9 +86,10 @@ func (c *Client) RunUpdateQuery(sessionID, requestId []byte, query string, metad
 	return queryResults, nil
 }
 
-func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Explain_ResPart, err error) {
+func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Explain_ResPart, err error) {
 
-	// Create query request
+	// create query request
+	requestId, metadata := CreateNewRequestIDOptions()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
@@ -135,13 +106,14 @@ func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, meta
 	return queryResults, nil
 }
 
-func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string) (queryResults []*common.QueryManager_Match_ResPart, err error) {
+func (c *Client) RunMatchQuery(sessionID []byte, query string) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
 	// Create default parameters
 	options := &common.Options{}
 	metadata := map[string]string{}
 
 	// Create query request
+	requestId := CreateNewRequestID()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
@@ -159,9 +131,10 @@ func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string) (query
 	return queryResults, nil
 }
 
-func (c *Client) RunMatchGroupQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_MatchGroup_ResPart, err error) {
+func (c *Client) RunMatchGroupQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_MatchGroup_ResPart, err error) {
 
 	// Create query request
+	requestId, metadata := CreateNewRequestIDOptions()
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
@@ -178,9 +151,10 @@ func (c *Client) RunMatchGroupQuery(sessionID, requestId []byte, query string, m
 	return queryResults, nil
 }
 
-func (c *Client) RunMatchGroupAggregateQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_MatchGroupAggregate_ResPart, err error) {
+func (c *Client) RunMatchGroupAggregateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_MatchGroupAggregate_ResPart, err error) {
 
 	// Create query request
+	requestId, metadata := CreateNewRequestIDOptions()
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
