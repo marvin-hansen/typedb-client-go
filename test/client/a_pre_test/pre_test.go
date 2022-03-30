@@ -17,16 +17,17 @@ func TestDBCreate(t *testing.T) {
 
 	dbErr := DBSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB setup error")
-
 }
 
-func TestDBDelete(t *testing.T) {
+func TestExistsDatabase(t *testing.T) {
 	conf := v2.NewLocalConfig(dbName)
-	client, cancel := v2.NewClient(conf)
+	c, cancel := v2.NewClient(conf)
 	defer cancel()
-	assert.NotNil(t, client, utils.ClientError)
+	assert.NotNil(t, c, utils.ClientError)
 
-	teardownErr := DBTeardown(client, dbName)
-	assert.NoError(t, teardownErr, "Should be no DB teardown error")
-
+	existsDatabase, err := c.CheckDatabaseExists(dbName)
+	assert.NoError(t, err, "Should be no error")
+	expected := true
+	actual := existsDatabase
+	assert.Equal(t, expected, actual, "Should be true i.e. exists")
 }

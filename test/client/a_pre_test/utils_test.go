@@ -17,6 +17,7 @@ func DBSetup(client *v2.Client, dbName string) error {
 	}
 
 	if !existsDatabase {
+		println("Create Database: " + dbName)
 		_, err := client.CreateDatabase(dbName)
 		if err != nil {
 			log.Println(err.Error())

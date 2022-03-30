@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package a_pre_test
+package z_post_test
 
 import (
 	"fmt"

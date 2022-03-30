@@ -16,11 +16,9 @@ func TestNewClient(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-
 }
 
 func TestCreateDatabase(t *testing.T) {
-
 	conf := v2.NewLocalConfig(dbName)
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
@@ -32,7 +30,6 @@ func TestCreateDatabase(t *testing.T) {
 }
 
 func TestExistsDatabase(t *testing.T) {
-
 	conf := v2.NewLocalConfig(dbName)
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
@@ -46,7 +43,6 @@ func TestExistsDatabase(t *testing.T) {
 }
 
 func TestDeleteDatabase(t *testing.T) {
-
 	conf := v2.NewLocalConfig(dbName)
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
