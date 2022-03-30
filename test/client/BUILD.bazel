@@ -2,10 +2,11 @@ filegroup(
     name = "build",
     testonly = True,
     srcs = [
-
+        "//test/client/a_pre_test:build",
         "//test/client/db_admin:build",
         "//test/client/query:build",
         "//test/client/schema:build",
+        "//test/client/z_post_test:build",
     ],
     visibility = ["//visibility:public"],
 )

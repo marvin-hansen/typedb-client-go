@@ -1,5 +1,14 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_test")
 
+filegroup(
+    name = "build",
+    testonly = True,
+    srcs = [
+        ":z_post_test_test",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 go_test(
     name = "z_post_test_test",
     srcs = [
