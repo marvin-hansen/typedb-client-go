@@ -14,9 +14,9 @@ go_test(
     srcs = ["workflow_schema_test.go"],
     tags = ["schema"],
     deps = [
+        "//data",
         "//src/client/v2:client",
         "//test/client/utils",
-        "//test/data",
         "@com_github_stretchr_testify//assert",
     ],
 )

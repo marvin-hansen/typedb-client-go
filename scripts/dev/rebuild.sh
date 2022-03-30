@@ -5,6 +5,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# Format bazel BUILD and .bzl files with a standard convention.
+bazel run //:buildifier
+
 # Convert mod dependencies into bazel dependencies
 bazel run //:gazelle -- update-repos -from_file=go.mod
 

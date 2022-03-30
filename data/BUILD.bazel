@@ -2,7 +2,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 filegroup(
     name = "build",
-    testonly = True,
     srcs = [
         ":data",
     ],
@@ -23,6 +22,6 @@ go_library(
         "phone_calls_data.go",
         "schema.go",
     ],
-    importpath = "github.com/marvin-hansen/typedb-client-go/test/data",
+    importpath = "github.com/marvin-hansen/typedb-client-go/data",
     visibility = ["//visibility:public"],
 )

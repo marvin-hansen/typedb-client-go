@@ -3,9 +3,9 @@
 package schema
 
 import (
+	"github.com/marvin-hansen/typedb-client-go/data"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
-	"github.com/marvin-hansen/typedb-client-go/test/data"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
