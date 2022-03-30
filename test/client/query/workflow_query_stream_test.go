@@ -29,6 +29,7 @@ func getClient() (*v2.Client, context.CancelFunc) {
 	return client, cancel
 }
 
+// TODO / FIXME: Timeout after 300 sec
 func TestInsertBulkQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
@@ -61,6 +62,7 @@ func TestInsertBulkQuery(t *testing.T) {
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
+// TODO / FIXME: Timeout after 300 sec
 func TestInsertQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
