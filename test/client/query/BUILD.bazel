@@ -20,7 +20,6 @@ go_test(
         "//data",
         "//src/client/v2:client",
         "//test/client/utils",
-        "@com_github_segmentio_ksuid//:ksuid",
         "@com_github_stretchr_testify//assert",
     ],
 )

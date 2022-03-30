@@ -8,7 +8,6 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/data"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
-	"github.com/segmentio/ksuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -30,7 +29,7 @@ func getClient() (*v2.Client, context.CancelFunc) {
 	return client, cancel
 }
 
-func TestInsertQuery(t *testing.T) {
+func TestInsertBulkQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
 
@@ -43,9 +42,21 @@ func TestInsertQuery(t *testing.T) {
 	session, sessionOpenErr := client.OpenNewDataSession(dbName)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	//testPrint("* Create session & request ID")
-	//sessionID := session.GetSessionId()
-	//requestId := ksuid.New().Bytes()
+	testPrint("* Create session ID")
+
+	testPrint("* Insert into TypeDB")
+	sessionID := session.GetSessionId()
+	options := v2.CreateNewRequestOptions()
+	insertResults, insertError := client.RunInsertBulkQuery(sessionID, gql, options)
+	assert.NoError(t, insertError, "Should be no error")
+	assert.NotNil(t, insertResults, "Query should return some results")
+
+	if verbose {
+		println("Print results")
+		for _, item := range insertResults {
+			println(item.String())
+		}
+	}
 
 	testPrint("* Close Session")
 	closeSessionErr := client.CloseSession(session.SessionId)
@@ -65,13 +76,13 @@ func TestMatchQuery(t *testing.T) {
 
 	testPrint("* Create session & request ID")
 	sessionID := session.GetSessionId()
-	requestId := ksuid.New().Bytes()
 
 	// TEST MATCH QUERY
 	query := utils.GetTestQuery()
 
 	testPrint("* Query TypeDB")
-	queryResults, queryErr := client.RunMatchQuery(sessionID, requestId, query)
+	options := v2.CreateNewRequestOptions()
+	queryResults, queryErr := client.RunMatchQuery(sessionID, query, options)
 	if queryErr != nil {
 		println(fmt.Errorf("could not create transaction: %w", queryErr))
 	}

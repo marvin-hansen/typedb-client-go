@@ -28,7 +28,7 @@ func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options 
 	metadata := CreateNewRequestMetadata()
 	for _, query := range queries {
 		requestId := CreateNewRequestID()
-		req := getMatchQueryReq(query, options, requestId, metadata)
+		req := getInsertQueryReq(query, options, requestId, metadata)
 		requests = append(requests, req)
 	}
 
@@ -50,7 +50,7 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 
 	// create request & meta data
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getMatchQueryReq(query, options, requestId, metadata)
+	req := getInsertQueryReq(query, options, requestId, metadata)
 
 	// run request
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_WRITE, req, options)
@@ -106,13 +106,10 @@ func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common
 	return queryResults, nil
 }
 
-func (c *Client) RunMatchQuery(sessionID []byte, query string) (queryResults []*common.QueryManager_Match_ResPart, err error) {
-
-	// Create default parameters
-	options := &common.Options{}
-	metadata := map[string]string{}
+func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
 	// Create query request
+	metadata := map[string]string{}
 	requestId := CreateNewRequestID()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
