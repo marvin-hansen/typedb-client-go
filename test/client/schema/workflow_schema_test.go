@@ -5,6 +5,7 @@ package schema
 import (
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
+	"github.com/marvin-hansen/typedb-client-go/test/data"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -17,7 +18,7 @@ func TestSchemaCreate(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, utils.ClientError)
 
-	testSchema := utils.GetPhoneCallsSchema()
+	testSchema := data.GetPhoneCallsSchema()
 	err := client.CreateDatabaseSchema(dbName, testSchema)
 
 	assert.NoError(t, err, "Should be no schema error")

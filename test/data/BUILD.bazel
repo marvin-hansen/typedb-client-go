@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+filegroup(
+    name = "build",
+    testonly = True,
+    srcs = [
+        ":data",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "data",
+    srcs = [
+        "call.go",
+        "call_data.go",
+        "company.go",
+        "company_data.go",
+        "contract.go",
+        "contract_data.go",
+        "person.go",
+        "person_data.go",
+        "phone_calls_data.go",
+        "schema.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/test/data",
+    visibility = ["//visibility:public"],
+)

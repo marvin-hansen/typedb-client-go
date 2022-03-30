@@ -3,6 +3,7 @@ filegroup(
     testonly = True,
     srcs = [
         "//test/client:build",
+        "//test/data:build",
     ],
     visibility = ["//visibility:public"],
 )

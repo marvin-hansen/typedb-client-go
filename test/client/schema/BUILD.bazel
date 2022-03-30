@@ -16,6 +16,7 @@ go_test(
     deps = [
         "//src/client/v2:client",
         "//test/client/utils",
+        "//test/data",
         "@com_github_stretchr_testify//assert",
     ],
 )
