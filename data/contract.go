@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"text/template"
 )
 
@@ -24,11 +23,7 @@ insert
 `))
 
 func GetContracts() (companies []Contract, err error) {
-	data, err := ioutil.ReadFile("phone_data/contracts.json")
-	if err != nil {
-		return nil, err
-	}
-
+	data := getContractData()
 	err = json.Unmarshal([]byte(data), &companies)
 	if err != nil {
 		return nil, err

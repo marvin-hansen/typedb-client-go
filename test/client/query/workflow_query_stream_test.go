@@ -3,7 +3,9 @@
 package query
 
 import (
+	"context"
 	"fmt"
+	"github.com/marvin-hansen/typedb-client-go/data"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/segmentio/ksuid"
@@ -13,7 +15,7 @@ import (
 
 const (
 	dbName  = utils.DBName
-	verbose = false
+	verbose = true
 )
 
 func testPrint(msg string) {
@@ -22,23 +24,51 @@ func testPrint(msg string) {
 	}
 }
 
-func TestQueryMatch(t *testing.T) {
-
+func getClient() (*v2.Client, context.CancelFunc) {
 	conf := v2.NewLocalConfig(dbName)
 	client, cancel := v2.NewClient(conf)
+	return client, cancel
+}
+
+func TestInsertQuery(t *testing.T) {
+	client, cancel := getClient()
 	defer cancel()
-	assert.NotNil(t, client, utils.ClientError)
+
+	testPrint("* Get Test Data")
+	gql, dataErr := data.GetPhoneCallsDataGql()
+	assert.NoError(t, dataErr, "could not get phone calls data gql: %w", dataErr)
+	assert.NotNil(t, gql, "Data should not be nil")
 
 	testPrint("* Create Session")
 	session, sessionOpenErr := client.OpenNewDataSession(dbName)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	// TEST MATCH QUERY
-	query := utils.GetTestQuery()
+	//testPrint("* Create session & request ID")
+	//sessionID := session.GetSessionId()
+	//requestId := ksuid.New().Bytes()
+
+	testPrint("* Close Session")
+	closeSessionErr := client.CloseSession(session.SessionId)
+	if closeSessionErr != nil {
+		return
+	}
+
+}
+
+func TestMatchQuery(t *testing.T) {
+	client, cancel := getClient()
+	defer cancel()
+
+	testPrint("* Create Session")
+	session, sessionOpenErr := client.OpenNewDataSession(dbName)
+	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	testPrint("* Create session & request ID")
 	sessionID := session.GetSessionId()
 	requestId := ksuid.New().Bytes()
+
+	// TEST MATCH QUERY
+	query := utils.GetTestQuery()
 
 	testPrint("* Query TypeDB")
 	queryResults, queryErr := client.RunMatchQuery(sessionID, requestId, query)
@@ -60,4 +90,5 @@ func TestQueryMatch(t *testing.T) {
 	if closeSessionErr != nil {
 		return
 	}
+
 }

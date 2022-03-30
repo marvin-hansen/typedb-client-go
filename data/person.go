@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"text/template"
 )
 
@@ -34,11 +33,7 @@ insert
 `))
 
 func GetPeople() (people []Person, err error) {
-	data, err := ioutil.ReadFile("phone_data/people.json")
-	if err != nil {
-		return nil, err
-	}
-
+	data := getPersonData()
 	err = json.Unmarshal([]byte(data), &people)
 	if err != nil {
 		return nil, err
