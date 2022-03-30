@@ -49,8 +49,8 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
-	requestId := tx.CreateNewRequestID()
-	metadata := tx.CreateNewRequestMetadata()
+	requestId := CreateNewRequestID()
+	metadata := CreateNewRequestMetadata()
 	req := getDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
 
 	writeErr := tx.ExecuteTransaction(req)
@@ -110,8 +110,8 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 	}
 
 	query := getSchemaQuery()
-	requestId := tx.CreateNewRequestID()
-	metadata := tx.CreateNewRequestMetadata()
+	requestId := CreateNewRequestID()
+	metadata := CreateNewRequestMetadata()
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	readErr := tx.ExecuteTransaction(req)

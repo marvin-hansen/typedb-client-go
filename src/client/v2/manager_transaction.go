@@ -50,21 +50,6 @@ type TransactionManager struct {
 	transactionId []byte
 }
 
-// CreateNewRequestMetadata returns a new map of empty metadata
-func (c TransactionManager) CreateNewRequestMetadata() map[string]string {
-	return map[string]string{}
-}
-
-// CreateNewRequestID generates a new unique request ID to use in transactions
-func (c TransactionManager) CreateNewRequestID() []byte {
-	return ksuid.New().Bytes()
-}
-
-// CreateNewStringRequestID generates a new unique request ID to use in transactions
-func (c TransactionManager) CreateNewStringRequestID() string {
-	return ksuid.New().String()
-}
-
 func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	tx, txErr := client.client.Transaction(client.ctx)
 	if txErr != nil {
@@ -72,6 +57,10 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	} else {
 		return tx, nil
 	}
+}
+
+func (c TransactionManager) GetSessionId() []byte {
+	return c.sessionId
 }
 
 // GetTransactionId returns the unique ID of the transaction

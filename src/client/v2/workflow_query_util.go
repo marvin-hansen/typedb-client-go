@@ -6,6 +6,11 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
+func (c *Client) runTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+
+	return queryResults, nil
+}
+
 //runQuery util used by all other single return value query methods
 func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options *common.Options) (*common.QueryManager_Res, error) {
 

@@ -17,6 +17,7 @@ go_test(
     ],
     tags = ["query"],
     deps = [
+        "//data",
         "//src/client/v2:client",
         "//test/client/utils",
         "@com_github_segmentio_ksuid//:ksuid",

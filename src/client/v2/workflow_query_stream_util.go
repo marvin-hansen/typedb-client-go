@@ -3,7 +3,6 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/segmentio/ksuid"
 )
 
 const (
@@ -13,32 +12,63 @@ const (
 	TX_WRITE = common.Transaction_WRITE
 )
 
-//runStreamQuery util used by all other streaming return value query methods
-func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Create a Transaction
-	tx, txErr := c.client.Transaction(c.ctx)
-	if txErr != nil {
-		return nil, fmt.Errorf("could not create transaction: %w", txErr)
+	tx, newTxErr := NewTransaction(c, sessionID)
+	if newTxErr != nil {
+		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
-	transactionId := ksuid.New().Bytes()
+	// Create request meta data
+	metadata := CreateNewRequestMetadata()
+
+	// run request in query
+	streamQuery, queryErr := c.runStreamQuery(tx, transactionType, req, options)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	// commit transaction
+	transactionId := tx.GetSessionId()
+	commitErr := tx.CommitTransaction(transactionId)
+	if commitErr != nil {
+		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+		if rollbackErr != nil {
+			return nil, fmt.Errorf("could commit insert into DB AND could NOT Rolled back transaction: %w", commitErr)
+		}
+
+		return nil, fmt.Errorf("could commit insert into DB. Rolled back transaction: %w", commitErr)
+	}
+
+	// close transaction
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	}
+
+	return streamQuery, nil
+}
+
+//runStreamQuery util used by all other streaming return value query methods
+func (c *Client) runStreamQuery(tx *TransactionManager, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+
+	sessionID := tx.GetSessionId()
+	transactionId := tx.GetTransactionId()
 
 	// Create open transaction request
 	netMillisecondLatency := int32(150)
 	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
-	// Stuff req into slice/array
-	reqArray := []*common.Transaction_Req{openReq, req}
 
 	// Send request through
-	sendErr := tx.Send(getTransactionClient(reqArray))
+	sendErr := tx.ExecuteTransaction(openReq, req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
 	for {
 		// Get return value
-		recs, recErr := tx.Recv()
+		recs, recErr := tx.tx.Recv()
 		if recErr != nil {
 			return nil, fmt.Errorf("could not receive query response: %w", recErr)
 		}
@@ -72,7 +102,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 	}
 
 	// Close transaction after the last part returned
-	closErr := tx.CloseSend()
+	closErr := tx.CloseTransaction()
 	if closErr != nil {
 		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
 	}

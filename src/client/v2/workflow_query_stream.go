@@ -1,6 +1,9 @@
 package v2
 
-import "github.com/marvin-hansen/typedb-client-go/common"
+import (
+	"fmt"
+	"github.com/marvin-hansen/typedb-client-go/common"
+)
 
 //
 // Methods with streaming results i.e one initial request -> multiple partial stream results.
@@ -19,13 +22,69 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 //    }
 //  }
 
-func (c *Client) RunInsertQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
+func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
 
-	// Create query request
+	// Create a Transaction
+	tx, newTxErr := NewTransaction(c, sessionID)
+	if newTxErr != nil {
+		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
+	}
+
+	// Create request meta data
+	metadata := CreateNewRequestMetadata()
+
+	// run each query from the collection
+	for _, query := range queries {
+		// create new request ID
+		requestId := CreateNewRequestID()
+
+		// Create query request
+		req := getMatchQueryReq(query, options, requestId, metadata)
+
+		insertResponses, insertErr := c.runStreamQuery(tx, TX_WRITE, req, options)
+		if insertErr != nil {
+			return nil, fmt.Errorf("could not insert transaction: %w", insertErr)
+		}
+
+		for _, response := range insertResponses {
+			queryResults = append(queryResults, response.GetInsertResPart())
+		}
+	}
+
+	// commit entire transaction
+	transactionId := tx.GetSessionId()
+	commitErr := tx.CommitTransaction(transactionId)
+	if commitErr != nil {
+		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+		if rollbackErr != nil {
+			return nil, fmt.Errorf("could commit insert into DB AND could NOT Rolled back transaction: %w", commitErr)
+		}
+
+		return nil, fmt.Errorf("could commit insert into DB. Rolled back transaction: %w", commitErr)
+	}
+
+	// close transaction
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	}
+
+	return queryResults, nil
+}
+
+func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
+
+	// create new request ID
+	requestId := CreateNewRequestID()
+
+	// Create request meta data
+	metadata := CreateNewRequestMetadata()
+
+	// Create request
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
-	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	// run request
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_WRITE, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -44,7 +103,7 @@ func (c *Client) RunUpdateQuery(sessionID, requestId []byte, query string, metad
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -63,7 +122,7 @@ func (c *Client) RunExplainQuery(sessionID, requestId []byte, query string, meta
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -86,7 +145,7 @@ func (c *Client) RunMatchQuery(sessionID, requestId []byte, query string) (query
 	req := getMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -106,7 +165,7 @@ func (c *Client) RunMatchGroupQuery(sessionID, requestId []byte, query string, m
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -125,7 +184,7 @@ func (c *Client) RunMatchGroupAggregateQuery(sessionID, requestId []byte, query 
 	req := getMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
