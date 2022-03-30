@@ -1,6 +1,10 @@
 package data
 
 func getCallData() []byte {
+	return getCallDataSample()
+}
+
+func getCallDataSample() []byte {
 	data := `
 [
   {
@@ -32,7 +36,8 @@ func getCallData() []byte {
     "callee_id": "+7 552 196 4096",
     "started_at": "2018-09-25T20:24:59",
     "duration": 556
-  }, {
+  }, 
+  {
     "caller_id": "+54 398 559 0423",
     "callee_id": "+86 921 547 9004",
     "started_at": "2018-09-24T09:38:52",
@@ -73,7 +78,7 @@ func getCallData() []byte {
     "callee_id": "+81 746 154 2598",
     "started_at": "2018-09-18T22:47:52",
     "duration": 5356
-  },
+  }
 ]
 `
 	return []byte(data)

@@ -24,14 +24,11 @@ func (c *Client) runStreamBulkTx(sessionID []byte, transactionType common.Transa
 	metadata := CreateNewRequestMetadata()
 
 	for _, req := range requests {
-		streamQuery, queryErr := c.runStreamQuery(tx, transactionType, req, options)
+		_, queryErr := c.runStreamQuery(tx, transactionType, req, options)
 		if queryErr != nil {
 			return nil, queryErr
 		}
 
-		for _, response := range streamQuery {
-			queryResults = append(queryResults, response)
-		}
 	}
 
 	// Only write transactions can be committed

@@ -42,8 +42,6 @@ func TestInsertBulkQuery(t *testing.T) {
 	session, sessionOpenErr := client.OpenNewDataSession(dbName)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	testPrint("* Create session ID")
-
 	testPrint("* Insert into TypeDB")
 	sessionID := session.GetSessionId()
 	options := v2.CreateNewRequestOptions()
@@ -60,10 +58,31 @@ func TestInsertBulkQuery(t *testing.T) {
 
 	testPrint("* Close Session")
 	closeSessionErr := client.CloseSession(session.SessionId)
-	if closeSessionErr != nil {
-		return
-	}
+	assert.NoError(t, closeSessionErr, "Should be no error")
+}
 
+func TestInsertQuery(t *testing.T) {
+	client, cancel := getClient()
+	defer cancel()
+
+	testPrint("* Create Session")
+	session, sessionOpenErr := client.OpenNewDataSession(dbName)
+	assert.NoError(t, sessionOpenErr, "Should be no error")
+
+	testPrint("* Get Test Insert")
+	gql := utils.GetCompanyInsert()
+
+	testPrint("* Insert into TypeDB")
+	sessionID := session.GetSessionId()
+	options := v2.CreateNewRequestOptions()
+
+	insertResults, insertError := client.RunInsertQuery(sessionID, gql, options)
+	assert.NoError(t, insertError, "Should be no error")
+	assert.NotNil(t, insertResults, "Query should return some results")
+
+	testPrint("* Close Session")
+	closeSessionErr := client.CloseSession(session.SessionId)
+	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
 func TestMatchQuery(t *testing.T) {
@@ -98,8 +117,5 @@ func TestMatchQuery(t *testing.T) {
 
 	testPrint("* Close Session")
 	closeSessionErr := client.CloseSession(session.SessionId)
-	if closeSessionErr != nil {
-		return
-	}
-
+	assert.NoError(t, closeSessionErr, "Should be no error")
 }
