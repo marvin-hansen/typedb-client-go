@@ -32,6 +32,85 @@ func getCallData() []byte {
     "callee_id": "+7 552 196 4096",
     "started_at": "2018-09-25T20:24:59",
     "duration": 556
+  }, {
+    "caller_id": "+54 398 559 0423",
+    "callee_id": "+86 921 547 9004",
+    "started_at": "2018-09-24T09:38:52",
+    "duration": 80
+  },
+  {
+    "caller_id": "+63 815 962 6097",
+    "callee_id": "+1 254 875 4647",
+    "started_at": "2018-09-20T12:02:37",
+    "duration": 9
+  },
+  {
+    "caller_id": "+81 308 988 7153",
+    "callee_id": "+48 894 777 5173",
+    "started_at": "2018-09-28T06:12:49",
+    "duration": 156
+  },
+  {
+    "caller_id": "+370 351 224 5176",
+    "callee_id": "+351 515 605 7915",
+    "started_at": "2018-09-16T22:31:25",
+    "duration": 543
+  },
+  {
+    "caller_id": "+7 690 597 4443",
+    "callee_id": "+48 697 447 6933",
+    "started_at": "2018-09-19T00:12:47",
+    "duration": 132
+  },
+  {
+    "caller_id": "+81 746 154 2598",
+    "callee_id": "+351 515 605 7915",
+    "started_at": "2018-09-19T08:10:14",
+    "duration": 76
+  },
+  {
+    "caller_id": "+54 398 559 0423",
+    "callee_id": "+81 746 154 2598",
+    "started_at": "2018-09-18T22:47:52",
+    "duration": 5356
+  },
+]
+`
+	return []byte(data)
+}
+
+func getCallDataAll() []byte {
+	data := `
+[
+  {
+    "caller_id": "+54 398 559 0423",
+    "callee_id": "+48 195 624 2025",
+    "started_at": "2018-09-16T22:24:19",
+    "duration": 122
+  },
+  {
+    "caller_id": "+263 498 495 0617",
+    "callee_id": "+48 195 624 2025",
+    "started_at": "2018-09-18T01:34:48",
+    "duration": 514
+  },
+  {
+    "caller_id": "+81 308 988 7153",
+    "callee_id": "+33 614 339 0298",
+    "started_at": "2018-09-21T20:21:17",
+    "duration": 120
+  },
+  {
+    "caller_id": "+263 498 495 0617",
+    "callee_id": "+33 614 339 0298",
+    "started_at": "2018-09-17T22:10:34",
+    "duration": 144
+  },
+  {
+    "caller_id": "+54 398 559 0423",
+    "callee_id": "+7 552 196 4096",
+    "started_at": "2018-09-25T20:24:59",
+    "duration": 556
   },
   {
     "caller_id": "+81 308 988 7153",
