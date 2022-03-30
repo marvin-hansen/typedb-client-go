@@ -3,13 +3,12 @@
 package utils
 
 func GetTestQuery() string {
-	query := `
-match 
-	$x sub thing; 
-get 
-	$x;
-`
-	return query
+	return `
+	match
+		$x sub thing;
+	get
+		$x;
+	`
 }
 
 func GetPhoneCallsSchema() string {
