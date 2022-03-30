@@ -2,6 +2,7 @@ filegroup(
     name = "build",
     testonly = True,
     srcs = [
+
         "//test/client/db_admin:build",
         "//test/client/query:build",
         "//test/client/schema:build",

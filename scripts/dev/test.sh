@@ -5,20 +5,16 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# note, Bazel consistently throws
+# Note, Bazel consistently throws
 # ""There were tests whose specified size is too big.""
-# So the reported test results are basically useless.
+# This seems to be persistent issue in OSX with no clear solution.
+# Means Bazel test is basically useless.
 
-# Needs to be replaced with Go Test
+# Replaced with Go Test b/c it's actually working
 
-# Build all test sources
-bazel build //test:build
+#
+cd test/client/db-admin
+go test ./...
 
-# run DB admin tests first i.e. create & delete DB
-bazel test //test/client/db_admin/... --test_output=streamed --nocache_test_results
-
-# Run schema tests next
-bazel test //test/client/schema/... --test_output=streamed --nocache_test_results
-
-# Run all query tests
-bazel test //test/client/query/... --test_output=streamed --nocache_test_results
+cd ../schema
+go test ./...

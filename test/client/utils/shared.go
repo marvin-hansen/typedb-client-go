@@ -3,3 +3,5 @@
 package utils
 
 const ClientError = "NPE: Client is nil"
+
+const DBName = "TestDB"

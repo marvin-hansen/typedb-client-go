@@ -11,10 +11,7 @@ filegroup(
 
 go_test(
     name = "schema_test",
-    srcs = [
-        "utils_test.go",
-        "workflow_schema_test.go",
-    ],
+    srcs = ["workflow_schema_test.go"],
     tags = ["schema"],
     deps = [
         "//src/client/v2:client",
