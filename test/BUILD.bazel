@@ -1,0 +1,8 @@
+filegroup(
+    name = "build",
+    testonly = True,
+    srcs = [
+        "//test/client:build",
+    ],
+    visibility = ["//visibility:public"],
+)

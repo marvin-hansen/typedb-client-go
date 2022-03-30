@@ -6,6 +6,6 @@ go_library(
         "shared.go",
         "utils_query.go",
     ],
-    importpath = "github.com/marvin-hansen/typedb-client-go/test/src/client/utils",
+    importpath = "github.com/marvin-hansen/typedb-client-go/test/client/utils",
     visibility = ["//visibility:public"],
 )

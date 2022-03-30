@@ -4,41 +4,37 @@ package schema
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
-	"github.com/marvin-hansen/typedb-client-go/test/src/client/utils"
+	utils2 "github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
+const dbName = "TestDB"
+
 func TestSchemaCreate(t *testing.T) {
-	println("* Create Client")
-	dbName := "TestDB"
 	conf := v2.NewLocalConfig(dbName)
 	client, cancel := v2.NewClient(conf)
 	defer cancel()
-	assert.NotNil(t, client, utils.ClientError)
+	assert.NotNil(t, client, utils2.ClientError)
 
 	dbErr := DBSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB setup error")
 
-	println("* Write Schema")
-	testSchema := utils.GetPhoneCallsSchema()
+	testSchema := utils2.GetPhoneCallsSchema()
 	err := client.CreateDatabaseSchema(dbName, testSchema)
 
 	assert.NoError(t, err, "Should be no schema error")
 }
 
 func TestSchemaGet(t *testing.T) {
-	println("* Create Client")
-	dbName := "TestDB"
 	conf := v2.NewLocalConfig(dbName)
 	client, cancel := v2.NewClient(conf)
 	defer cancel()
-	assert.NotNil(t, client, utils.ClientError)
+	assert.NotNil(t, client, utils2.ClientError)
 
 	dbErr := DBSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB error")
 
-	println("* Get Schema")
 	allEntries, err := client.GetDatabaseSchema(dbName)
 
 	assert.NoError(t, err, "Should be no schema error")

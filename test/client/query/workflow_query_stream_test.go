@@ -5,7 +5,7 @@ package query
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
-	"github.com/marvin-hansen/typedb-client-go/test/src/client/utils"
+	utils2 "github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/segmentio/ksuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -18,7 +18,7 @@ func TestQueryMatch(t *testing.T) {
 	conf := v2.NewLocalConfig(dbName)
 	client, cancel := v2.NewClient(conf)
 	defer cancel()
-	assert.NotNil(t, client, utils.ClientError)
+	assert.NotNil(t, client, utils2.ClientError)
 
 	println("* Create Session")
 	session, sessionOpenErr := client.OpenNewDataSession(dbName)
@@ -27,7 +27,7 @@ func TestQueryMatch(t *testing.T) {
 	}
 
 	// TEST MATCH QUERY
-	query := utils.GetTestQuery()
+	query := utils2.GetTestQuery()
 
 	println("* Create session & request ID")
 	sessionID := session.GetSessionId()

@@ -4,7 +4,7 @@ package db_admin
 
 import (
 	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
-	"github.com/marvin-hansen/typedb-client-go/test/src/client/utils"
+	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
