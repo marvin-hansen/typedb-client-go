@@ -44,6 +44,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
 	options := &common.Options{}
+
 	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_WRITE, options, latencyMillis)
 	if openTxErr != nil {
 		return fmt.Errorf("could not open transaction: %w", openTxErr)

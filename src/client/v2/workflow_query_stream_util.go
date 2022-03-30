@@ -20,21 +20,27 @@ func (c *Client) runStreamBulkTx(sessionID []byte, transactionType common.Transa
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
+	// open new transaction
+	transactionId := tx.GetTransactionId()
+	latencyMillis := int32(100)
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
+	if openTxErr != nil {
+		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
+	}
+
 	// Create request meta data
 	metadata := CreateNewRequestMetadata()
 
 	for _, req := range requests {
-		_, queryErr := c.runStreamQuery(tx, transactionType, req, options)
+		_, queryErr := c.runStreamQuery(tx, sessionID, transactionType, req, options)
 		if queryErr != nil {
 			return nil, queryErr
 		}
-
 	}
 
 	// Only write transactions can be committed
 	if transactionType == TX_WRITE {
 		// Commit transaction
-		transactionId := tx.GetSessionId()
 		commitErr := tx.CommitTransaction(transactionId)
 		if commitErr != nil {
 			// Rollback commit in case of error
@@ -64,20 +70,58 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
-	// Create request meta data
-	metadata := CreateNewRequestMetadata()
+	// open new transaction
+	transactionId := tx.GetTransactionId()
+	latencyMillis := int32(100)
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
+	if openTxErr != nil {
+		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
+	}
 
-	// Run query
-	streamQuery, queryErr := c.runStreamQuery(tx, transactionType, req, options)
-	if queryErr != nil {
-		return nil, queryErr
+	readErr := tx.ExecuteTransaction(req)
+	if readErr != nil {
+		return nil, fmt.Errorf("could not exevute transaction: %w", readErr)
+	}
+
+	for {
+		// Get return value
+		recs, recErr := tx.tx.Recv()
+		if recErr != nil {
+			return nil, fmt.Errorf("could not receive query response: %w", recErr)
+		}
+
+		// Extract state of current partial result
+		state := recs.GetResPart().GetStreamResPart().GetState()
+
+		// When the server sends a Stream.ResPart with state = CONTINUE
+		// it indicates that there are more answers to fetch,
+		// so the client should respond with Stream.Req
+		if state == CONTINUE {
+			reqCont := getTransactionStreamReq()
+			_, queryErr := c.runQuery(sessionID, reqCont, options)
+			if queryErr != nil {
+				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
+			}
+		}
+
+		// If the Stream.ResPart has state = DONE,
+		// it indicates that there are no more answers to fetch,
+		// so the client doesn't need to respond.
+		if state == DONE {
+			break
+
+		} else {
+			part := recs.GetResPart().GetQueryManagerResPart()
+			queryResults = append(queryResults, part)
+		}
 	}
 
 	// Only write transactions can be committed
 	if transactionType == TX_WRITE {
+		// Create request meta data
+		metadata := CreateNewRequestMetadata()
 
 		// Commit transaction
-		transactionId := tx.GetSessionId()
 		commitErr := tx.CommitTransaction(transactionId)
 		if commitErr != nil {
 			// Rollback commit in case of error
@@ -96,23 +140,14 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
 	}
 
-	return streamQuery, nil
+	return queryResults, nil
 }
 
 //runStreamQuery util used by all other streaming return value query methods
-func (c *Client) runStreamQuery(tx *TransactionManager, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
-
-	sessionID := tx.GetSessionId()
-	transactionId := tx.GetTransactionId()
-
-	// Create open transaction request
-	netMillisecondLatency := int32(150)
-	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
+func (c *Client) runStreamQuery(tx *TransactionManager, sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Send request through
-	
-	// TODO / FIXME: RETURNS ERROR: Invalid Session Operation: Session with UUID '58ee856e-e161-4255-b5f7-57184521416d' does not exist.
-	sendErr := tx.ExecuteTransaction(openReq, req)
+	sendErr := tx.ExecuteTransaction(req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
