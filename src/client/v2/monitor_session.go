@@ -5,7 +5,11 @@ import (
 	"time"
 )
 
-func (s SessionManager) MonitorSession() {
+func (s SessionManager) stopMonitorSession() {
+
+}
+
+func (s SessionManager) startMonitorSession() {
 
 }
 
