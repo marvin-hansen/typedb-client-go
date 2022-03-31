@@ -19,8 +19,6 @@ go_library(
         "manager_query.go",
         "manager_session.go",
         "manager_transaction.go",
-        "request_query.go",
-        "request_tx_stream.go",
         "workflow_db.go",
         "workflow_query.go",
         "workflow_query_stream.go",

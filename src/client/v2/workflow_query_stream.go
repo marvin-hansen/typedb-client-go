@@ -2,6 +2,7 @@ package v2
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
+	requests2 "github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
 //
@@ -28,7 +29,7 @@ func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options 
 	metadata := CreateNewRequestMetadata()
 	for _, query := range queries {
 		requestId := CreateNewRequestID()
-		req := getInsertQueryReq(query, options, requestId, metadata)
+		req := requests2.GetInsertQueryReq(query, options, requestId, metadata)
 		requests = append(requests, req)
 	}
 
@@ -50,7 +51,7 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 
 	// create request & meta data
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getInsertQueryReq(query, options, requestId, metadata)
+	req := requests2.GetInsertQueryReq(query, options, requestId, metadata)
 
 	// run request
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_WRITE, req, options)
@@ -70,7 +71,7 @@ func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.
 
 	// create query request
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getMatchQueryReq(query, options, requestId, metadata)
+	req := requests2.GetMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -90,7 +91,7 @@ func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common
 
 	// create query request
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getMatchQueryReq(query, options, requestId, metadata)
+	req := requests2.GetMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -111,7 +112,7 @@ func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.O
 	// Create query request
 	metadata := map[string]string{}
 	requestId := CreateNewRequestID()
-	req := getMatchQueryReq(query, options, requestId, metadata)
+	req := requests2.GetMatchQueryReq(query, options, requestId, metadata)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -132,7 +133,7 @@ func (c *Client) RunMatchGroupQuery(sessionID []byte, query string, options *com
 
 	// Create query request
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getMatchGroupQueryReq(query, options, requestId, metadata)
+	req := requests2.GetMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -152,7 +153,7 @@ func (c *Client) RunMatchGroupAggregateQuery(sessionID []byte, query string, opt
 
 	// Create query request
 	requestId, metadata := CreateNewRequestIDOptions()
-	req := getMatchGroupQueryReq(query, options, requestId, metadata)
+	req := requests2.GetMatchGroupQueryReq(query, options, requestId, metadata)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)

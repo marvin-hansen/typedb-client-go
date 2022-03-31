@@ -5,6 +5,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
 // dbCheck checks if a DB with the name exists
@@ -50,7 +51,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 
 	requestId := CreateNewRequestID()
 	metadata := CreateNewRequestMetadata()
-	req := getDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
+	req := requests.GetDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
 
 	writeErr := tx.ExecuteTransaction(req)
 	if writeErr != nil {
@@ -109,7 +110,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 	query := getSchemaQuery()
 	requestId := CreateNewRequestID()
 	metadata := CreateNewRequestMetadata()
-	req := getMatchQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchQueryReq(query, options, requestId, metadata)
 
 	readErr := tx.ExecuteTransaction(req)
 	if readErr != nil {
@@ -131,7 +132,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
 			// Create a request and attach meta data & request ID
-			reqCont := getTransactionStreamReq()
+			reqCont := requests.GetTransactionStreamReq()
 			// run query
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {

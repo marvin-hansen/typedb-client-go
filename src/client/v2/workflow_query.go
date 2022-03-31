@@ -2,7 +2,10 @@
 
 package v2
 
-import "github.com/marvin-hansen/typedb-client-go/common"
+import (
+	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
+)
 
 //
 // Methods with singular return type i.e. one request -> one result
@@ -21,7 +24,7 @@ import "github.com/marvin-hansen/typedb-client-go/common"
 
 func (c *Client) RunDefineQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
 	// Create a request and attach meta data & request ID
-	req := getDefinedQueryReq(query, requestId, options, metadata)
+	req := requests.GetDefinedQueryReq(query, requestId, options, metadata)
 	// run query
 	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {
@@ -33,7 +36,7 @@ func (c *Client) RunDefineQuery(sessionID, requestId []byte, query string, metad
 
 func (c *Client) RunUndefineQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
 	// Create a request and attach meta data & request ID
-	req := getUndefinedQueryReq(query, options, requestId, metadata)
+	req := requests.GetUndefinedQueryReq(query, options, requestId, metadata)
 	// run query
 	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {
@@ -45,7 +48,7 @@ func (c *Client) RunUndefineQuery(sessionID, requestId []byte, query string, met
 
 func (c *Client) RunMatchAggregateQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
 	// Create a request and attach meta data & request ID
-	req := getMatchAggregateQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchAggregateQueryReq(query, options, requestId, metadata)
 	// run query
 	res, queryErr := c.runQuery(sessionID, req, options)
 
@@ -58,7 +61,7 @@ func (c *Client) RunMatchAggregateQuery(sessionID, requestId []byte, query strin
 
 func (c *Client) RunDeleteQuery(sessionID, requestId []byte, query string, metadata map[string]string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
 	// Create a request and attach meta data & request ID
-	req := getDeleteQueryReq(query, options, requestId, metadata)
+	req := requests.GetDeleteQueryReq(query, options, requestId, metadata)
 	// run query
 	res, queryErr := c.runQuery(sessionID, req, options)
 	if queryErr != nil {

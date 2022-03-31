@@ -3,6 +3,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
 const (
@@ -97,7 +98,7 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			reqCont := getTransactionStreamReq()
+			reqCont := requests.GetTransactionStreamReq()
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
@@ -167,7 +168,7 @@ func (c *Client) runStreamQuery(tx *TransactionManager, sessionID []byte, transa
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			reqCont := getTransactionStreamReq()
+			reqCont := requests.GetTransactionStreamReq()
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
