@@ -132,7 +132,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
 			// Create a request and attach meta data & request ID
-			reqCont := requests.GetTransactionStreamReq()
+			reqCont := requests.GetTransactionStreamReq(transactionId)
 			// run query
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {

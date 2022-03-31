@@ -7,7 +7,6 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
-// TODO / FIXME: Replace local tx with parameter from callsite
 //runQuery util used by all other single return value query methods
 func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options *common.Options) (*common.QueryManager_Res, error) {
 

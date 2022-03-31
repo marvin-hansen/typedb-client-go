@@ -10,6 +10,7 @@ func (s SessionManager) stopMonitorSession() {
 }
 
 func (s SessionManager) startMonitorSession() {
+	//https://medium.com/@marcus.murray/go-closing-routines-f90097f35223
 
 }
 

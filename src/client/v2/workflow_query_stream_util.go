@@ -48,10 +48,11 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			reqCont := requests.GetTransactionStreamReq()
-			_, queryErr := c.runQuery(sessionID, reqCont, options)
-			if queryErr != nil {
-				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
+			reqCont := requests.GetTransactionStreamReq(transactionId)
+			reqArray := []*common.Transaction_Req{reqCont}
+			sendErr := tx.tx.Send(requests.GetTransactionClient(reqArray))
+			if sendErr != nil {
+				return nil, fmt.Errorf("could not send query request iterator: %w", sendErr)
 			}
 		}
 
@@ -118,7 +119,7 @@ func (c *Client) runStreamQuery(tx *TransactionManager, sessionID []byte, transa
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			reqCont := requests.GetTransactionStreamReq()
+			reqCont := requests.GetTransactionStreamReq(tx.transactionId)
 			_, queryErr := c.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
