@@ -4,6 +4,7 @@ go_library(
     name = "utils",
     srcs = [
         "shared.go",
+        "utils_insert.go",
         "utils_query.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/test/client/utils",
