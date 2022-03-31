@@ -4,12 +4,14 @@ Go client for [TypeDB](https://vaticle.com/typedb)
 
 Status: Early stage work in progress! 
 
-Supports: TypeDB [2.7.1](https://github.com/vaticle/typedb/releases/tag/2.7.1)
+Supported TypeDB versions:
+* [2.6](https://github.com/vaticle/typedb/releases/tag/2.6.4)
+* [2.7](https://github.com/vaticle/typedb/releases/tag/2.7.1)
+* [2.8](https://github.com/vaticle/typedb/releases/tag/2.8.1)
 
 Protocol: [2.6.1](https://github.com/vaticle/typedb-protocol/releases/tag/2.6.1)
 
 NOT supported:
-* V. 2.8
 * Cluster
 
 DB Admin
