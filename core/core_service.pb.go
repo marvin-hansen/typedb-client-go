@@ -105,7 +105,7 @@ var file_core_core_service_proto_goTypes = []interface{}{
 	(*CoreDatabase_Schema_Req)(nil),          // 3: typedb.protocol.CoreDatabase.Schema.Req
 	(*CoreDatabase_Delete_Req)(nil),          // 4: typedb.protocol.CoreDatabase.Delete.Req
 	(*common.Session_Open_Req)(nil),          // 5: typedb.protocol.Session.Open.Req
-	(*common.Session_Close_Req)(nil),         // 6: typedb.protocol.Session.Close.Req
+	(*common.Session_Close_Req)(nil),         // 6: typedb.protocol.Session.CloseSession.Req
 	(*common.Session_Pulse_Req)(nil),         // 7: typedb.protocol.Session.Pulse.Req
 	(*common.Transaction_Client)(nil),        // 8: typedb.protocol.Transaction.Client
 	(*CoreDatabaseManager_Contains_Res)(nil), // 9: typedb.protocol.CoreDatabaseManager.Contains.Res
@@ -114,7 +114,7 @@ var file_core_core_service_proto_goTypes = []interface{}{
 	(*CoreDatabase_Schema_Res)(nil),          // 12: typedb.protocol.CoreDatabase.Schema.Res
 	(*CoreDatabase_Delete_Res)(nil),          // 13: typedb.protocol.CoreDatabase.Delete.Res
 	(*common.Session_Open_Res)(nil),          // 14: typedb.protocol.Session.Open.Res
-	(*common.Session_Close_Res)(nil),         // 15: typedb.protocol.Session.Close.Res
+	(*common.Session_Close_Res)(nil),         // 15: typedb.protocol.Session.CloseSession.Res
 	(*common.Session_Pulse_Res)(nil),         // 16: typedb.protocol.Session.Pulse.Res
 	(*common.Transaction_Server)(nil),        // 17: typedb.protocol.Transaction.Server
 }
@@ -125,7 +125,7 @@ var file_core_core_service_proto_depIdxs = []int32{
 	3,  // 3: typedb.protocol.TypeDB.database_schema:input_type -> typedb.protocol.CoreDatabase.Schema.Req
 	4,  // 4: typedb.protocol.TypeDB.database_delete:input_type -> typedb.protocol.CoreDatabase.Delete.Req
 	5,  // 5: typedb.protocol.TypeDB.session_open:input_type -> typedb.protocol.Session.Open.Req
-	6,  // 6: typedb.protocol.TypeDB.session_close:input_type -> typedb.protocol.Session.Close.Req
+	6,  // 6: typedb.protocol.TypeDB.session_close:input_type -> typedb.protocol.Session.CloseSession.Req
 	7,  // 7: typedb.protocol.TypeDB.session_pulse:input_type -> typedb.protocol.Session.Pulse.Req
 	8,  // 8: typedb.protocol.TypeDB.transaction:input_type -> typedb.protocol.Transaction.Client
 	9,  // 9: typedb.protocol.TypeDB.databases_contains:output_type -> typedb.protocol.CoreDatabaseManager.Contains.Res
@@ -134,7 +134,7 @@ var file_core_core_service_proto_depIdxs = []int32{
 	12, // 12: typedb.protocol.TypeDB.database_schema:output_type -> typedb.protocol.CoreDatabase.Schema.Res
 	13, // 13: typedb.protocol.TypeDB.database_delete:output_type -> typedb.protocol.CoreDatabase.Delete.Res
 	14, // 14: typedb.protocol.TypeDB.session_open:output_type -> typedb.protocol.Session.Open.Res
-	15, // 15: typedb.protocol.TypeDB.session_close:output_type -> typedb.protocol.Session.Close.Res
+	15, // 15: typedb.protocol.TypeDB.session_close:output_type -> typedb.protocol.Session.CloseSession.Res
 	16, // 16: typedb.protocol.TypeDB.session_pulse:output_type -> typedb.protocol.Session.Pulse.Res
 	17, // 17: typedb.protocol.TypeDB.transaction:output_type -> typedb.protocol.Transaction.Server
 	9,  // [9:18] is the sub-list for method output_type

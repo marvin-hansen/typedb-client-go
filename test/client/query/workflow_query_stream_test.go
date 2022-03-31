@@ -48,8 +48,8 @@ func TestInsertQuery(t *testing.T) {
 	assert.NoError(t, insertError, "Should be no error")
 	assert.NotNil(t, insertResults, "Query should return some results")
 
-	testPrint("* Close Session")
-	closeSessionErr := client.SessionManager.Close(sessionID)
+	testPrint("* CloseSession Session")
+	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
@@ -80,7 +80,7 @@ func TestMatchQuery(t *testing.T) {
 		}
 	}
 
-	testPrint("* Close Session")
-	closeSessionErr := client.SessionManager.Close(sessionID)
+	testPrint("* CloseSession Session")
+	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }

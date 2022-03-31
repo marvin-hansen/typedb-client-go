@@ -1,10 +1,11 @@
+// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
+
 package v2
 
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
-	"time"
 )
 
 func NewSessionManager(client *Client) *SessionManager {
@@ -59,7 +60,17 @@ func (s SessionManager) GetSession(sessionID []byte) (*common.Session_Open_Res, 
 	}
 }
 
-func (s SessionManager) Close(sessionID []byte) error {
+func (s SessionManager) ResetSession(sessionID []byte) error {
+	sessionId := string(sessionID)
+	if s.checkSessionExists(sessionId) {
+		session := s.sessionMap[sessionId]
+		session.Reset()
+		return nil
+	}
+	return fmt.Errorf("Session does not exist for key: " + sessionId)
+}
+
+func (s SessionManager) CloseSession(sessionID []byte) error {
 	sessionId := string(sessionID)
 	if s.checkSessionExists(sessionId) {
 		closeReq := requests.GetSessionCloseReq(sessionID)
@@ -81,16 +92,4 @@ func (s SessionManager) Close(sessionID []byte) error {
 	} else {
 		return fmt.Errorf("Session does not exists for key: " + sessionId)
 	}
-}
-
-func (s SessionManager) MonitorSession() {
-
-}
-
-func heartbeat() {
-	go func() {
-		timer := time.After(time.Second * 10)
-		<-timer
-		fmt.Println("heartbeat happened!")
-	}()
 }

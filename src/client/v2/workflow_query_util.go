@@ -45,7 +45,7 @@ func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options
 	// Extract query result
 	res := recv.GetRes().GetQueryManagerRes()
 
-	// Close transaction
+	// CloseSession transaction
 	closErr := tx.CloseSend()
 	if closErr != nil {
 		return nil, fmt.Errorf("could not close query transaction: %w", closErr)

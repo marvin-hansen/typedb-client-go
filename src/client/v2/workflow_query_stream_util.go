@@ -135,7 +135,7 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		}
 	}
 
-	// Close transaction
+	// CloseSession transaction
 	closeTxErr := tx.CloseTransaction()
 	if closeTxErr != nil {
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
