@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package v2
+package requests
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
@@ -9,11 +9,11 @@ import (
 // Transaction
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
-func getTransactionClient(reqs []*common.Transaction_Req) (req *common.Transaction_Client) {
+func GetTransactionClient(reqs []*common.Transaction_Req) (req *common.Transaction_Client) {
 	return &common.Transaction_Client{Reqs: reqs}
 }
 
-func getTransactionOpenReq(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
+func GetTransactionOpenReq(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) (req *common.Transaction_Req) {
 
 	if options == nil {
 		options = &common.Options{}
@@ -33,7 +33,7 @@ func getTransactionOpenReq(sessionID, transactionId []byte, sessionType common.T
 	return req
 }
 
-func getTransactionCommitReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
+func GetTransactionCommitReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
 	req = &common.Transaction_Req{
 		ReqId:    transactionId,
 		Metadata: metadata,
@@ -42,7 +42,7 @@ func getTransactionCommitReq(transactionId []byte, metadata map[string]string) (
 	return req
 }
 
-func getTransactionRollbackReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
+func GetTransactionRollbackReq(transactionId []byte, metadata map[string]string) (req *common.Transaction_Req) {
 	req = &common.Transaction_Req{
 		ReqId:    transactionId,
 		Metadata: metadata,

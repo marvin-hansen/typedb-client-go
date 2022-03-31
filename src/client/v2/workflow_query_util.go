@@ -3,6 +3,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 	"github.com/segmentio/ksuid"
 )
 
@@ -25,12 +26,12 @@ func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options
 	// Create open transaction request
 	transactionType := TX_READ
 	netMillisecondLatency := int32(150)
-	openReq := getTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
+	openReq := requests.GetTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
 	reqArray := []*common.Transaction_Req{openReq, req}
 
 	// Send request through
-	sendErr := tx.Send(getTransactionClient(reqArray))
+	sendErr := tx.Send(requests.GetTransactionClient(reqArray))
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}

@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package v2
+package requests
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
@@ -10,32 +10,32 @@ import (
 // EntityType
 // 565
 
-func getAttributeGetOwner(label *Label, onlyKey bool) *common.Transaction_Req {
+func GetAttributeGetOwner(label *Label, onlyKey bool) *common.Transaction_Req {
 	s := &common.AttributeType_GetOwners_Req{OnlyKey: onlyKey}
 	req := &common.Type_Req{Req: &common.Type_Req_AttributeTypeGetOwnersReq{AttributeTypeGetOwnersReq: s}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getAttributePutReq(label *Label, value *common.Attribute_Value) *common.Transaction_Req {
+func GetAttributePutReq(label *Label, value *common.Attribute_Value) *common.Transaction_Req {
 	s := &common.AttributeType_Put_Req{Value: value}
 	req := &common.Type_Req{Req: &common.Type_Req_AttributeTypePutReq{AttributeTypePutReq: s}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getAttributeReq(label *Label, value *common.Attribute_Value) *common.Transaction_Req {
+func GetAttributeReq(label *Label, value *common.Attribute_Value) *common.Transaction_Req {
 	s := &common.AttributeType_Get_Req{Value: value}
 	req := &common.Type_Req{Req: &common.Type_Req_AttributeTypeGetReq{AttributeTypeGetReq: s}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getAttributeGetRegexReq(label *Label) *common.Transaction_Req {
+func GetAttributeGetRegexReq(label *Label) *common.Transaction_Req {
 	s := &common.AttributeType_GetRegex_Req{}
 	req := &common.Type_Req{Req: &common.Type_Req_AttributeTypeGetRegexReq{AttributeTypeGetRegexReq: s}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getAttributeSetRegexReq(label *Label, regex string) *common.Transaction_Req {
+func GetAttributeSetRegexReq(label *Label, regex string) *common.Transaction_Req {
 	s := &common.AttributeType_SetRegex_Req{Regex: regex}
 	req := &common.Type_Req{Req: &common.Type_Req_AttributeTypeSetRegexReq{AttributeTypeSetRegexReq: s}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }

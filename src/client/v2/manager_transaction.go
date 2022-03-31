@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/core"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 	"github.com/segmentio/ksuid"
 )
 
@@ -71,7 +72,7 @@ func (c TransactionManager) GetTransactionId() []byte {
 // OpenTransaction needs to be called first to initiate a transaction on the server.
 func (c TransactionManager) OpenTransaction(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
 	// Create a request with options & request ID
-	req := getTransactionOpenReq(sessionID, transactionId, sessionType, options, netMillisecondLatency)
+	req := requests.GetTransactionOpenReq(sessionID, transactionId, sessionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
 
 	execErr := c.ExecuteTransaction(req)
@@ -85,7 +86,7 @@ func (c TransactionManager) OpenTransaction(sessionID, transactionId []byte, ses
 // ExecuteTransaction needs to be called each time to send a request to the server.
 func (c *TransactionManager) ExecuteTransaction(req ...*common.Transaction_Req) error {
 	// Send request through
-	sendErr := c.tx.Send(getTransactionClient(req))
+	sendErr := c.tx.Send(requests.GetTransactionClient(req))
 	if sendErr != nil {
 		return fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
@@ -102,7 +103,7 @@ func (c *TransactionManager) ExecuteTransaction(req ...*common.Transaction_Req) 
 func (c TransactionManager) CommitTransaction(transactionId []byte) error {
 	// Create a request with meta data & request ID
 	metadata := map[string]string{}
-	req := getTransactionCommitReq(transactionId, metadata)
+	req := requests.GetTransactionCommitReq(transactionId, metadata)
 
 	commitErr := c.ExecuteTransaction(req)
 	if commitErr != nil {
@@ -115,7 +116,7 @@ func (c TransactionManager) CommitTransaction(transactionId []byte) error {
 // RollbackTransaction needs to be called whenever a commit fails to restore the previous state.
 func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
-	req := getTransactionRollbackReq(transactionId, metadata)
+	req := requests.GetTransactionRollbackReq(transactionId, metadata)
 	rollbackErr := c.ExecuteTransaction(req)
 	if rollbackErr != nil {
 		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)

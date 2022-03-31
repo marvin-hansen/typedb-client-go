@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package v2
+package requests
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
@@ -10,8 +10,8 @@ import (
 // Type
 // https://github.com/vaticle/typedb-client-python/blob/master/typedb/common/rpc/request_builder.py
 
-// getTypeTx coverts a TypeReq into a Transaction_Req
-func getTypeTx(req *common.Type_Req, label *Label) *common.Transaction_Req {
+// GetTypeTx coverts a TypeReq into a Transaction_Req
+func GetTypeTx(req *common.Type_Req, label *Label) *common.Transaction_Req {
 	req.Label = label.GetName()
 	if label.HasScope() {
 		req.Scope = label.GetScope()
@@ -21,33 +21,33 @@ func getTypeTx(req *common.Type_Req, label *Label) *common.Transaction_Req {
 	return &common.Transaction_Req{Req: r}
 }
 
-func getTypeIsAbstractReq(label *Label) *common.Transaction_Req {
+func GetTypeIsAbstractReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_TypeIsAbstractReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getTypeSetLabelReq(label *Label, newLabel string) *common.Transaction_Req {
+func GetTypeSetLabelReq(label *Label, newLabel string) *common.Transaction_Req {
 	req := &common.Type_Req_TypeSetLabelReq{}
 	req.TypeSetLabelReq.Label = newLabel
-	return getTypeTx(&common.Type_Req{Req: req}, label)
+	return GetTypeTx(&common.Type_Req{Req: req}, label)
 }
 
-func getTypeSupertypeReq(label *Label) *common.Transaction_Req {
+func GetTypeSupertypeReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_TypeGetSupertypeReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getTypeAllSupertypesReq(label *Label) *common.Transaction_Req {
+func GetTypeAllSupertypesReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_TypeGetSupertypesReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getTypeAllSubtypesReq(label *Label) *common.Transaction_Req {
+func GetTypeAllSubtypesReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_TypeGetSubtypesReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getTypeDeleteReq(label *Label) *common.Transaction_Req {
+func GetTypeDeleteReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_TypeDeleteReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }

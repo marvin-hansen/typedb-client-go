@@ -1,43 +1,43 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
-package v2
+package requests
 
 import "github.com/marvin-hansen/typedb-client-go/common"
 
 // Relation
 // 675
 
-func getRelationAddPlayerReq(iid string, roleType *common.Type, player *common.Thing) *common.Transaction_Req {
+func GetRelationAddPlayerReq(iid string, roleType *common.Type, player *common.Thing) *common.Transaction_Req {
 	s := &common.Relation_AddPlayer_Req{
 		RoleType: roleType,
 		Player:   player,
 	}
 	req := &common.Thing_Req{Req: &common.Thing_Req_RelationAddPlayerReq{RelationAddPlayerReq: s}}
-	return getThingTx(req, iid)
+	return GetThingTx(req, iid)
 }
 
-func getRelationRemovePlayerReq(iid string, roleType *common.Type, player *common.Thing) *common.Transaction_Req {
+func GetRelationRemovePlayerReq(iid string, roleType *common.Type, player *common.Thing) *common.Transaction_Req {
 	s := &common.Relation_RemovePlayer_Req{
 		RoleType: roleType,
 		Player:   player,
 	}
 	req := &common.Thing_Req{Req: &common.Thing_Req_RelationRemovePlayerReq{RelationRemovePlayerReq: s}}
-	return getThingTx(req, iid)
+	return GetThingTx(req, iid)
 }
 
-func getRelationGetAllPlayersReq(iid string, roleTypes *[]*common.Type) *common.Transaction_Req {
+func GetRelationGetAllPlayersReq(iid string, roleTypes *[]*common.Type) *common.Transaction_Req {
 	s := &common.Relation_GetPlayers_Req{RoleTypes: *roleTypes}
 	req := &common.Thing_Req{Req: &common.Thing_Req_RelationGetPlayersReq{RelationGetPlayersReq: s}}
-	return getThingTx(req, iid)
+	return GetThingTx(req, iid)
 }
 
-func getRelationGetPlayersByRoleTypeReq(iid string) *common.Transaction_Req {
+func GetRelationGetPlayersByRoleTypeReq(iid string) *common.Transaction_Req {
 	s := &common.Relation_GetPlayersByRoleType_Req{}
 	req := &common.Thing_Req{Req: &common.Thing_Req_RelationGetPlayersByRoleTypeReq{RelationGetPlayersByRoleTypeReq: s}}
-	return getThingTx(req, iid)
+	return GetThingTx(req, iid)
 }
 
-func getRelationGetRelatingReq(iid string) *common.Transaction_Req {
+func GetRelationGetRelatingReq(iid string) *common.Transaction_Req {
 	s := &common.Relation_GetRelating_Req{}
 	req := &common.Thing_Req{Req: &common.Thing_Req_RelationGetRelatingReq{RelationGetRelatingReq: s}}
-	return getThingTx(req, iid)
+	return GetThingTx(req, iid)
 }

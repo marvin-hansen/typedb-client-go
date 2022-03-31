@@ -3,6 +3,7 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 	"time"
 )
 
@@ -22,7 +23,7 @@ type SessionManager struct {
 // NewSession creates a new session for the given client & DB
 func (s SessionManager) NewSession(dbName string, sessionType common.Session_Type) (sessionID []byte, err error) {
 
-	openReq := getSessionOpenReq(dbName, sessionType, &common.Options{})
+	openReq := requests.GetSessionOpenReq(dbName, sessionType, &common.Options{})
 	session, openErr := s.client.client.SessionOpen(s.client.ctx, openReq)
 	if openErr != nil {
 		return nil, openErr
@@ -61,7 +62,7 @@ func (s SessionManager) GetSession(sessionID []byte) (*common.Session_Open_Res, 
 func (s SessionManager) Close(sessionID []byte) error {
 	sessionId := string(sessionID)
 	if s.checkSessionExists(sessionId) {
-		closeReq := getSessionCloseReq(sessionID)
+		closeReq := requests.GetSessionCloseReq(sessionID)
 		_, closeErr := s.client.client.SessionClose(s.client.ctx, closeReq)
 
 		// Delete closed session regardless of close success.

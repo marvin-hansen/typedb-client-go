@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package v2
+package requests
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
@@ -10,7 +10,7 @@ import (
 // RoleType
 // 410
 
-func getRoleType(label *Label, encoding common.Type_Encoding) *common.Type {
+func GetRoleType(label *Label, encoding common.Type_Encoding) *common.Type {
 	return &common.Type{
 		Label:    label.GetName(),
 		Scope:    label.GetScope(),
@@ -18,12 +18,12 @@ func getRoleType(label *Label, encoding common.Type_Encoding) *common.Type {
 	}
 }
 
-func getRoleTypeRelationTypeReq(label *Label) *common.Transaction_Req {
+func GetRoleTypeRelationTypeReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_RoleTypeGetRelationTypesReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }
 
-func getRoleTypePlayersReq(label *Label) *common.Transaction_Req {
+func GetRoleTypePlayersReq(label *Label) *common.Transaction_Req {
 	req := &common.Type_Req{Req: &common.Type_Req_RoleTypeGetPlayersReq{}}
-	return getTypeTx(req, label)
+	return GetTypeTx(req, label)
 }

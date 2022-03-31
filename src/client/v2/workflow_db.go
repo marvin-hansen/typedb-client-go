@@ -4,11 +4,12 @@ package v2
 
 import (
 	"fmt"
+	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 	"log"
 )
 
 func (c *Client) GetAllDatabases() (allDatabases []string, err error) {
-	req := getAllDBReq()
+	req := requests.GetAllDBReq()
 	databaseAllResult, err := c.client.DatabasesAll(c.ctx, req)
 	if err != nil {
 		log.Println(err.Error())
@@ -18,7 +19,7 @@ func (c *Client) GetAllDatabases() (allDatabases []string, err error) {
 }
 
 func (c *Client) CreateDatabase(dbName string) (ok bool, err error) {
-	req := getCreateDBReq(dbName)
+	req := requests.GetCreateDBReq(dbName)
 	databaseCreateRes, err := c.client.DatabasesCreate(c.ctx, req)
 	if err != nil {
 		log.Println(databaseCreateRes.String())
@@ -29,7 +30,7 @@ func (c *Client) CreateDatabase(dbName string) (ok bool, err error) {
 }
 
 func (c *Client) CheckDatabaseExists(dbName string) (exists bool, err error) {
-	req := getContainsDBReq(dbName)
+	req := requests.GetContainsDBReq(dbName)
 	databaseExistsRes, dbExistErr := c.client.DatabasesContains(c.ctx, req)
 	if dbExistErr != nil {
 		return false, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
@@ -47,7 +48,7 @@ func (c *Client) DeleteDatabase(dbName string) (ok bool, err error) {
 		return false, err
 	}
 	if exists {
-		req := getDeleteDBReq(dbName)
+		req := requests.GetDeleteDBReq(dbName)
 		databaseDeleteRes, dbDeleteErr := c.client.DatabaseDelete(c.ctx, req)
 		if dbDeleteErr != nil {
 			log.Println(databaseDeleteRes.String())
