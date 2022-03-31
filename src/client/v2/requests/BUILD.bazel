@@ -1,0 +1,20 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "requests",
+    srcs = [
+        "request_attribute.go",
+        "request_concept.go",
+        "request_db.go",
+        "request_relation.go",
+        "request_session.go",
+        "request_thing.go",
+    ],
+    importpath = "github.com/marvin-hansen/typedb-client-go/src/client/v2/requests",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//common",
+        "//core",
+        "//src/type/err_type",
+    ],
+)
