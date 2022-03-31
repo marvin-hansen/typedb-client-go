@@ -1,48 +1,95 @@
 package v2
 
 import (
+	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"time"
 )
 
-// NewSession creates a new session for the given client & DB
-func NewSession(client *Client, dbName string, sessionType common.Session_Type) (*SessionManager, error) {
-
-	openReq := getSessionOpenReq(dbName, sessionType, &common.Options{})
-	session, openErr := client.client.SessionOpen(client.ctx, openReq)
-	if openErr != nil {
-		return nil, openErr
-	}
-
+func NewSessionManager(client *Client) *SessionManager {
 	return &SessionManager{
-		client:  client,
-		session: session,
-	}, nil
+		client:     client,
+		sessionMap: map[string]*common.Session_Open_Res{},
+	}
 }
 
 // SessionManager Encapsulates one single session.
 type SessionManager struct {
-	client  *Client
-	session *common.Session_Open_Res
+	client     *Client
+	sessionMap map[string]*common.Session_Open_Res
 }
 
-// GetSessionId returns the current session ID
-func (s SessionManager) GetSessionId() []byte {
-	return s.session.GetSessionId()
-}
+// NewSession creates a new session for the given client & DB
+func (s SessionManager) NewSession(dbName string, sessionType common.Session_Type) (sessionID []byte, err error) {
 
-// Reset -  No idea what the reset function actually rests, but it's in the specs....
-func (s SessionManager) Reset() {
-	s.session.Reset()
-}
-
-// Close - Ends the current session.
-func (s SessionManager) Close() error {
-	sessionID := s.GetSessionId()
-	closeReq := getSessionCloseReq(sessionID)
-	_, closeErr := s.client.client.SessionClose(s.client.ctx, closeReq)
-	if closeErr != nil {
-		return closeErr
-	} else {
-		return nil
+	openReq := getSessionOpenReq(dbName, sessionType, &common.Options{})
+	session, openErr := s.client.client.SessionOpen(s.client.ctx, openReq)
+	if openErr != nil {
+		return nil, openErr
 	}
+
+	sessionId := string(session.SessionId)
+	s.sessionMap[sessionId] = session
+
+	return session.SessionId, nil
+}
+
+func (s SessionManager) checkSessionExists(sessionID string) (exists bool) {
+	if _, ok := s.sessionMap[sessionID]; ok {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (s SessionManager) deleteSession(sessionID string) {
+	if _, ok := s.sessionMap[sessionID]; ok {
+		delete(s.sessionMap, sessionID)
+	}
+}
+
+func (s SessionManager) GetSession(sessionID []byte) (*common.Session_Open_Res, bool, error) {
+	sessionId := string(sessionID)
+	if s.checkSessionExists(sessionId) {
+		session := s.sessionMap[sessionId]
+		return session, true, nil
+	} else {
+		return nil, false, fmt.Errorf("Session does not exists for key: " + sessionId)
+	}
+}
+
+func (s SessionManager) Close(sessionID []byte) error {
+	sessionId := string(sessionID)
+	if s.checkSessionExists(sessionId) {
+		closeReq := getSessionCloseReq(sessionID)
+		_, closeErr := s.client.client.SessionClose(s.client.ctx, closeReq)
+
+		// Delete closed session regardless of close success.
+		// if client side close fails, the server will close the session after time out.
+		s.deleteSession(sessionId)
+
+		// Stop heartbeat regardless of close success.
+		// When the server stops receiving heartbeats, it will close the session after 30 sec.
+
+		// Check for error, just in case
+		if closeErr != nil {
+			return closeErr
+		} else {
+			return nil
+		}
+	} else {
+		return fmt.Errorf("Session does not exists for key: " + sessionId)
+	}
+}
+
+func (s SessionManager) MonitorSession() {
+
+}
+
+func heartbeat() {
+	go func() {
+		timer := time.After(time.Second * 10)
+		<-timer
+		fmt.Println("heartbeat happened!")
+	}()
 }

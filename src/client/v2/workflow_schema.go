@@ -29,12 +29,10 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return dbExistErr
 	}
 
-	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.SessionManager.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
-
-	sessionID := session.GetSessionId()
 
 	tx, newTxErr := NewTransaction(c, sessionID)
 	if newTxErr != nil {
@@ -74,7 +72,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not close transaction: %w", closeTxErr)
 	}
 
-	closeErr := session.Close()
+	closeErr := c.SessionManager.Close(sessionID)
 	if closeErr != nil {
 		return fmt.Errorf("could not close session: %w", closeErr)
 	}
@@ -90,12 +88,10 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 		return nil, dbExistErr
 	}
 
-	session, openErr := NewSession(c, dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.SessionManager.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return nil, fmt.Errorf("could not open schema session: %w", openErr)
 	}
-
-	sessionID := session.GetSessionId()
 
 	tx, newTxErr := NewTransaction(c, sessionID)
 	if newTxErr != nil {
@@ -160,7 +156,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
 	}
 
-	closeErr := session.Close()
+	closeErr := c.SessionManager.Close(sessionID)
 	if closeErr != nil {
 		return nil, fmt.Errorf("could not close session: %w", closeErr)
 	}

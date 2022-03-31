@@ -7,14 +7,14 @@ import (
 	pb "github.com/marvin-hansen/typedb-client-go/core"
 	"google.golang.org/grpc"
 	"log"
-	"sync"
 )
 
 type Client struct {
 	client pb.TypeDBClient
 	config *Config
 	ctx    context.Context
-	mtx    sync.RWMutex
+	//
+	SessionManager *SessionManager
 }
 
 func NewClient(conf *Config) (*Client, context.CancelFunc) {
@@ -52,8 +52,13 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 	client := pb.NewTypeDBClient(conn)
 	ctx := context.Background()
 	typeDBClient := &Client{
-		client: client,
-		ctx:    ctx,
+		client:         client,
+		ctx:            ctx,
+		SessionManager: nil,
 	}
+
+	sessionManager := NewSessionManager(typeDBClient)
+	typeDBClient.SessionManager = sessionManager
+
 	return typeDBClient, nil
 }

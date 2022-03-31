@@ -18,7 +18,6 @@ go_test(
     tags = ["query"],
     deps = [
         "//common",
-        "//data",
         "//src/client/v2:client",
         "//test/client/utils",
         "@com_github_stretchr_testify//assert",

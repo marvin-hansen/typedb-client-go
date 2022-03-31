@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/marvin-hansen/typedb-client-go/data"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/stretchr/testify/assert"
@@ -31,52 +30,18 @@ func getClient() (*v2.Client, context.CancelFunc) {
 }
 
 // TODO / FIXME: Timeout after 300 sec
-func TestInsertBulkQuery(t *testing.T) {
-	client, cancel := getClient()
-	defer cancel()
-
-	testPrint("* Get Test Data")
-	gql, dataErr := data.GetPhoneCallsDataGql()
-	assert.NoError(t, dataErr, "could not get phone calls data gql: %w", dataErr)
-	assert.NotNil(t, gql, "Data should not be nil")
-
-	testPrint("* Create Session")
-	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA) //client.OpenNewDataSession(dbName)
-	assert.NoError(t, sessionOpenErr, "Should be no error")
-
-	testPrint("* Insert into TypeDB")
-	sessionID := session.GetSessionId()
-	options := v2.CreateNewRequestOptions()
-	insertResults, insertError := client.RunInsertBulkQuery(sessionID, gql, options)
-	assert.NoError(t, insertError, "Should be no error")
-	assert.NotNil(t, insertResults, "Query should return some results")
-
-	if verbose {
-		println("Print results")
-		for _, item := range insertResults {
-			println(item.String())
-		}
-	}
-
-	testPrint("* Close Session")
-	closeSessionErr := session.Close() //client.CloseSession(session.GetSessionId())
-	assert.NoError(t, closeSessionErr, "Should be no error")
-}
-
-// TODO / FIXME: Timeout after 300 sec
 func TestInsertQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
 
 	testPrint("* Create Session")
-	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.SessionManager.NewSession(dbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	testPrint("* Get Test Insert")
 	gql := utils.GetCompanyInsert()
 
 	testPrint("* Insert into TypeDB")
-	sessionID := session.GetSessionId()
 	options := v2.CreateNewRequestOptions()
 
 	insertResults, insertError := client.RunInsertQuery(sessionID, gql, options)
@@ -84,7 +49,7 @@ func TestInsertQuery(t *testing.T) {
 	assert.NotNil(t, insertResults, "Query should return some results")
 
 	testPrint("* Close Session")
-	closeSessionErr := session.Close()
+	closeSessionErr := client.SessionManager.Close(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
 
@@ -93,11 +58,8 @@ func TestMatchQuery(t *testing.T) {
 	defer cancel()
 
 	testPrint("* Create Session")
-	session, sessionOpenErr := v2.NewSession(client, dbName, common.Session_DATA) //client.OpenNewDataSession(dbName)
+	sessionID, sessionOpenErr := client.SessionManager.NewSession(dbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
-
-	testPrint("* Create session & request ID")
-	sessionID := session.GetSessionId()
 
 	// TEST MATCH QUERY
 	query := utils.GetTestQuery()
@@ -119,6 +81,6 @@ func TestMatchQuery(t *testing.T) {
 	}
 
 	testPrint("* Close Session")
-	closeSessionErr := session.Close() //client.CloseSession(session.SessionId)
+	closeSessionErr := client.SessionManager.Close(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }
