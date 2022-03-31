@@ -13,56 +13,6 @@ const (
 	TX_WRITE = common.Transaction_WRITE
 )
 
-func (c *Client) runStreamBulkTx(sessionID []byte, transactionType common.Transaction_Type, requests []*common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
-
-	// Create a Transaction
-	tx, newTxErr := NewTransaction(c, sessionID)
-	if newTxErr != nil {
-		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
-	}
-
-	// open new transaction
-	transactionId := tx.GetTransactionId()
-	latencyMillis := int32(100)
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
-	if openTxErr != nil {
-		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
-	}
-
-	// Create request meta data
-	metadata := CreateNewRequestMetadata()
-
-	for _, req := range requests {
-		_, queryErr := c.runStreamQuery(tx, sessionID, transactionType, req, options)
-		if queryErr != nil {
-			return nil, queryErr
-		}
-	}
-
-	// Only write transactions can be committed
-	if transactionType == TX_WRITE {
-		// Commit transaction
-		commitErr := tx.CommitTransaction(transactionId)
-		if commitErr != nil {
-			// Rollback commit in case of error
-			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
-			if rollbackErr != nil {
-				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
-			}
-
-			return nil, fmt.Errorf("could commit into DB. Rolled back transaction: %w", commitErr)
-		}
-	}
-
-	// close transaction
-	closeTxErr := tx.CloseTransaction()
-	if closeTxErr != nil {
-		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
-	}
-
-	return queryResults, nil
-}
-
 func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Create a Transaction

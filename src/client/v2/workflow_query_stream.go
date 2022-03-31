@@ -22,31 +22,6 @@ import (
 //    }
 //  }
 
-func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options *common.Options) (insertResults []*common.QueryManager_Insert_ResPart, err error) {
-
-	// Create request collection
-	var requests []*common.Transaction_Req
-	metadata := CreateNewRequestMetadata()
-	for _, query := range queries {
-		requestId := CreateNewRequestID()
-		req := requests2.GetInsertQueryReq(query, options, requestId, metadata)
-		requests = append(requests, req)
-	}
-
-	// run request collection
-	queryResults, queryErr := c.runStreamBulkTx(sessionID, TX_WRITE, requests, options)
-	if queryErr != nil {
-		return nil, queryErr
-	}
-
-	// extract match results and stuff into queryResults collection
-	for _, item := range queryResults {
-		insertResults = append(insertResults, item.GetInsertResPart())
-	}
-
-	return insertResults, nil
-}
-
 func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
 
 	// create request & meta data
@@ -63,7 +38,6 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 	for _, item := range streamQuery {
 		queryResults = append(queryResults, item.GetInsertResPart())
 	}
-
 	return queryResults, nil
 }
 
