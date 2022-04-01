@@ -46,7 +46,7 @@ const dbName = utils.DBName
 		}
 
 		// Delete DB if exists. Uncomment to actually delete...
-		// ok, err := c.DBManager.DeleteDatabase(dbName)
+		// ok, err := client.DBManager.DeleteDatabase(dbName)
 		
 		// Load a TypeDB schema. See data folder  
 		testSchema := data.GetPhoneCallsSchema()
