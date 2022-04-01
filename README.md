@@ -15,6 +15,14 @@ Protocol:
 NOT supported:
 * Cluster
 
+Current status: Active Development
+* DBManager fully implemented See example below
+* SessionManager implemented 
+* TransactionManager implemented 
+* QueryManager under development
+
+Implementation & testing details in [status document](Status.md) 
+
 ## Usage 
 
 ```Go
@@ -30,7 +38,6 @@ import (
 const dbName = utils.DBName
 
     func main(){
-
 		// Create new client with default localhost config
 		conf := v2.NewLocalConfig(dbName)
 		client, cancel := v2.NewClient(conf)
