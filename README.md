@@ -83,7 +83,6 @@ const dbName = utils.DBName
 
 ```
 
-
 ## Make reference
 
 ```bash 
@@ -97,10 +96,15 @@ Dev:
     make stats                  Shows the latest project stats. 
 ```
 
-# Author
+## Author
 
 * Marvin Hansen 
 * GPG key ID: 210D39BC
 * Github key ID: 369D5A0B210D39BC
 * GPG Fingerprint: 4B18 F7B2 04B9 7A72 967E  663E 369D 5A0B 210D 39BC 
 * Public key: [key](pubkey.txt)
+
+## Licence 
+
+* [MIT Licence](LICENSE)
+* Software is "as is" without any warranty. 
