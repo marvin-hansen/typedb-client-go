@@ -24,7 +24,7 @@ func TestCreateDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
 
-	ok, err := c.CreateDatabase(dbName)
+	ok, err := c.DBManager.CreateDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true")
 }
@@ -35,7 +35,7 @@ func TestExistsDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
 
-	existsDatabase, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected := true
 	actual := existsDatabase
@@ -49,7 +49,7 @@ func TestDeleteDatabase(t *testing.T) {
 	assert.NotNil(t, c, utils.ClientError)
 
 	// check if DB exists
-	existsDatabase, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected := true
 	actual := existsDatabase
@@ -58,11 +58,11 @@ func TestDeleteDatabase(t *testing.T) {
 	// Delete if exists.
 	// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
 	// AND returns true when the DB actually got deleted.
-	ok, err := c.DeleteDatabase(dbName)
+	ok, err := c.DBManager.DeleteDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true i.e. exists")
 
-	existsDatabase, err = c.CheckDatabaseExists(dbName)
+	existsDatabase, err = c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected = false
 	actual = existsDatabase

@@ -28,7 +28,7 @@ func checkConnection(conn *grpc.ClientConn, err error) {
 
 // dbCheck checks if a DB with the name exists
 func (c *Client) dbCheck(dbName string) (err error) {
-	existsDatabase, dbExistErr := c.CheckDatabaseExists(dbName)
+	existsDatabase, dbExistErr := c.DBManager.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
 		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
