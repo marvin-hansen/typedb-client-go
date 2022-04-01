@@ -16,7 +16,7 @@ NOT supported:
 * Cluster
 
 Current status: Active Development
-* DBManager fully implemented See example below
+* DBManager fully implemented
 * SessionManager implemented 
 * TransactionManager implemented 
 * QueryManager under development
@@ -24,6 +24,8 @@ Current status: Active Development
 Implementation & testing details in [status document](Status.md) 
 
 ## Usage 
+
+For more detailed usage, see test files in [test folder](test/client)
 
 ```Go
 package main
