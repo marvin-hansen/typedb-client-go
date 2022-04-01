@@ -10,6 +10,16 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
+func NewTransactionManager(client *Client) *TransactionManager {
+	return &TransactionManager{
+		client: client,
+	}
+}
+
+type TransactionManager struct {
+	client *Client
+}
+
 // NewTransaction creates one atomic transaction options with all methods
 // operating on that transaction. Each transaction must be opened & closed.
 // Notice, one session may run multiple transactions.
@@ -25,26 +35,26 @@ import (
 // }
 // tx.CloseTransaction()
 //
-func NewTransaction(client *Client, sessionId []byte) (*TransactionManager, error) {
+func (t *TransactionManager) NewTransaction(sessionId []byte) (*Transaction, error) {
 
-	transactionClient, err := newTx(client)
+	transactionClient, err := newTx(t.client)
 	if err != nil {
 		return nil, err
 	}
 
 	transactionId := ksuid.New().Bytes()
 
-	return &TransactionManager{
-		client:        client,
+	return &Transaction{
+		client:        t.client,
 		sessionId:     sessionId,
 		transactionId: transactionId,
 		tx:            transactionClient,
 	}, nil
 }
 
-// TransactionManager encapsulates one single transaction for a specific session.
+// Transaction encapsulates one single transaction for a specific session.
 // Note, a session may hold one or more transactions.
-type TransactionManager struct {
+type Transaction struct {
 	client        *Client
 	tx            core.TypeDB_TransactionClient
 	sessionId     []byte
@@ -60,17 +70,17 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	}
 }
 
-func (c TransactionManager) GetSessionId() []byte {
+func (c Transaction) GetSessionId() []byte {
 	return c.sessionId
 }
 
 // GetTransactionId returns the unique ID of the transaction
-func (c TransactionManager) GetTransactionId() []byte {
+func (c Transaction) GetTransactionId() []byte {
 	return c.transactionId
 }
 
 // OpenTransaction needs to be called first to initiate a transaction on the server.
-func (c TransactionManager) OpenTransaction(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
+func (c Transaction) OpenTransaction(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
 	// Create a request with options & request ID
 	req := requests.GetTransactionOpenReq(sessionID, transactionId, sessionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
@@ -84,7 +94,7 @@ func (c TransactionManager) OpenTransaction(sessionID, transactionId []byte, ses
 }
 
 // ExecuteTransaction needs to be called each time to send a request to the server.
-func (c *TransactionManager) ExecuteTransaction(req ...*common.Transaction_Req) error {
+func (c *Transaction) ExecuteTransaction(req ...*common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(requests.GetTransactionClient(req))
 	if sendErr != nil {
@@ -100,7 +110,7 @@ func (c *TransactionManager) ExecuteTransaction(req ...*common.Transaction_Req) 
 }
 
 // CommitTransaction needs to be called only once to finalize all previous steps.
-func (c TransactionManager) CommitTransaction(transactionId []byte) error {
+func (c Transaction) CommitTransaction(transactionId []byte) error {
 	// Create a request with meta data & request ID
 	metadata := map[string]string{}
 	req := requests.GetTransactionCommitReq(transactionId, metadata)
@@ -114,7 +124,7 @@ func (c TransactionManager) CommitTransaction(transactionId []byte) error {
 }
 
 // RollbackTransaction needs to be called whenever a commit fails to restore the previous state.
-func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
+func (c Transaction) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
 	// Create a request with meta data & request ID
 	req := requests.GetTransactionRollbackReq(transactionId, metadata)
 	rollbackErr := c.ExecuteTransaction(req)
@@ -126,7 +136,7 @@ func (c TransactionManager) RollbackTransaction(transactionId []byte, metadata m
 }
 
 // CloseTransaction call only once at the end to close the transaction.
-func (c TransactionManager) CloseTransaction() error {
+func (c Transaction) CloseTransaction() error {
 	closeErr := c.tx.CloseSend()
 	if closeErr != nil {
 		return fmt.Errorf("could not close query transaction: %w", closeErr)

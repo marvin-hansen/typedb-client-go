@@ -16,7 +16,7 @@ const (
 func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Create a Transaction
-	tx, newTxErr := NewTransaction(c, sessionID)
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
@@ -96,7 +96,7 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 }
 
 //runStreamQuery util used by all other streaming return value query methods
-func (c *Client) runStreamQuery(tx *TransactionManager, sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+func (c *Client) runStreamQuery(tx *Transaction, sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
 	// Send request through
 	sendErr := tx.ExecuteTransaction(req)

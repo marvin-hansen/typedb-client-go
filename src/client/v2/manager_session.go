@@ -15,7 +15,7 @@ func NewSessionManager(client *Client) *SessionManager {
 	}
 }
 
-// SessionManager Encapsulates one single session.
+// SessionManager Encapsulates multiple session.
 type SessionManager struct {
 	client     *Client
 	sessionMap map[string]*common.Session_Open_Res

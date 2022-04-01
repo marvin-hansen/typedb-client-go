@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_test")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 filegroup(
     name = "build",
@@ -12,14 +12,26 @@ filegroup(
 go_test(
     name = "query_test",
     srcs = [
-        "workflow_query_stream_test.go",
-        "workflow_query_test.go",
+        "query_insert_test.go",
+        "query_match_test.go",
     ],
+    embed = [":query"],
     tags = ["query"],
     deps = [
         "//common",
         "//src/client/v2:client",
         "//test/client/utils",
         "@com_github_stretchr_testify//assert",
+    ],
+)
+
+go_library(
+    name = "query",
+    srcs = ["query_utils.go"],
+    importpath = "github.com/marvin-hansen/typedb-client-go/test/client/query",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/client/v2:client",
+        "//test/client/utils",
     ],
 )

@@ -571,12 +571,12 @@ var file_common_session_proto_goTypes = []interface{}{
 	(Session_Type)(0),         // 0: typedb.protocol.Session.Type
 	(*Session)(nil),           // 1: typedb.protocol.Session
 	(*Session_Open)(nil),      // 2: typedb.protocol.Session.Open
-	(*Session_Close)(nil),     // 3: typedb.protocol.Session.CloseSession
+	(*Session_Close)(nil),     // 3: typedb.protocol.Session.Close
 	(*Session_Pulse)(nil),     // 4: typedb.protocol.Session.Pulse
 	(*Session_Open_Req)(nil),  // 5: typedb.protocol.Session.Open.Req
 	(*Session_Open_Res)(nil),  // 6: typedb.protocol.Session.Open.Res
-	(*Session_Close_Req)(nil), // 7: typedb.protocol.Session.CloseSession.Req
-	(*Session_Close_Res)(nil), // 8: typedb.protocol.Session.CloseSession.Res
+	(*Session_Close_Req)(nil), // 7: typedb.protocol.Session.Close.Req
+	(*Session_Close_Res)(nil), // 8: typedb.protocol.Session.Close.Res
 	(*Session_Pulse_Req)(nil), // 9: typedb.protocol.Session.Pulse.Req
 	(*Session_Pulse_Res)(nil), // 10: typedb.protocol.Session.Pulse.Res
 	(*Options)(nil),           // 11: typedb.protocol.Options

@@ -27,7 +27,7 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := NewTransaction(c.client, sessionID)
+	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID)
 	if newTxErr != nil {
 		return fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
@@ -86,7 +86,7 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 		return nil, fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := NewTransaction(c.client, sessionID)
+	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}

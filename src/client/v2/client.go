@@ -10,12 +10,12 @@ import (
 )
 
 type Client struct {
-	client pb.TypeDBClient
-	config *Config
-	ctx    context.Context
-	//
-	SessionManager *SessionManager
-	DBManager      *DBManager
+	client             pb.TypeDBClient
+	config             *Config
+	ctx                context.Context
+	DBManager          *DBManager
+	SessionManager     *SessionManager
+	TransactionManager *TransactionManager
 }
 
 func NewClient(conf *Config) (*Client, context.CancelFunc) {
@@ -65,6 +65,9 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 	// create db manager
 	dbManager := NewDBManager(typeDBClient)
 	typeDBClient.DBManager = dbManager
+
+	txManager := NewTransactionManager(typeDBClient)
+	typeDBClient.TransactionManager = txManager
 
 	//
 	return typeDBClient, nil
