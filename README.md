@@ -31,7 +31,7 @@ const dbName = utils.DBName
 
     func main(){
 
-		// create new client with default localhost config
+		// Create new client with default localhost config
 		conf := v2.NewLocalConfig(dbName)
 		client, cancel := v2.NewClient(conf)
 		defer cancel()
@@ -45,10 +45,9 @@ const dbName = utils.DBName
 			log.Fatal("DB Doesn't exists", err)
 		}
 
-		// Delete DB if exists.
+		// Delete DB if exists. Uncomment to actually delete...
 		// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
-		// AND returns true when the DB actually got deleted.
-		// In both cases, you know the DB is gone.
+		// AND returns true when the DB actually got deleted. In both cases, you know the DB is gone.
 		// ok, err := c.DBManager.DeleteDatabase(dbName)
 		
 		// Load a TypeDB schema. See data folder  
@@ -66,6 +65,7 @@ const dbName = utils.DBName
 			log.Fatal("could not load schema from DB", err)
 		}
 
+		// Print schema to console 
 		if len(allEntries) > 0 {
 			for _, item := range allEntries {
 				println(item)
