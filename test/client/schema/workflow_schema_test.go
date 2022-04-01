@@ -19,7 +19,7 @@ func TestSchemaCreate(t *testing.T) {
 	assert.NotNil(t, client, utils.ClientError)
 
 	testSchema := data.GetPhoneCallsSchema()
-	err := client.CreateDatabaseSchema(dbName, testSchema)
+	err := client.DBManager.CreateDatabaseSchema(dbName, testSchema)
 
 	assert.NoError(t, err, "Should be no schema error")
 }
@@ -30,7 +30,7 @@ func TestSchemaGet(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, client, utils.ClientError)
 
-	allEntries, err := client.GetDatabaseSchema(dbName)
+	allEntries, err := client.DBManager.GetDatabaseSchema(dbName)
 
 	assert.NoError(t, err, "Should be no schema error")
 	assert.NotNil(t, t, allEntries, "Should not be nil")

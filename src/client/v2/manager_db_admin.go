@@ -1,5 +1,3 @@
-// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
-
 package v2
 
 import (
@@ -8,34 +6,28 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
-// dbCheck checks if a DB with the name exists
-func (c *Client) dbCheck(dbName string) (err error) {
-	existsDatabase, dbExistErr := c.CheckDatabaseExists(dbName)
-	if dbExistErr != nil {
-		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
-	}
+func NewDBManager(client *Client) *DBManager {
+	return &DBManager{client: client}
+}
 
-	if !existsDatabase {
-		return fmt.Errorf(" database does not exists: %w", dbExistErr)
-	}
-
-	return nil
+type DBManager struct {
+	client *Client
 }
 
 // CreateDatabaseSchema creates schema fo the given DB
-func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
+func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 
-	dbExistErr := c.dbCheck(dbName)
+	dbExistErr := c.client.dbCheck(dbName)
 	if dbExistErr != nil {
 		return dbExistErr
 	}
 
-	sessionID, openErr := c.SessionManager.NewSession(dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.client.SessionManager.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := NewTransaction(c, sessionID)
+	tx, newTxErr := NewTransaction(c.client, sessionID)
 	if newTxErr != nil {
 		return fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
@@ -73,7 +65,7 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not close transaction: %w", closeTxErr)
 	}
 
-	closeErr := c.SessionManager.CloseSession(sessionID)
+	closeErr := c.client.SessionManager.CloseSession(sessionID)
 	if closeErr != nil {
 		return fmt.Errorf("could not close session: %w", closeErr)
 	}
@@ -82,19 +74,19 @@ func (c *Client) CreateDatabaseSchema(dbName, schema string) (err error) {
 }
 
 // GetDatabaseSchema returns the schema for the DB
-func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err error) {
+func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err error) {
 
-	dbExistErr := c.dbCheck(dbName)
+	dbExistErr := c.client.dbCheck(dbName)
 	if dbExistErr != nil {
 		return nil, dbExistErr
 	}
 
-	sessionID, openErr := c.SessionManager.NewSession(dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.client.SessionManager.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return nil, fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := NewTransaction(c, sessionID)
+	tx, newTxErr := NewTransaction(c.client, sessionID)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
@@ -134,7 +126,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 			// Create a request and attach meta data & request ID
 			reqCont := requests.GetTransactionStreamReq(transactionId)
 			// run query
-			_, queryErr := c.runQuery(sessionID, reqCont, options)
+			_, queryErr := c.client.runQuery(sessionID, reqCont, options)
 			if queryErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
 			}
@@ -157,7 +149,7 @@ func (c *Client) GetDatabaseSchema(dbName string) (allEntries []string, err erro
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
 	}
 
-	closeErr := c.SessionManager.CloseSession(sessionID)
+	closeErr := c.client.SessionManager.CloseSession(sessionID)
 	if closeErr != nil {
 		return nil, fmt.Errorf("could not close session: %w", closeErr)
 	}

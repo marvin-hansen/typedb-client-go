@@ -15,6 +15,7 @@ type Client struct {
 	ctx    context.Context
 	//
 	SessionManager *SessionManager
+	DBManager      *DBManager
 }
 
 func NewClient(conf *Config) (*Client, context.CancelFunc) {
@@ -57,8 +58,14 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 		SessionManager: nil,
 	}
 
+	// create session manager
 	sessionManager := NewSessionManager(typeDBClient)
 	typeDBClient.SessionManager = sessionManager
 
+	// create db manager
+	dbManager := NewDBManager(typeDBClient)
+	typeDBClient.DBManager = dbManager
+
+	//
 	return typeDBClient, nil
 }
