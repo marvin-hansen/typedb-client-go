@@ -9,41 +9,78 @@ Supported TypeDB versions:
 * [2.7](https://github.com/vaticle/typedb/releases/tag/2.7.1)
 * [2.8](https://github.com/vaticle/typedb/releases/tag/2.8.1)
 
-Protocol: [2.6.1](https://github.com/vaticle/typedb-protocol/releases/tag/2.6.1)
+Protocol: 
+* [2.6.1](https://github.com/vaticle/typedb-protocol/releases/tag/2.6.1)
 
 NOT supported:
 * Cluster
 
-DB Admin
+## Usage 
 
-- [x] GetAllDatabases
-- [x] CreateDatabase
-- [x] CheckDatabaseExists 
-- [x] DeleteDatabase
+```Go
+package main
 
-Schema:
-- [x] CreateDatabaseSchema
-- [x] GetDatabaseSchema
+import (
+	"github.com/marvin-hansen/typedb-client-go/data"
+	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
+	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
+	"log"
+)
 
-Transaction (TransactionManager):
-- [x] NewTransaction
-- [x] OpenTransaction
-- [x] ExecuteTransaction
-- [x] CommitTransaction
-- [x] RollbackTransaction
-- [x] CloseTransaction
+const dbName = utils.DBName
 
-Query:
-- [x] RunInsertQuery
-- [x] RunUpdateQuery
-- [x] RunDeleteQuery
-- [x] RunExplainQuery
-- [x] RunDefineQuery
-- [x] RunUnDefineQuery
-- [x] RunMatchQuery
-- [x] RunMatchGroupQuery
-- [x] RunMatchAggregateQuery
-- [x] RunMatchGroupAggregateQuery
+    func main(){
+
+		// create new client with default localhost config
+		conf := v2.NewLocalConfig(dbName)
+		client, cancel := v2.NewClient(conf)
+		defer cancel()
+		
+		// Create a new DB 
+		_, err := client.DBManager.CreateDatabase(dbName)
+
+		// Check if DB has been created 
+		_, err = client.DBManager.CheckDatabaseExists(dbName)
+		if err != nil{
+			log.Fatal("DB Doesn't exists", err)
+		}
+
+		// Delete DB if exists.
+		// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
+		// AND returns true when the DB actually got deleted.
+		// In both cases, you know the DB is gone.
+		// ok, err := c.DBManager.DeleteDatabase(dbName)
+		
+		// Load a TypeDB schema. See data folder  
+		testSchema := data.GetPhoneCallsSchema()
+		
+		// Write schema into TypeDB 
+		err = client.DBManager.CreateDatabaseSchema(dbName, testSchema)
+		if err != nil{
+			log.Fatal("could not create DB schema", err)
+		}
+		
+		// Load the Schema from the DB 
+		allEntries, err := client.DBManager.GetDatabaseSchema(dbName)
+		if err != nil{
+			log.Fatal("could not load schema from DB", err)
+		}
+
+		if len(allEntries) > 0 {
+			for _, item := range allEntries {
+				println(item)
+			}
+			println() 
+		}
+		
+		
+		// TODO: insert data
+
+	}
+
+
+```
+
 
 ## Make reference
 
