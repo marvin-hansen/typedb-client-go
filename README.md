@@ -46,8 +46,6 @@ const dbName = utils.DBName
 		}
 
 		// Delete DB if exists. Uncomment to actually delete...
-		// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
-		// AND returns true when the DB actually got deleted. In both cases, you know the DB is gone.
 		// ok, err := c.DBManager.DeleteDatabase(dbName)
 		
 		// Load a TypeDB schema. See data folder  
@@ -73,11 +71,8 @@ const dbName = utils.DBName
 			println() 
 		}
 		
-		
-		// TODO: insert data
-
+		// TODO: insert & query data
 	}
-
 
 ```
 
