@@ -8,6 +8,10 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
+// TODO: Update implementation & add session pulse
+// https://github.com/typedb-osi/TypeDBClient.jl/blob/main/src/core/CoreSession.jl
+//
+
 func NewSessionManager(client *Client) *SessionManager {
 	return &SessionManager{
 		client:     client,
