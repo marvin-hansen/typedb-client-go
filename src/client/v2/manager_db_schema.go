@@ -41,9 +41,7 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
-	requestId := CreateNewRequestID()
-	metadata := CreateNewRequestMetadata()
-	req := requests.GetDefinedQueryReq(schema, requestId, &common.Options{}, metadata)
+	req := requests.GetDefinedQueryReq(schema, options)
 
 	writeErr := tx.ExecuteTransaction(req)
 	if writeErr != nil {
@@ -52,6 +50,7 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 
 	commitErr := tx.CommitTransaction(transactionId)
 	if commitErr != nil {
+		metadata := CreateNewRequestMetadata()
 		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
 		if rollbackErr != nil {
 			return fmt.Errorf("could commit schema into DB AND could NOT Rolled back transaction: %w", commitErr)
@@ -100,9 +99,7 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 	}
 
 	query := getSchemaQuery()
-	requestId := CreateNewRequestID()
-	metadata := CreateNewRequestMetadata()
-	req := requests.GetMatchQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchQueryReq(query, options)
 
 	readErr := tx.ExecuteTransaction(req)
 	if readErr != nil {

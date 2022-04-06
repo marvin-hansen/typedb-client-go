@@ -16,6 +16,9 @@ const (
 
 func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
 
+	// generate new req id
+	req.ReqId = CreateNewRequestID()
+
 	// Create a Transaction
 	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
 	if newTxErr != nil {
@@ -99,6 +102,8 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults *common.QueryManager_ResPart, err error) {
 	mtd := "runStreamQuery"
 
+	req.ReqId = CreateNewRequestID()
+
 	dbgPrint(mtd, " SessionID: "+hex.EncodeToString(sessionID))
 	dbgPrint(mtd, " Create a Transaction")
 	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
@@ -109,7 +114,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
 	dbgPrint(mtd, " Transaction ID "+hex.EncodeToString(transactionId))
-	dbgPrint(mtd, " open new transaction ")
+	dbgPrint(mtd, " Open new transaction ")
 	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
@@ -128,11 +133,28 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 	if recErr != nil {
 		return nil, fmt.Errorf("could not receive query response: %w", recErr)
 	}
-
 	dbgPrint(mtd, recv.String())
 
 	dbgPrint(mtd, " Extract query result ")
 	queryResults = recv.GetResPart().GetQueryManagerResPart()
+
+	// Only write transactions can be committed
+	if transactionType == TX_WRITE {
+		// Create request meta data
+		metadata := CreateNewRequestMetadata()
+
+		// Commit transaction
+		commitErr := tx.CommitTransaction(transactionId)
+		if commitErr != nil {
+			// Rollback commit in case of error
+			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+			if rollbackErr != nil {
+				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
+			}
+
+			return nil, fmt.Errorf("could commit into DB. Rolled back transaction: %w", commitErr)
+		}
+	}
 
 	dbgPrint(mtd, "Close transaction")
 	closErr := tx.tx.CloseSend()

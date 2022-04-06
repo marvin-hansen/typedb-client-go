@@ -17,8 +17,9 @@ func TestInsertQuery(t *testing.T) {
 	sessionID, sessionOpenErr := client.SessionManager.NewSession(dbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	testPrint("* Get Test Insert")
 	gql := utils.GetCompanyInsert()
+	testPrint("* Get Test Insert")
+	println(gql)
 
 	testPrint("* Insert into TypeDB")
 	options := v2.CreateNewRequestOptions()

@@ -25,7 +25,7 @@ func TestExistsDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
 
-	existsDatabase, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected := true
 	actual := existsDatabase

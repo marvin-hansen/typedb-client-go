@@ -10,6 +10,8 @@ import (
 //runQuery util used by all other single return value query methods
 func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options *common.Options) (*common.QueryManager_Res, error) {
 
+	req.ReqId = CreateNewRequestID()
+
 	// Create a Transaction
 	tx, txErr := c.client.Transaction(c.ctx)
 	if txErr != nil {

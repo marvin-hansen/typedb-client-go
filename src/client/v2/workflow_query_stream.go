@@ -32,9 +32,8 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 	//      repeated ConceptMap answers = 1;
 	//    }
 	//  }
-	// create request & meta data
-	requestId, metadata := CreateNewRequestIDOptions()
-	req := requests.GetInsertQueryReq(query, options, requestId, metadata)
+
+	req := requests.GetInsertQueryReq(query, options)
 
 	// run request
 	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_WRITE, req, options)
@@ -50,11 +49,8 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 
 func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
 
-	// create query request
-	requestId, metadata := CreateNewRequestIDOptions()
-	req := requests.GetMatchQueryReq(query, options, requestId, metadata)
-
 	// run query
+	req := requests.GetMatchQueryReq(query, options)
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
@@ -70,11 +66,8 @@ func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.
 
 func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Explain_ResPart, err error) {
 
-	// create query request
-	requestId, metadata := CreateNewRequestIDOptions()
-	req := requests.GetMatchQueryReq(query, options, requestId, metadata)
-
 	// run query
+	req := requests.GetMatchQueryReq(query, options)
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
 	if queryErr != nil {
 		return nil, queryErr
@@ -100,9 +93,7 @@ func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.O
 	//  }
 	//
 	// Create query request
-	metadata := map[string]string{}
-	requestId := CreateNewRequestID()
-	req := requests.GetMatchQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchQueryReq(query, options)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -122,8 +113,7 @@ func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.O
 func (c *Client) RunMatchGroupQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_MatchGroup_ResPart, err error) {
 
 	// Create query request
-	requestId, metadata := CreateNewRequestIDOptions()
-	req := requests.GetMatchGroupQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchGroupQueryReq(query, options)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
@@ -142,8 +132,7 @@ func (c *Client) RunMatchGroupQuery(sessionID []byte, query string, options *com
 func (c *Client) RunMatchGroupAggregateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_MatchGroupAggregate_ResPart, err error) {
 
 	// Create query request
-	requestId, metadata := CreateNewRequestIDOptions()
-	req := requests.GetMatchGroupQueryReq(query, options, requestId, metadata)
+	req := requests.GetMatchGroupQueryReq(query, options)
 
 	// run query
 	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)

@@ -21,6 +21,7 @@ go_library(
         "request_type_er_relation.go",
         "request_type_role.go",
         "request_type_thing.go",
+        "utils.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/src/client/v2/requests",
     visibility = ["//visibility:public"],
@@ -29,5 +30,6 @@ go_library(
         "//core",
         "//src/type/common_type",
         "//src/type/err_type",
+        "@com_github_segmentio_ksuid//:ksuid",
     ],
 )
