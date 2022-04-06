@@ -99,7 +99,7 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults *common.QueryManager_ResPart, err error) {
 	mtd := "runStreamQuery"
 
-	dbgPrint(mtd, " sessionID: "+hex.EncodeToString(sessionID))
+	dbgPrint(mtd, " SessionID: "+hex.EncodeToString(sessionID))
 	dbgPrint(mtd, " Create a Transaction")
 	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
 	if newTxErr != nil {
@@ -108,7 +108,7 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 
 	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
-	dbgPrint(mtd, " new transaction "+hex.EncodeToString(transactionId))
+	dbgPrint(mtd, " Transaction ID "+hex.EncodeToString(transactionId))
 	dbgPrint(mtd, " open new transaction ")
 	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
 	if openTxErr != nil {
