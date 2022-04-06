@@ -22,22 +22,29 @@ import (
 //    }
 //  }
 
-func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
+func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults *common.QueryManager_Insert_ResPart, err error) {
 
+	//   message Insert {
+	//    message Req {
+	//      string query = 1;
+	//    }
+	//    message ResPart {
+	//      repeated ConceptMap answers = 1;
+	//    }
+	//  }
 	// create request & meta data
 	requestId, metadata := CreateNewRequestIDOptions()
 	req := requests.GetInsertQueryReq(query, options, requestId, metadata)
 
 	// run request
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_WRITE, req, options)
+	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_WRITE, req, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
 
 	// extract match results and stuff into queryResults collection
-	for _, item := range streamQuery {
-		queryResults = append(queryResults, item.GetInsertResPart())
-	}
+	queryResults = streamQuery.GetInsertResPart()
+
 	return queryResults, nil
 }
 
@@ -83,6 +90,15 @@ func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common
 
 func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Match_ResPart, err error) {
 
+	//   message Match {
+	//    message Req {
+	//      string query = 1;
+	//    }
+	//    message ResPart {
+	//      repeated ConceptMap answers = 1;
+	//    }
+	//  }
+	//
 	// Create query request
 	metadata := map[string]string{}
 	requestId := CreateNewRequestID()

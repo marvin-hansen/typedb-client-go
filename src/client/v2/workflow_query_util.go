@@ -22,6 +22,7 @@ func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options
 	transactionType := TX_READ
 	netMillisecondLatency := int32(150)
 	openReq := requests.GetTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
+
 	// Stuff req into slice/array
 	reqArray := []*common.Transaction_Req{openReq, req}
 

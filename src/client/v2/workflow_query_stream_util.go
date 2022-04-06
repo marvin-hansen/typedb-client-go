@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
@@ -95,45 +96,50 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 	return queryResults, nil
 }
 
-//runStreamQuery util used by all other streaming return value query methods
-func (c *Client) runStreamQuery(tx *Transaction, sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults *common.QueryManager_ResPart, err error) {
+	mtd := "runStreamQuery"
 
-	// Send request through
+	dbgPrint(mtd, " sessionID: "+hex.EncodeToString(sessionID))
+	dbgPrint(mtd, " Create a Transaction")
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
+	if newTxErr != nil {
+		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
+	}
+
+	transactionId := tx.GetTransactionId()
+	latencyMillis := int32(100)
+	dbgPrint(mtd, " new transaction "+hex.EncodeToString(transactionId))
+	dbgPrint(mtd, " open new transaction ")
+	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
+	if openTxErr != nil {
+		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
+	}
+
+	dbgPrint(mtd, " Send request through ")
 	sendErr := tx.ExecuteTransaction(req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
-	for {
-		// Get return value
-		recs, recErr := tx.tx.Recv()
-		if recErr != nil {
-			return nil, fmt.Errorf("could not receive query response: %w", recErr)
-		}
-
-		// Extract state of current partial result
-		state := recs.GetResPart().GetStreamResPart().GetState()
-		println(state)
-
-		// When the server sends a Stream.ResPart with state = CONTINUE
-		// it indicates that there are more answers to fetch,
-		// so the client should respond with Stream.Req
-		if state == CONTINUE {
-			reqCont := requests.GetTransactionStreamReq(tx.transactionId)
-			_, queryErr := c.runQuery(sessionID, reqCont, options)
-			if queryErr != nil {
-				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
-			}
-		} else if state == DONE {
-			// If the Stream.ResPart has state = DONE,
-			// it indicates that there are no more answers to fetch,
-			// so the client doesn't need to respond.
-			break
-		} else {
-			part := recs.GetResPart().GetQueryManagerResPart()
-			queryResults = append(queryResults, part)
-		}
+	dbgPrint(mtd, " Get return value ")
+	// here things get stuck pretty hard!
+	// for some reason, nothing returns
+	recv, recErr := tx.tx.Recv()
+	if recErr != nil {
+		return nil, fmt.Errorf("could not receive query response: %w", recErr)
 	}
 
+	dbgPrint(mtd, recv.String())
+
+	dbgPrint(mtd, " Extract query result ")
+	queryResults = recv.GetResPart().GetQueryManagerResPart()
+
+	dbgPrint(mtd, "Close transaction")
+	closErr := tx.tx.CloseSend()
+	if closErr != nil {
+		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
+	}
+
+	dbgPrint(mtd, "Return query result")
 	return queryResults, nil
 }

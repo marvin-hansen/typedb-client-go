@@ -7,3 +7,9 @@ const (
 	main    = "TypeDBClient: "
 	connErr = main + "error: Connection is nil; can't create client"
 )
+
+func dbgPrint(mtd, msg string) {
+	if debug {
+		println("[" + mtd + "]: " + msg)
+	}
+}
