@@ -35,7 +35,7 @@ type TransactionManager struct {
 // }
 // tx.CloseTransaction()
 //
-func (t *TransactionManager) NewTransaction(sessionId []byte) (*Transaction, error) {
+func (t *TransactionManager) NewTransaction(sessionId []byte, transactionType common.Transaction_Type) (*Transaction, error) {
 
 	transactionClient, err := newTx(t.client)
 	if err != nil {
@@ -45,20 +45,24 @@ func (t *TransactionManager) NewTransaction(sessionId []byte) (*Transaction, err
 	transactionId := ksuid.New().Bytes()
 
 	return &Transaction{
-		client:        t.client,
-		sessionId:     sessionId,
-		transactionId: transactionId,
-		tx:            transactionClient,
+		client:          t.client,
+		sessionId:       sessionId,
+		transactionId:   transactionId,
+		transactionType: transactionType,
+		tx:              transactionClient,
+		isOpen:          false,
 	}, nil
 }
 
 // Transaction encapsulates one single transaction for a specific session.
 // Note, a session may hold one or more transactions.
 type Transaction struct {
-	client        *Client
-	tx            core.TypeDB_TransactionClient
-	sessionId     []byte
-	transactionId []byte
+	client          *Client
+	tx              core.TypeDB_TransactionClient
+	sessionId       []byte
+	transactionId   []byte
+	transactionType common.Transaction_Type
+	isOpen          bool
 }
 
 func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
@@ -80,21 +84,22 @@ func (c Transaction) GetTransactionId() []byte {
 }
 
 // OpenTransaction needs to be called first to initiate a transaction on the server.
-func (c Transaction) OpenTransaction(sessionID, transactionId []byte, sessionType common.Transaction_Type, options *common.Options, netMillisecondLatency int32) error {
+func (c Transaction) OpenTransaction(sessionID []byte, options *common.Options, netMillisecondLatency int32) error {
 	// Create a request with options & request ID
-	req := requests.GetTransactionOpenReq(sessionID, transactionId, sessionType, options, netMillisecondLatency)
+	req := requests.GetTransactionOpenReq(sessionID, c.transactionType, options, netMillisecondLatency)
 	// Stuff req into slice/array
 
 	execErr := c.ExecuteTransaction(req)
 	if execErr != nil {
 		return fmt.Errorf("could not open transaction: %w", execErr)
 	} else {
+		c.isOpen = true
 		return nil
 	}
 }
 
 // ExecuteTransaction needs to be called each time to send a request to the server.
-func (c *Transaction) ExecuteTransaction(req ...*common.Transaction_Req) error {
+func (c *Transaction) ExecuteTransaction(req *common.Transaction_Req) error {
 	// Send request through
 	sendErr := c.tx.Send(requests.GetTransactionClient(req))
 	if sendErr != nil {
@@ -110,11 +115,9 @@ func (c *Transaction) ExecuteTransaction(req ...*common.Transaction_Req) error {
 }
 
 // CommitTransaction needs to be called only once to finalize all previous steps.
-func (c Transaction) CommitTransaction(transactionId []byte) error {
+func (c Transaction) CommitTransaction() error {
 	// Create a request with meta data & request ID
-	metadata := map[string]string{}
-	req := requests.GetTransactionCommitReq(transactionId, metadata)
-
+	req := requests.GetTransactionCommitReq()
 	commitErr := c.ExecuteTransaction(req)
 	if commitErr != nil {
 		return fmt.Errorf("could not commit transaction: %w", commitErr)
@@ -124,9 +127,9 @@ func (c Transaction) CommitTransaction(transactionId []byte) error {
 }
 
 // RollbackTransaction needs to be called whenever a commit fails to restore the previous state.
-func (c Transaction) RollbackTransaction(transactionId []byte, metadata map[string]string) error {
+func (c Transaction) RollbackTransaction() error {
 	// Create a request with meta data & request ID
-	req := requests.GetTransactionRollbackReq(transactionId, metadata)
+	req := requests.GetTransactionRollbackReq()
 	rollbackErr := c.ExecuteTransaction(req)
 	if rollbackErr != nil {
 		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)
@@ -141,5 +144,6 @@ func (c Transaction) CloseTransaction() error {
 	if closeErr != nil {
 		return fmt.Errorf("could not close query transaction: %w", closeErr)
 	}
+	c.isOpen = false
 	return nil
 }

@@ -33,10 +33,9 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 	//    }
 	//  }
 
-	req := requests.GetInsertQueryReq(query, options)
-
 	// run request
-	streamQuery, queryErr := c.runStreamQuery(sessionID, TX_WRITE, req, options)
+	req := requests.GetInsertQueryReq(query, options)
+	streamQuery, queryErr := c.RunStreamQuery(sessionID, req, TX_WRITE, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -51,7 +50,7 @@ func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.
 
 	// run query
 	req := requests.GetMatchQueryReq(query, options)
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -68,7 +67,7 @@ func (c *Client) RunExplainQuery(sessionID []byte, query string, options *common
 
 	// run query
 	req := requests.GetMatchQueryReq(query, options)
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -96,7 +95,7 @@ func (c *Client) RunMatchQuery(sessionID []byte, query string, options *common.O
 	req := requests.GetMatchQueryReq(query, options)
 
 	// run query
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -116,7 +115,7 @@ func (c *Client) RunMatchGroupQuery(sessionID []byte, query string, options *com
 	req := requests.GetMatchGroupQueryReq(query, options)
 
 	// run query
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -135,7 +134,7 @@ func (c *Client) RunMatchGroupAggregateQuery(sessionID []byte, query string, opt
 	req := requests.GetMatchGroupQueryReq(query, options)
 
 	// run query
-	streamQuery, queryErr := c.runStreamTx(sessionID, TX_READ, req, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}

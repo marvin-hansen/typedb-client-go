@@ -26,7 +26,7 @@ func (c *Client) RunDefineQuery(sessionID []byte, query string, options *common.
 	// Create a request and attach meta data & request ID
 	req := requests.GetDefinedQueryReq(query, options)
 	// run query
-	res, queryErr := c.runQuery(sessionID, req, options)
+	res, queryErr := c.RunQuery(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {
@@ -38,7 +38,7 @@ func (c *Client) RunUndefineQuery(sessionID []byte, query string, options *commo
 	// Create a request and attach meta data & request ID
 	req := requests.GetUndefinedQueryReq(query, options)
 	// run query
-	res, queryErr := c.runQuery(sessionID, req, options)
+	res, queryErr := c.RunQuery(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {
@@ -50,7 +50,7 @@ func (c *Client) RunMatchAggregateQuery(sessionID []byte, query string, options 
 	// Create a request and attach meta data & request ID
 	req := requests.GetMatchAggregateQueryReq(query, options)
 	// run query
-	res, queryErr := c.runQuery(sessionID, req, options)
+	res, queryErr := c.RunQuery(sessionID, req, TX_READ, options)
 
 	if queryErr != nil {
 		return nil, queryErr
@@ -63,7 +63,7 @@ func (c *Client) RunDeleteQuery(sessionID []byte, query string, options *common.
 	// Create a request and attach meta data & request ID
 	req := requests.GetDeleteQueryReq(query, options)
 	// run query
-	res, queryErr := c.runQuery(sessionID, req, options)
+	res, queryErr := c.RunQuery(sessionID, req, TX_READ, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {

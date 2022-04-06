@@ -14,25 +14,23 @@ const (
 	TX_WRITE = common.Transaction_WRITE
 )
 
-func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, transactionType common.Transaction_Type, options *common.Options) (queryResults []*common.QueryManager_ResPart, err error) {
+	mtd := "RunStreamTx"
 
-	// generate new req id
-	req.ReqId = CreateNewRequestID()
-
-	// Create a Transaction
-	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
+	dbgPrint(mtd, " Create a Transaction")
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, transactionType)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
-	// open new transaction
-	transactionId := tx.GetTransactionId()
+	dbgPrint(mtd, " Open new transaction ")
 	latencyMillis := int32(100)
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
+	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
+	dbgPrint(mtd, " Execute Transaction ")
 	readErr := tx.ExecuteTransaction(req)
 	if readErr != nil {
 		return nil, fmt.Errorf("could not exevute transaction: %w", readErr)
@@ -52,9 +50,8 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		// it indicates that there are more answers to fetch,
 		// so the client should respond with Stream.Req
 		if state == CONTINUE {
-			reqCont := requests.GetTransactionStreamReq(transactionId)
-			reqArray := []*common.Transaction_Req{reqCont}
-			sendErr := tx.tx.Send(requests.GetTransactionClient(reqArray))
+			reqCont := requests.GetTransactionStreamReq()
+			sendErr := tx.tx.Send(requests.GetTransactionClient(reqCont))
 			if sendErr != nil {
 				return nil, fmt.Errorf("could not send query request iterator: %w", sendErr)
 			}
@@ -74,14 +71,12 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 
 	// Only write transactions can be committed
 	if transactionType == TX_WRITE {
-		// Create request meta data
-		metadata := CreateNewRequestMetadata()
-
 		// Commit transaction
-		commitErr := tx.CommitTransaction(transactionId)
+		dbgPrint(mtd, " Commit Transaction ")
+		commitErr := tx.CommitTransaction()
 		if commitErr != nil {
 			// Rollback commit in case of error
-			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+			rollbackErr := tx.RollbackTransaction()
 			if rollbackErr != nil {
 				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
 			}
@@ -90,7 +85,7 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 		}
 	}
 
-	// CloseSession transaction
+	dbgPrint(mtd, " Close Transaction ")
 	closeTxErr := tx.CloseTransaction()
 	if closeTxErr != nil {
 		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
@@ -99,14 +94,12 @@ func (c *Client) runStreamTx(sessionID []byte, transactionType common.Transactio
 	return queryResults, nil
 }
 
-func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transaction_Type, req *common.Transaction_Req, options *common.Options) (queryResults *common.QueryManager_ResPart, err error) {
-	mtd := "runStreamQuery"
-
-	req.ReqId = CreateNewRequestID()
+func (c *Client) RunStreamQuery(sessionID []byte, req *common.Transaction_Req, transactionType common.Transaction_Type, options *common.Options) (queryResults *common.QueryManager_ResPart, err error) {
+	mtd := "RunStreamQuery"
 
 	dbgPrint(mtd, " SessionID: "+hex.EncodeToString(sessionID))
 	dbgPrint(mtd, " Create a Transaction")
-	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID)
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, transactionType)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
@@ -115,12 +108,12 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 	latencyMillis := int32(100)
 	dbgPrint(mtd, " Transaction ID "+hex.EncodeToString(transactionId))
 	dbgPrint(mtd, " Open new transaction ")
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, transactionType, options, latencyMillis)
+	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
 
-	dbgPrint(mtd, " Send request through ")
+	dbgPrint(mtd, " Execute Transaction ")
 	sendErr := tx.ExecuteTransaction(req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
@@ -140,14 +133,11 @@ func (c *Client) runStreamQuery(sessionID []byte, transactionType common.Transac
 
 	// Only write transactions can be committed
 	if transactionType == TX_WRITE {
-		// Create request meta data
-		metadata := CreateNewRequestMetadata()
-
 		// Commit transaction
-		commitErr := tx.CommitTransaction(transactionId)
+		commitErr := tx.CommitTransaction()
 		if commitErr != nil {
 			// Rollback commit in case of error
-			rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+			rollbackErr := tx.RollbackTransaction()
 			if rollbackErr != nil {
 				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
 			}

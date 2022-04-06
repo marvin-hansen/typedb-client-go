@@ -3,51 +3,61 @@ package v2
 import (
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
-	"github.com/segmentio/ksuid"
 )
 
-//runQuery util used by all other single return value query methods
-func (c *Client) runQuery(sessionID []byte, req *common.Transaction_Req, options *common.Options) (*common.QueryManager_Res, error) {
-
-	req.ReqId = CreateNewRequestID()
+//RunQuery util used by all other single return value query methods
+func (c *Client) RunQuery(sessionID []byte, req *common.Transaction_Req, transactionType common.Transaction_Type, options *common.Options) (*common.QueryManager_Res, error) {
 
 	// Create a Transaction
-	tx, txErr := c.client.Transaction(c.ctx)
-	if txErr != nil {
-		return nil, fmt.Errorf("could not create transaction: %w", txErr)
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, TX_READ)
+	if newTxErr != nil {
+		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
-	transactionId := ksuid.New().Bytes()
+	// open new transaction
+	latencyMillis := int32(100)
+	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
+	if openTxErr != nil {
+		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
+	}
 
-	// Create open transaction request
-	transactionType := TX_READ
-	netMillisecondLatency := int32(150)
-	openReq := requests.GetTransactionOpenReq(sessionID, transactionId, transactionType, options, netMillisecondLatency)
-
-	// Stuff req into slice/array
-	reqArray := []*common.Transaction_Req{openReq, req}
-
-	// Send request through
-	sendErr := tx.Send(requests.GetTransactionClient(reqArray))
+	//  Execute transaction
+	sendErr := tx.ExecuteTransaction(req)
 	if sendErr != nil {
 		return nil, fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
+	// Only write transactions can be committed
+	if transactionType == TX_WRITE {
+		// Create request meta data
+
+		// Commit transaction
+		commitErr := tx.CommitTransaction()
+		if commitErr != nil {
+			// Rollback commit in case of error
+			rollbackErr := tx.RollbackTransaction()
+			if rollbackErr != nil {
+				return nil, fmt.Errorf("could NOT roll back Commit from failed transaction: %w", commitErr)
+			}
+
+			return nil, fmt.Errorf("could commit into DB. Rolled back transaction: %w", commitErr)
+		}
+	}
+
+	// Close transaction
+	closeTxErr := tx.CloseTransaction()
+	if closeTxErr != nil {
+		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	}
+
 	// Get return value
-	recv, recErr := tx.Recv()
+	recv, recErr := tx.tx.Recv()
 	if recErr != nil {
 		return nil, fmt.Errorf("could not receive query response: %w", recErr)
 	}
 
 	// Extract query result
 	res := recv.GetRes().GetQueryManagerRes()
-
-	// CloseSession transaction
-	closErr := tx.CloseSend()
-	if closErr != nil {
-		return nil, fmt.Errorf("could not close query transaction: %w", closErr)
-	}
 
 	return res, nil
 }

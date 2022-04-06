@@ -36,6 +36,7 @@ func TestSchemaGet(t *testing.T) {
 	assert.NotNil(t, t, allEntries, "Should not be nil")
 
 	if len(allEntries) > 0 {
+		println("print results")
 		for _, item := range allEntries {
 			println(item)
 		}

@@ -3,6 +3,7 @@
 package query
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
@@ -15,9 +16,9 @@ func TestMatchQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
 
-	testPrint("* Create Session")
 	sessionID, sessionOpenErr := client.SessionManager.NewSession(dbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
+	testPrint("* Create Session: " + hex.EncodeToString(sessionID))
 
 	// TEST MATCH QUERY
 	query := utils.GetTestQuery()
@@ -38,7 +39,7 @@ func TestMatchQuery(t *testing.T) {
 		}
 	}
 
-	testPrint("* CloseSession Session")
+	testPrint("* CloseSession Session: " + hex.EncodeToString(sessionID))
 	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 }

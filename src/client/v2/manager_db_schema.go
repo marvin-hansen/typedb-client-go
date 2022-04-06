@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
@@ -27,16 +28,15 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID)
+	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID, TX_WRITE)
 	if newTxErr != nil {
 		return fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
 
-	transactionId := tx.GetTransactionId()
 	latencyMillis := int32(100)
 	options := &common.Options{}
 
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_WRITE, options, latencyMillis)
+	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
 	if openTxErr != nil {
 		return fmt.Errorf("could not open transaction: %w", openTxErr)
 	}
@@ -48,10 +48,9 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not write schema into DB: %w", writeErr)
 	}
 
-	commitErr := tx.CommitTransaction(transactionId)
+	commitErr := tx.CommitTransaction()
 	if commitErr != nil {
-		metadata := CreateNewRequestMetadata()
-		rollbackErr := tx.RollbackTransaction(transactionId, metadata)
+		rollbackErr := tx.RollbackTransaction()
 		if rollbackErr != nil {
 			return fmt.Errorf("could commit schema into DB AND could NOT Rolled back transaction: %w", commitErr)
 		}
@@ -72,9 +71,10 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 	return nil
 }
 
-// GetDatabaseSchema returns the schema for the DB
 func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err error) {
+	mtd := "GetDatabaseSchema"
 
+	dbgPrint(mtd, " Check if DB exists")
 	dbExistErr := c.client.dbCheck(dbName)
 	if dbExistErr != nil {
 		return nil, dbExistErr
@@ -84,71 +84,27 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 	if openErr != nil {
 		return nil, fmt.Errorf("could not open schema session: %w", openErr)
 	}
+	dbgPrint(mtd, " Create new session: "+hex.EncodeToString(sessionID))
 
-	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID)
-	if newTxErr != nil {
-		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
-	}
-
-	transactionId := tx.GetTransactionId()
-	latencyMillis := int32(100)
-	options := &common.Options{}
-	openTxErr := tx.OpenTransaction(sessionID, transactionId, TX_READ, options, latencyMillis)
-	if openTxErr != nil {
-		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
-	}
-
+	dbgPrint(mtd, " Create new GetSchemaQuery")
 	query := getSchemaQuery()
+	options := &common.Options{}
 	req := requests.GetMatchQueryReq(query, options)
 
-	readErr := tx.ExecuteTransaction(req)
-	if readErr != nil {
-		return nil, fmt.Errorf("could not read schema: %w", readErr)
-	}
-
-	for {
-		// Get return value
-		recs, recErr := tx.tx.Recv()
-		if recErr != nil {
-			return nil, fmt.Errorf("could not receive query response: %w", recErr)
-		}
-
-		// Extract state of current partial result
-		state := recs.GetResPart().GetStreamResPart().GetState()
-
-		// When the server sends a Stream.ResPart with state = CONTINUE
-		// it indicates that there are more answers to fetch,
-		// so the client should respond with Stream.Req
-		if state == CONTINUE {
-			// Create a request and attach meta data & request ID
-			reqCont := requests.GetTransactionStreamReq(transactionId)
-			// run query
-			_, queryErr := c.client.runQuery(sessionID, reqCont, options)
-			if queryErr != nil {
-				return nil, fmt.Errorf("could not send query request iterator: %w", queryErr)
-			}
-		}
-
-		// If the Stream.ResPart has state = DONE,
-		// it indicates that there are no more answers to fetch,
-		// so the client doesn't need to respond.
-		if state == DONE {
-			break
-
-		} else {
-			part := recs.GetResPart().GetQueryManagerResPart()
-			allEntries = append(allEntries, part.String())
-		}
-	}
-
-	closeTxErr := tx.CloseTransaction()
-	if closeTxErr != nil {
-		return nil, fmt.Errorf("could not close transaction: %w", closeTxErr)
+	dbgPrint(mtd, " RUN GetSchemaQuery")
+	stream, err := c.client.RunStreamTx(sessionID, req, TX_READ, options)
+	if err != nil {
+		return nil, err
 	}
 
 	closeErr := c.client.SessionManager.CloseSession(sessionID)
 	if closeErr != nil {
 		return nil, fmt.Errorf("could not close session: %w", closeErr)
+	}
+	dbgPrint(mtd, " Close session: "+hex.EncodeToString(sessionID))
+
+	for _, part := range stream {
+		allEntries = append(allEntries, part.GetMatchResPart().String())
 	}
 
 	return allEntries, nil
