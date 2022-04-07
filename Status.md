@@ -25,12 +25,11 @@ SessionManager:
 - [x] GetSession
 - [x] ResetSession
 - [x] CloseSession
+- [x] MonitorSession (handles heartbeat automatically when open & close a session)
 
+## Broken
 
-## Partly implemented & NOT tested 
-
-SessionManager:
-- [x] Monitor each session 
+- [x] RunInsertQuery = Timeout bug.
 
 ## Implemented - needs more testing 
 
@@ -48,6 +47,3 @@ Query:
 - [x] RunMatchAggregateQuery
 - [x] RunMatchGroupAggregateQuery
 
-## Broken 
-
-- [x] RunInsertQuery
