@@ -54,7 +54,6 @@ func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) cont
 					dbgPrint(mtd, "Heartbeat error detected. closing session: "+byteToString(sessionID))
 					cancel()
 				}
-				fmt.Println("done")
 			}
 		}
 	}()

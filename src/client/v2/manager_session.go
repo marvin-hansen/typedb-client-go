@@ -21,7 +21,7 @@ type SessionManager struct {
 	sessionMap map[string]*TypeDBSession
 }
 
-// NewSession creates a new session for the given client & DB
+// NewSession creates a new session for the DB
 func (s SessionManager) NewSession(dbName string, sessionType common.Session_Type) (sessionID []byte, err error) {
 
 	openReq := requests.GetSessionOpenReq(dbName, sessionType, &common.Options{})
@@ -105,12 +105,15 @@ func (s SessionManager) deleteSession(sessionID string) {
 	}
 }
 
-// Shutdown should be called when closing the client
-// to end all idling sessions.
+// Shutdown should be called when closing the client to end all remaining sessions.
 func (s SessionManager) Shutdown() {
+	mtd := "SessionManager/Shutdown"
 	if len(s.sessionMap) > 0 {
 		for _, session := range s.sessionMap {
-			_ = s.CloseSession(session.GetSession().GetSessionId())
+			sessionID := session.GetSession().GetSessionId()
+			_ = s.CloseSession(sessionID)
 		}
 	}
+
+	dbgPrint(mtd, "no session to close :-) ")
 }
