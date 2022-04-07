@@ -121,7 +121,7 @@ func (c *Client) RunStreamQuery(sessionID []byte, req *common.Transaction_Req, t
 
 	dbgPrint(mtd, " Get return value ")
 	// here things get stuck pretty hard!
-	// for some reason, nothing returns
+	// for some reason, nothing returns during insert.
 	recv, recErr := tx.tx.Recv()
 	if recErr != nil {
 		return nil, fmt.Errorf("could not receive query response: %w", recErr)

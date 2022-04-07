@@ -9,6 +9,8 @@ import (
 )
 
 // TODO / FIXME: Timeout after 300 sec
+// Error: could not receive query response: rpc error: code =
+// Internal desc = [SRV28] Invalid Server Operation: Transaction exceeded maximum configured duration of '300' seconds.
 func TestInsertQuery(t *testing.T) {
 	client, cancel := getClient()
 	defer cancel()
