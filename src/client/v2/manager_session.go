@@ -112,8 +112,9 @@ func (s SessionManager) Shutdown() {
 		for _, session := range s.sessionMap {
 			sessionID := session.GetSession().GetSessionId()
 			_ = s.CloseSession(sessionID)
+			dbgPrint(mtd, "Close session: "+byteToString(sessionID))
 		}
+	} else {
+		dbgPrint(mtd, "no session to close :-) ")
 	}
-
-	dbgPrint(mtd, "no session to close :-) ")
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func TestSingleSession(t *testing.T) {
+	// testing a single session. Good citizen closes session & client
 
 	testPrint("Create client")
 	client, cancel := getClient()
@@ -36,6 +37,7 @@ func TestSingleSession(t *testing.T) {
 }
 
 func TestMultiSession(t *testing.T) {
+	// testing multiple session. Good citizen closes all sessions & client
 
 	testPrint("Create client")
 	client, cancel := getClient()
@@ -85,6 +87,51 @@ func TestMultiSession(t *testing.T) {
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	testPrint("Close client")
+	client.Close()
+
+	testPrint("Success: Test passed! ")
+}
+
+func TestSessionNotClosed(t *testing.T) {
+	// testing multiple session. Sloppy citizen forgets to close a session.
+	// Good client will close it anyway:-0
+
+	testPrint("Create client")
+	client, cancel := getClient()
+	defer cancel()
+	assert.NotNil(t, client, utils.ClientError)
+
+	testPrint("Create session 1")
+	sessionOneID, err := client.SessionManager.NewSession(dbName, common.Session_DATA)
+	assert.NoError(t, err, "Should be no session open error")
+	assert.NotNil(t, sessionOneID, "Should not be nil")
+
+	testPrint("SessionID " + byteToString(sessionOneID))
+
+	testPrint("Waiting...")
+	time.Sleep(time.Second * 1)
+
+	testPrint("Create session 2")
+	sessionTwoID, err := client.SessionManager.NewSession(dbName, common.Session_DATA)
+	assert.NoError(t, err, "Should be no session open error")
+	assert.NotNil(t, sessionTwoID, "Should not be nil")
+
+	testPrint("SessionID " + byteToString(sessionTwoID))
+
+	testPrint("Waiting...")
+	time.Sleep(time.Second * 1)
+
+	testPrint("Close session 1")
+	closeErr := client.SessionManager.CloseSession(sessionOneID)
+	assert.NoError(t, closeErr, "Should be no session close error")
+
+	testPrint("NOT closing session 2. Sits idle for now but still sends heartbeats")
+
+	time.Sleep(time.Second * 1)
+
+	testPrint("Close client")
+	testPrint("Client closes all idling sessions.") // Lazy citizen is on the beach already
+
 	client.Close()
 
 	testPrint("Success: Test passed! ")
