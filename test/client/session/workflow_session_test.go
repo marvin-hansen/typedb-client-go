@@ -29,5 +29,8 @@ func TestSingleSession(t *testing.T) {
 	closeErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
+	testPrint("Close client")
+	client.Close()
+
 	testPrint("Success: Test passed! ")
 }

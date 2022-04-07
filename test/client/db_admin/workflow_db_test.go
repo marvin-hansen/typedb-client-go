@@ -17,6 +17,9 @@ func TestNewClient(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
+
+	// close client
+	c.Close()
 }
 
 func TestCreateDatabase(t *testing.T) {
@@ -28,6 +31,9 @@ func TestCreateDatabase(t *testing.T) {
 	ok, err := c.DBManager.CreateDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true")
+
+	// close client
+	c.Close()
 }
 
 func TestExistsDatabase(t *testing.T) {
@@ -41,6 +47,9 @@ func TestExistsDatabase(t *testing.T) {
 	expected := true
 	actual := existsDatabase
 	assert.Equal(t, expected, actual, "Should be true i.e. exists")
+
+	// close client
+	c.Close()
 }
 
 func TestDeleteDatabase(t *testing.T) {
@@ -68,4 +77,7 @@ func TestDeleteDatabase(t *testing.T) {
 	expected = false
 	actual = existsDatabase
 	assert.Equal(t, expected, actual, "Should be true i.e. exists")
+
+	// close client
+	c.Close()
 }

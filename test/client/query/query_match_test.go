@@ -42,4 +42,7 @@ func TestMatchQuery(t *testing.T) {
 	testPrint("* CloseSession Session: " + hex.EncodeToString(sessionID))
 	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
+
+	// close client
+	client.Close()
 }

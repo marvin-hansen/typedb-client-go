@@ -104,3 +104,13 @@ func (s SessionManager) deleteSession(sessionID string) {
 		delete(s.sessionMap, sessionID)
 	}
 }
+
+// Shutdown should be called when closing the client
+// to end all idling sessions.
+func (s SessionManager) Shutdown() {
+	if len(s.sessionMap) > 0 {
+		for _, session := range s.sessionMap {
+			_ = s.CloseSession(session.GetSession().GetSessionId())
+		}
+	}
+}

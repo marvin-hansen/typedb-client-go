@@ -17,6 +17,8 @@ func TestDBCreate(t *testing.T) {
 
 	dbErr := DBSetup(client, dbName)
 	assert.NoError(t, dbErr, "Should be no DB setup error")
+
+	client.Close()
 }
 
 func TestExistsDatabase(t *testing.T) {
@@ -30,4 +32,6 @@ func TestExistsDatabase(t *testing.T) {
 	expected := true
 	actual := existsDatabase
 	assert.Equal(t, expected, actual, "Should be true i.e. exists")
+
+	c.Close()
 }

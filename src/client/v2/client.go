@@ -72,3 +72,8 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 	//
 	return typeDBClient, nil
 }
+
+func (c Client) Close() {
+	// ends all remaining sessions
+	c.SessionManager.Shutdown()
+}

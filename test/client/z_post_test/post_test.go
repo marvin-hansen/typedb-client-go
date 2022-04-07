@@ -17,6 +17,9 @@ func TestDBDelete(t *testing.T) {
 
 	teardownErr := DBTeardown(client, dbName)
 	assert.NoError(t, teardownErr, "Should be no DB teardown error")
+
+	// close client
+	client.Close()
 }
 
 func TestDoesNotExistsDatabase(t *testing.T) {
@@ -25,9 +28,12 @@ func TestDoesNotExistsDatabase(t *testing.T) {
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
 
-	existsDatabase, err := c.CheckDatabaseExists(dbName)
+	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected := false
 	actual := existsDatabase
 	assert.Equal(t, expected, actual, "Should be true i.e. exists")
+
+	// close client
+	c.Close()
 }
