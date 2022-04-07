@@ -3,12 +3,9 @@
 package v2
 
 type Config struct {
-	DBHost    string
-	DBPort    string
-	DBName    string
-	Infer     bool
-	Explain   bool
-	BatchSize int
+	DBHost string
+	DBPort string
+	DBName string
 }
 
 func (c Config) GetConnectionString() string {
@@ -17,22 +14,16 @@ func (c Config) GetConnectionString() string {
 
 func NewLocalConfig(dbName string) *Config {
 	return &Config{
-		DBHost:    "",
-		DBPort:    "1729",
-		DBName:    dbName,
-		Infer:     true,
-		Explain:   true,
-		BatchSize: 0,
+		DBHost: "",
+		DBPort: "1729",
+		DBName: dbName,
 	}
 }
 
-func NewConfig(dbHost, dbPort, dbName string, infer, explain bool, batchSize int) *Config {
+func NewConfig(dbHost, dbPort, dbName string) *Config {
 	return &Config{
-		DBHost:    dbHost,
-		DBPort:    dbPort,
-		DBName:    dbName,
-		Infer:     infer,
-		Explain:   explain,
-		BatchSize: batchSize,
+		DBHost: dbHost,
+		DBPort: dbPort,
+		DBName: dbName,
 	}
 }

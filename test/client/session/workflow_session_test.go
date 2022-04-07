@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+// Important, to make the testing time reasonable & visible,
+//* Switch the heartBeatInterval to 1 (File: src/client/v2/manager_session_monitor)
+//* Uncomment the debug lines in the sendPulseRequest method to see a console log
+
 func TestSingleSession(t *testing.T) {
 	// testing a single session. Good citizen closes session & client
 
@@ -130,9 +134,10 @@ func TestSessionNotClosed(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	testPrint("Close client")
-	testPrint("Client closes all idling sessions.") // Lazy citizen is on the beach already
+	testPrint("Client closes all idling sessions.")
 
 	client.Close()
 
+	// Lazy citizen is on the beach already. Thanks client ;-0
 	testPrint("Success: Test passed! ")
 }
