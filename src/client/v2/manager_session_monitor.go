@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const heartBeatInterval = 5
+const heartBeatInterval = 3
 
 func (s SessionManager) startMonitorSession(ctx context.Context, sessionID []byte) context.CancelFunc {
 	return s.runHeartbeat(ctx, sessionID)

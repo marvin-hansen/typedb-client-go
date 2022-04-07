@@ -26,15 +26,16 @@ func TestInsertQuery(t *testing.T) {
 	testPrint("* Insert into TypeDB")
 	options := v2.CreateNewRequestOptions()
 
+	// this one fails
 	insertResults, insertError := client.RunInsertQuery(sessionID, gql, options)
+
 	assert.NoError(t, insertError, "Should be no error")
 	assert.NotNil(t, insertResults, "Query should return some results")
 
-	testPrint("* CloseSession Session")
+	testPrint("* Close Session")
 	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 
-	// close client
+	testPrint("* Close Client")
 	client.Close()
-
 }
