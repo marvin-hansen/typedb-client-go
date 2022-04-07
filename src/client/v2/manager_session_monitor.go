@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
+	"time"
 )
 
 func (s SessionManager) startMonitorSession(sessionID []byte) {
@@ -20,17 +21,22 @@ func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) cont
 	// Create a new context, with its cancellation function cfrom the original context
 	ctx, cancel := context.WithCancel(ctx)
 	go func() {
-		select {
-		case <-ctx.Done():
-			fmt.Println("Stopped monitoring session: ")
-		default:
-			err := s.sendPulseRequest(sessionID)
-			// If this operation returns an error
-			// cancel all operations using this local context created above
-			if err != nil {
-				cancel()
+		for {
+			select {
+
+			case <-ctx.Done():
+				fmt.Println("Stopped monitoring session: ")
+
+			case <-time.After(500 * time.Millisecond):
+				err := s.sendPulseRequest(sessionID)
+
+				// If this operation returns an error
+				// cancel all operations using this local context created above
+				if err != nil {
+					cancel()
+				}
+				fmt.Println("done")
 			}
-			fmt.Println("done")
 		}
 	}()
 
