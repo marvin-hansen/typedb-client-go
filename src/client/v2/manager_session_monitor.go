@@ -7,13 +7,31 @@ import (
 	"time"
 )
 
-func (s SessionManager) startMonitorSession(sessionID []byte) {
-	// How do I track each goRoutine per session
-
+func (s SessionManager) startMonitorSession(ctx context.Context, sessionID []byte) context.CancelFunc {
+	return s.runHeartbeat(ctx, sessionID)
 }
 
-func (s SessionManager) stopMonitorSession(sessionID []byte) {
-	// How do I call the correct cancle function to stop the GoRoutine matchin the session?
+func (s SessionManager) stopMonitorSession(sessionID []byte) (err error) {
+
+	mtd := "stopMonitorSession"
+
+	dbgPrint(mtd, "Get session for ID: "+byteToString(sessionID))
+	session, ok, err := s.GetSession(sessionID)
+	if err != nil {
+		return fmt.Errorf("error. Could not retrieve session: %w", err)
+	}
+
+	if !ok {
+		return fmt.Errorf("error. Could not retrieve session: %w", err)
+	}
+
+	dbgPrint(mtd, "Get cancel function for session: "+byteToString(sessionID))
+	cancelFunc := session.GetCancelFunc()
+
+	dbgPrint(mtd, "Call cancel function to close session: "+byteToString(sessionID))
+	cancelFunc()
+
+	return nil
 
 }
 
