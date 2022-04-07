@@ -12,7 +12,6 @@ func (s SessionManager) startMonitorSession(ctx context.Context, sessionID []byt
 }
 
 func (s SessionManager) stopMonitorSession(sessionID []byte) (err error) {
-
 	mtd := "stopMonitorSession"
 
 	dbgPrint(mtd, "Get session for ID: "+byteToString(sessionID))
@@ -32,7 +31,6 @@ func (s SessionManager) stopMonitorSession(sessionID []byte) (err error) {
 	cancelFunc()
 
 	return nil
-
 }
 
 func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) context.CancelFunc {

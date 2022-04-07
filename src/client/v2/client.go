@@ -66,14 +66,14 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 	dbManager := NewDBManager(typeDBClient)
 	typeDBClient.DBManager = dbManager
 
+	// create TX manager
 	txManager := NewTransactionManager(typeDBClient)
 	typeDBClient.TransactionManager = txManager
 
-	//
 	return typeDBClient, nil
 }
 
 func (c Client) Close() {
-	// ends all remaining sessions
+	// Closes all remaining sessions
 	c.SessionManager.Shutdown()
 }
