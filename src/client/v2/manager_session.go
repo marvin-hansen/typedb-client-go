@@ -34,24 +34,14 @@ func (s SessionManager) NewSession(dbName string, sessionType common.Session_Typ
 		return nil, openErr
 	}
 
+	// Add session to the map
 	sessionId := string(session.SessionId)
 	s.sessionMap[sessionId] = session
 
+	// Stop monitoring the session
+	s.startMonitorSession(session.SessionId)
+
 	return session.SessionId, nil
-}
-
-func (s SessionManager) checkSessionExists(sessionID string) (exists bool) {
-	if _, ok := s.sessionMap[sessionID]; ok {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (s SessionManager) deleteSession(sessionID string) {
-	if _, ok := s.sessionMap[sessionID]; ok {
-		delete(s.sessionMap, sessionID)
-	}
 }
 
 func (s SessionManager) GetSession(sessionID []byte) (*common.Session_Open_Res, bool, error) {
@@ -80,12 +70,13 @@ func (s SessionManager) CloseSession(sessionID []byte) error {
 		closeReq := requests.GetSessionCloseReq(sessionID)
 		_, closeErr := s.client.client.SessionClose(s.client.ctx, closeReq)
 
+		// Stop heartbeat regardless of close success.
+		// When the server stops receiving heartbeats, it will close the session after 30 sec.
+		s.stopMonitorSession(sessionID)
+
 		// Delete closed session regardless of close success.
 		// if client side close fails, the server will close the session after time out.
 		s.deleteSession(sessionId)
-
-		// Stop heartbeat regardless of close success.
-		// When the server stops receiving heartbeats, it will close the session after 30 sec.
 
 		// Check for error, just in case
 		if closeErr != nil {
@@ -95,5 +86,19 @@ func (s SessionManager) CloseSession(sessionID []byte) error {
 		}
 	} else {
 		return fmt.Errorf("Session does not exists for key: " + sessionId)
+	}
+}
+
+func (s SessionManager) checkSessionExists(sessionID string) (exists bool) {
+	if _, ok := s.sessionMap[sessionID]; ok {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (s SessionManager) deleteSession(sessionID string) {
+	if _, ok := s.sessionMap[sessionID]; ok {
+		delete(s.sessionMap, sessionID)
 	}
 }
