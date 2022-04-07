@@ -15,12 +15,8 @@ func (s SessionManager) stopMonitorSession(sessionID []byte) (err error) {
 	mtd := "stopMonitorSession"
 
 	dbgPrint(mtd, "Get session for ID: "+byteToString(sessionID))
-	session, ok, err := s.GetSession(sessionID)
+	session, err := s.GetSession(sessionID)
 	if err != nil {
-		return fmt.Errorf("error. Could not retrieve session: %w", err)
-	}
-
-	if !ok {
 		return fmt.Errorf("error. Could not retrieve session: %w", err)
 	}
 
@@ -39,21 +35,23 @@ func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) cont
 	dbgPrint(mtd, "Create a new context, with its cancellation function from the original context")
 	ctx, cancel := context.WithCancel(ctx)
 	go func() {
-		for {
-			select {
+		select {
 
-			case <-ctx.Done():
-				dbgPrint(mtd, "Stopped monitoring session: "+byteToString(sessionID))
+		case <-ctx.Done():
+			dbgPrint(mtd, "Stopped monitoring session: "+byteToString(sessionID))
+			break
 
-			case <-time.After(500 * time.Millisecond):
+		default:
+			for {
 				err := s.sendPulseRequest(sessionID)
-
 				// If this operation returns an error
 				// cancel all operations using this local context created above
 				if err != nil {
 					dbgPrint(mtd, "Heartbeat error detected. closing session: "+byteToString(sessionID))
 					cancel()
 				}
+				// sleep a bit before repeat
+				time.Sleep(time.Millisecond * 500)
 			}
 		}
 	}()

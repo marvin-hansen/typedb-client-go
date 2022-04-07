@@ -43,13 +43,13 @@ func (s SessionManager) NewSession(dbName string, sessionType common.Session_Typ
 	return session.SessionId, nil
 }
 
-func (s SessionManager) GetSession(sessionID []byte) (session *TypeDBSession, ok bool, err error) {
+func (s SessionManager) GetSession(sessionID []byte) (session *TypeDBSession, err error) {
 	sessionId := string(sessionID)
 	if s.checkSessionExists(sessionId) {
 		session = s.sessionMap[sessionId]
-		return session, true, nil
+		return session, nil
 	} else {
-		return nil, false, fmt.Errorf("Session does not exists for key: " + sessionId)
+		return nil, fmt.Errorf("Session does not exists for key: " + sessionId)
 	}
 }
 
