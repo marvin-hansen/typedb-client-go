@@ -3,12 +3,16 @@
 package v2
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/segmentio/ksuid"
 	"google.golang.org/grpc"
 	"log"
 )
+
+func byteToString(sessionID []byte) string {
+	return hex.EncodeToString(sessionID)
+}
 
 func checkPrintErr(err error, errorMsg string) {
 	if err != nil {
@@ -40,31 +44,8 @@ func (c *Client) dbCheck(dbName string) (err error) {
 	return nil
 }
 
-func CreateNewRequestIDOptions() (requestId []byte, metadata map[string]string) {
-	return CreateNewRequestID(), CreateNewRequestMetadata()
-}
-
-func CreateNewRequestIDMetaOptions() (requestId []byte, options *common.Options, metadata map[string]string) {
-	return CreateNewRequestID(), CreateNewRequestOptions(), CreateNewRequestMetadata()
-}
-
 func CreateNewRequestOptions() *common.Options {
 	return &common.Options{}
-}
-
-// CreateNewRequestMetadata returns a new map of empty metadata
-func CreateNewRequestMetadata() map[string]string {
-	return map[string]string{}
-}
-
-// CreateNewRequestID generates a new unique request ID to use in transactions
-func CreateNewRequestID() []byte {
-	return ksuid.New().Bytes()
-}
-
-// CreateNewStringRequestID generates a new unique request ID to use in transactions
-func CreateNewStringRequestID() string {
-	return ksuid.New().String()
 }
 
 func getSchemaQuery() string {

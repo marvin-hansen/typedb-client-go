@@ -14,18 +14,20 @@ func (s SessionManager) startMonitorSession(sessionID []byte) {
 
 func (s SessionManager) stopMonitorSession(sessionID []byte) {
 	// How do I call the correct cancle function to stop the GoRoutine matchin the session?
+
 }
 
 func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) context.CancelFunc {
+	mtd := "runHeartbeat"
 
-	// Create a new context, with its cancellation function cfrom the original context
+	dbgPrint(mtd, "Create a new context, with its cancellation function from the original context")
 	ctx, cancel := context.WithCancel(ctx)
 	go func() {
 		for {
 			select {
 
 			case <-ctx.Done():
-				fmt.Println("Stopped monitoring session: ")
+				dbgPrint(mtd, "Stopped monitoring session: "+byteToString(sessionID))
 
 			case <-time.After(500 * time.Millisecond):
 				err := s.sendPulseRequest(sessionID)
@@ -33,6 +35,7 @@ func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) cont
 				// If this operation returns an error
 				// cancel all operations using this local context created above
 				if err != nil {
+					dbgPrint(mtd, "Heartbeat error detected. closing session: "+byteToString(sessionID))
 					cancel()
 				}
 				fmt.Println("done")
@@ -47,20 +50,20 @@ func (s SessionManager) runHeartbeat(ctx context.Context, sessionID []byte) cont
 func (s SessionManager) sendPulseRequest(sessionID []byte) error {
 	mtd := "sendPulse: "
 
+	dbgPrint(mtd, "Sending pulse request for session: "+byteToString(sessionID))
 	req := requests.GetSessionPulseReq(sessionID)
 	res, pulseErr := s.client.client.SessionPulse(s.client.ctx, req)
 	if pulseErr != nil {
-		dbgPrint(mtd, "Heartbeat error. Close session")
+		dbgPrint(mtd, "Heartbeat error. Close session: "+byteToString(sessionID))
 		return pulseErr
 	}
 	if res.Alive == false {
-		dbgPrint(mtd, "Server not alive anymore. Close session")
+		dbgPrint(mtd, "Server not alive anymore. Close session: "+byteToString(sessionID))
 		closeErr := s.CloseSession(sessionID)
 		if closeErr != nil {
 			return closeErr
 		}
 	}
-
 	// no error
 	return nil
 }
