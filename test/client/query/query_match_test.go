@@ -12,18 +12,20 @@ import (
 	"testing"
 )
 
+const verbose = false
+
 func TestMatchQuery(t *testing.T) {
-	client, cancel := getClient()
+	client, cancel := utils.GetClient()
 	defer cancel()
 
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(dbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
-	testPrint("* Create Session: " + hex.EncodeToString(sessionID))
+	utils.TestPrint("* Create Session: " + hex.EncodeToString(sessionID))
 
 	// TEST MATCH QUERY
 	query := utils.GetTestQuery()
 
-	testPrint("* Query TypeDB")
+	utils.TestPrint("* Query TypeDB")
 	options := v2.CreateNewRequestOptions()
 	queryResults, queryErr := client.RunMatchQuery(sessionID, query, options)
 	if queryErr != nil {
@@ -39,7 +41,7 @@ func TestMatchQuery(t *testing.T) {
 		}
 	}
 
-	testPrint("* CloseSession Session: " + hex.EncodeToString(sessionID))
+	utils.TestPrint("* CloseSession Session: " + hex.EncodeToString(sessionID))
 	closeSessionErr := client.SessionManager.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 

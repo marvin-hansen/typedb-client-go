@@ -1,20 +1,8 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-
-go_library(
-    name = "session",
-    srcs = ["utils.go"],
-    importpath = "github.com/marvin-hansen/typedb-client-go/test/client/session",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/client/v2:client",
-        "//test/client/utils",
-    ],
-)
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
 
 go_test(
     name = "session_test",
     srcs = ["workflow_session_test.go"],
-    embed = [":session"],
     deps = [
         "//common",
         "//test/client/utils",

@@ -1,23 +1,12 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
-
-go_library(
-    name = "query_explain",
-    srcs = ["query_utils.go"],
-    importpath = "github.com/marvin-hansen/typedb-client-go/test/client/query_explain",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/client/v2:client",
-        "//test/client/utils",
-    ],
-)
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
 
 go_test(
     name = "query_explain_test",
     srcs = ["query_explain_test.go"],
-    embed = [":query_explain"],
     deps = [
         "//common",
         "//src/client/v2:client",
+        "//test/client/utils",
         "@com_github_stretchr_testify//assert",
     ],
 )
