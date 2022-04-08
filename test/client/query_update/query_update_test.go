@@ -8,6 +8,7 @@ import (
 	"testing"
 )
 
+// TODO / FIXME: Timeout after 300 sec
 func TestUpdateQuery(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
