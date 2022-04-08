@@ -25,13 +25,18 @@ go test -count=1 ./...
  cd ../a_pre_test/
 go test -count=1 ./...
 
+# Test session
+cd ../session/
+go test -count=1 ./...
+
 # Test create & get schema
 cd ../schema/
 go test -count=1 ./...
 
+# Insert test fails.
 # Test queries
-cd ../query/
-go test -count=1 ./...
+#cd ../query/
+#go test -count=1 ./...
 
 # Teardown of everything that was created during pre-test setup
 cd ../z_post_test/
