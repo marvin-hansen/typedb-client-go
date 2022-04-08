@@ -6,6 +6,7 @@ go_library(
         "query_utils.go",
         "shared.go",
         "utils_convert.go",
+        "utils_delete.go",
         "utils_insert.go",
         "utils_query.go",
     ],
