@@ -33,10 +33,11 @@ go test -count=1 ./...
 cd ../schema/
 go test -count=1 ./...
 
-# Insert test fails.
-# Test queries
-#cd ../query/
-#go test -count=1 ./...
+ Test queries
+cd ../query/
+go test -count=1 ./...
+
+# Insert test fails. Thus not tested until it passes.
 
 # Teardown of everything that was created during pre-test setup
 cd ../z_post_test/
