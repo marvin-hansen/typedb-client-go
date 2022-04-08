@@ -9,7 +9,7 @@ import (
 func (c *Client) RunQuery(sessionID []byte, req *common.Transaction_Req, transactionType common.Transaction_Type, options *common.Options) (*common.QueryManager_Res, error) {
 
 	// Create a Transaction
-	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, TX_READ)
+	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, transactionType)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}

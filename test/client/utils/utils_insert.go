@@ -2,7 +2,7 @@ package utils
 
 func GetCompanyInsert() string {
 	return `
-	insert $company isa company, has name "Telecom";
+	insert $person isa person, has phone-number "+44 091 xxx";
 `
 }
 

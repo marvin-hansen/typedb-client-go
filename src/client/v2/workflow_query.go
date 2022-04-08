@@ -63,7 +63,7 @@ func (c *Client) RunDeleteQuery(sessionID []byte, query string, options *common.
 	// Create a request and attach meta data & request ID
 	req := requests.GetDeleteQueryReq(query, options)
 	// run query
-	res, queryErr := c.RunQuery(sessionID, req, TX_READ, options)
+	res, queryErr := c.RunQuery(sessionID, req, TX_WRITE, options)
 	if queryErr != nil {
 		return nil, queryErr
 	} else {
