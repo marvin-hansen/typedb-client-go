@@ -15,7 +15,7 @@ func (c *Client) RunQuery(sessionID []byte, req *common.Transaction_Req, transac
 	}
 
 	// open new transaction
-	latencyMillis := int32(100)
+	latencyMillis := int32(1000)
 	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)

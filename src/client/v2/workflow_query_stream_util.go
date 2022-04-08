@@ -24,7 +24,7 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 	}
 
 	dbgPrint(mtd, " Open new transaction ")
-	latencyMillis := int32(100)
+	latencyMillis := int32(1000)
 	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
 	if openTxErr != nil {
 		return nil, fmt.Errorf("could not open transaction: %w", openTxErr)
@@ -100,7 +100,7 @@ func (c *Client) RunStreamQuery(sessionID []byte, req *common.Transaction_Req, t
 	}
 
 	transactionId := tx.GetTransactionId()
-	latencyMillis := int32(100)
+	latencyMillis := int32(1000)
 	dbgPrint(mtd, " Transaction ID "+hex.EncodeToString(transactionId))
 	dbgPrint(mtd, " Open new transaction ")
 	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)

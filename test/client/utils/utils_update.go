@@ -1,5 +1,7 @@
 package utils
 
+// GetPersonTelUpdate returns update query for testing
+// https://docs.vaticle.com/docs/query/update-query
 func GetPersonTelUpdate() string {
 	return `
 	match $p isa person, has phone-number $tel;
