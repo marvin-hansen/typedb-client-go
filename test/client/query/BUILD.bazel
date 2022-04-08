@@ -11,10 +11,7 @@ filegroup(
 
 go_test(
     name = "query_test",
-    srcs = [
-        "query_insert_test.go",
-        "query_match_test.go",
-    ],
+    srcs = ["query_match_test.go"],
     embed = [":query"],
     tags = ["query"],
     deps = [
