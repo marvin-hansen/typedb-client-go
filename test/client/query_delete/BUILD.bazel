@@ -5,6 +5,7 @@ go_test(
     srcs = ["query_delete_test.go"],
     deps = [
         "//common",
+        "//src/client/v2:client",
         "//test/client/utils",
         "@com_github_stretchr_testify//assert",
     ],

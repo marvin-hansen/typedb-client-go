@@ -9,6 +9,7 @@ go_library(
         "utils_delete.go",
         "utils_insert.go",
         "utils_query.go",
+        "utils_update.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/test/client/utils",
     visibility = ["//visibility:public"],
