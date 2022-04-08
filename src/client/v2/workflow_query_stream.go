@@ -22,7 +22,7 @@ import (
 //    }
 //  }
 
-func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults *common.QueryManager_Insert_ResPart, err error) {
+func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Insert_ResPart, err error) {
 
 	//   message Insert {
 	//    message Req {
@@ -35,13 +35,17 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 
 	// run request
 	req := requests.GetInsertQueryReq(query, options)
-	streamQuery, queryErr := c.RunStreamQuery(sessionID, req, TX_WRITE, options)
+	streamQuery, queryErr := c.RunStreamTx(sessionID, req, TX_WRITE, options)
 	if queryErr != nil {
 		return nil, queryErr
 	}
 
 	// extract match results and stuff into queryResults collection
-	queryResults = streamQuery.GetInsertResPart()
+	//queryResults = streamQuery //.GetInsertResPart()
+
+	for _, item := range streamQuery {
+		queryResults = append(queryResults, item.GetInsertResPart())
+	}
 
 	return queryResults, nil
 }

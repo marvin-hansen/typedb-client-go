@@ -36,20 +36,22 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 		return nil, fmt.Errorf("could not exevute transaction: %w", readErr)
 	}
 
+	dbgPrint(mtd, " Enter loop ")
 	for {
-		// Get return value
+		dbgPrint(mtd, " Get return value ")
 		recs, recErr := tx.tx.Recv()
 		if recErr != nil {
 			return nil, fmt.Errorf("could not receive query response: %w", recErr)
 		}
 
-		// Extract state of current partial result
-		state := recs.GetResPart().GetStreamResPart().GetState()
-
-		// When the server sends a Stream.ResPart with state = CONTINUE
-		// it indicates that there are more answers to fetch,
-		// so the client should respond with Stream.Req
-		if state == CONTINUE {
+		dbgPrint(mtd, " Determine if stream is done")
+		done := c.isStreamDone(recs.GetResPart(), true)
+		if done {
+			dbgPrint(mtd, " Done. Break loop ")
+			break // break loop when done
+		} else {
+			//
+			dbgPrint(mtd, " Continue. Send continue request")
 			reqCont := requests.GetTransactionStreamReq()
 			sendErr := tx.tx.Send(requests.GetTransactionClient(reqCont))
 			if sendErr != nil {
@@ -57,16 +59,9 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 			}
 		}
 
-		// If the Stream.ResPart has state = DONE,
-		// it indicates that there are no more answers to fetch,
-		// so the client doesn't need to respond.
-		if state == DONE {
-			break
-
-		} else {
-			part := recs.GetResPart().GetQueryManagerResPart()
-			queryResults = append(queryResults, part)
-		}
+		dbgPrint(mtd, " Collect results ")
+		part := recs.GetResPart().GetQueryManagerResPart()
+		queryResults = append(queryResults, part)
 	}
 
 	// Only write transactions can be committed

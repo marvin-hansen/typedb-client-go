@@ -19,6 +19,8 @@ go_library(
         "manager_query.go",
         "manager_session.go",
         "manager_session_monitor.go",
+        "manager_session_state.go",
+        "manager_session_type.go",
         "manager_transaction.go",
         "workflow_query.go",
         "workflow_query_stream.go",

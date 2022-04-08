@@ -12,7 +12,6 @@ import (
 // getQueryTx coverts a QueryManager_Req into a Transaction_Req
 func getQueryTx(req *common.QueryManager_Req) *common.Transaction_Req {
 	r := &common.Transaction_Req_QueryManagerReq{QueryManagerReq: req}
-
 	return &common.Transaction_Req{Req: r, ReqId: createNewRequestID()}
 }
 
