@@ -85,17 +85,29 @@ func (c Transaction) GetTransactionId() []byte {
 
 // OpenTransaction needs to be called first to initiate a transaction on the server.
 func (c Transaction) OpenTransaction(sessionID []byte, options *common.Options, netMillisecondLatency int32) error {
-	// Create a request with options & request ID
-	req := requests.GetTransactionOpenReq(sessionID, c.transactionType, options, netMillisecondLatency)
-	// Stuff req into slice/array
+	mtd := "OpenTransaction"
 
+	dbgPrint(mtd, " Create a tx Open request for tx: "+byteToString(c.transactionId))
+	req := requests.GetTransactionOpenReq(sessionID, c.transactionType, options, netMillisecondLatency)
+
+	dbgPrint(mtd, " Execute OPEN Request ")
 	execErr := c.ExecuteTransaction(req)
 	if execErr != nil {
 		return fmt.Errorf("could not open transaction: %w", execErr)
 	} else {
+
+		recv, recErr := c.ReceiveResult()
+		if recErr != nil {
+			return fmt.Errorf("could not receive Tx Open response: %w", recErr)
+		}
+
+		dbgPrint(mtd, " Receive open Ack for Tx: "+byteToString(recv.GetRes().ReqId))
+		// dbgPrint(mtd, " Get open Ack for Tx: "+(recv.String()))
+
 		c.isOpen = true
 		return nil
 	}
+
 }
 
 // ExecuteTransaction needs to be called each time to send a request to the server.

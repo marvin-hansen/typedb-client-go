@@ -7,21 +7,6 @@ import (
 	"github.com/marvin-hansen/typedb-client-go/src/client/v2/requests"
 )
 
-//
-// Methods with singular return type i.e. one request -> one result
-//
-// From the proto spec in common/query.proto @line 47
-//
-//   message Res {
-//    oneof res {
-//      Define.Res define_res = 100;
-//      Undefine.Res undefine_res = 101;
-//      MatchAggregate.Res match_aggregate_res = 102;
-//      Delete.Res delete_res = 104;
-//    }
-//  }
-//
-
 func (c *Client) RunDefineQuery(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
 	// Create a request and attach meta data & request ID
 	req := requests.GetDefinedQueryReq(query, options)

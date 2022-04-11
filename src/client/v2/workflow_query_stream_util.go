@@ -36,13 +36,11 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 	}
 
 	if singleResPart {
-
-		dbgPrint(mtd, " Get return value ")
-		recv, recErr := tx.tx.Recv()
+		recv, recErr := tx.ReceiveResult()
 		if recErr != nil {
 			return nil, fmt.Errorf("could not receive query response: %w", recErr)
 		}
-		dbgPrint(mtd, recv.String())
+		dbgPrint(mtd, " Get return value: "+recv.String())
 
 		dbgPrint(mtd, " Extract query result ")
 		dbgPrint(mtd, " Collect results ")

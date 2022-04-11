@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const verbose = false
+const verbose = true
 
 // TODO / FIXME: Nil results i.e. no insert
 func TestInsertQuery(t *testing.T) {
@@ -26,19 +26,15 @@ func TestInsertQuery(t *testing.T) {
 	utils.TestPrint("* Insert into TypeDB")
 	options := v2.CreateNewRequestOptions()
 
-	// this one fails
+	// this one returns null
 	insertResults, insertError := client.RunInsertQuery(sessionID, gql, options)
 
 	assert.NoError(t, insertError, "Should be no error")
 	assert.NotNil(t, insertResults, "Query should return some results")
 
 	if verbose {
-		// WHAT THE F...?
-		for _, res := range insertResults {
-			x := res.GetMap()
-			for _, r := range x {
-				println(r.String())
-			}
+		for _, item := range insertResults {
+			println(item.String())
 		}
 	}
 

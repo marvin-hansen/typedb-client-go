@@ -33,6 +33,9 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 
 	for _, item := range streamQuery {
 		queryResults = item.GetInsertResPart().GetAnswers()
+
+		// queryResults = append(queryResults, item.String())
+
 	}
 
 	return queryResults, nil
