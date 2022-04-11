@@ -16,11 +16,11 @@ const (
 func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, transactionType common.Transaction_Type, options *common.Options, singleResPart bool) (queryResults []*common.QueryManager_ResPart, err error) {
 	mtd := "RunStreamTx"
 
-	dbgPrint(mtd, " Create a Transaction")
 	tx, newTxErr := c.TransactionManager.NewTransaction(sessionID, transactionType)
 	if newTxErr != nil {
 		return nil, fmt.Errorf("could not create a new transaction: %w", newTxErr)
 	}
+	dbgPrint(mtd, " Create a new Transaction: "+byteToString(tx.GetTransactionId()))
 
 	dbgPrint(mtd, " Open new transaction ")
 	latencyMillis := int32(1000)

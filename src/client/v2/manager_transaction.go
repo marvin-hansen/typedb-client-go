@@ -85,53 +85,48 @@ func (c Transaction) GetTransactionId() []byte {
 
 // OpenTransaction needs to be called first to initiate a transaction on the server.
 func (c Transaction) OpenTransaction(sessionID []byte, options *common.Options, netMillisecondLatency int32) error {
-	mtd := "OpenTransaction"
 
-	dbgPrint(mtd, " Create a tx Open request for tx: "+byteToString(c.transactionId))
+	//mtd := "OpenTransaction"
+	//dbgPrint(mtd, " Create a tx Open request for tx: "+byteToString(c.transactionId))
 	req := requests.GetTransactionOpenReq(sessionID, c.transactionType, options, netMillisecondLatency)
 
-	dbgPrint(mtd, " Execute OPEN Request ")
+	//dbgPrint(mtd, " Execute OPEN Request ")
 	execErr := c.ExecuteTransaction(req)
 	if execErr != nil {
 		return fmt.Errorf("could not open transaction: %w", execErr)
 	} else {
 
-		recv, recErr := c.ReceiveResult()
+		// we have to pull the OpenTX Ack here as confirmation from the server.
+		_, recErr := c.ReceiveResult()
 		if recErr != nil {
 			return fmt.Errorf("could not receive Tx Open response: %w", recErr)
 		}
-
-		dbgPrint(mtd, " Receive open Ack for Tx: "+byteToString(recv.GetRes().ReqId))
+		//dbgPrint(mtd, " Receive open Ack for Tx: "+byteToString(recv.GetRes().ReqId))
 		// dbgPrint(mtd, " Get open Ack for Tx: "+(recv.String()))
 
 		c.isOpen = true
 		return nil
 	}
-
 }
 
 // ExecuteTransaction needs to be called each time to send a request to the server.
 func (c *Transaction) ExecuteTransaction(req *common.Transaction_Req) error {
-
-	// create new Tx client to wrap req.
+	// create new Tx client to wrap req once more...
 	txCl := requests.GetTransactionClient(req)
-
 	// Send wrapped request to server
 	sendErr := c.tx.Send(txCl)
 	if sendErr != nil {
 		return fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
-
 	return nil
 }
 
+// ReceiveResult Returns the result of the TX. Call multiple times on case of a stream.
 func (c *Transaction) ReceiveResult() (recv *common.Transaction_Server, err error) {
-
 	recv, err = c.tx.Recv()
 	if err != nil {
 		return nil, err
 	}
-
 	return recv, nil
 }
 

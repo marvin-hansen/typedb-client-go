@@ -8,12 +8,9 @@ func (c *Client) isStreamDone(reqResult *common.Transaction_ResPart, stream bool
 		if state == DONE {
 			return true
 		}
-
 		if state == CONTINUE {
 			return false
 		}
 	}
-
-	// no stream
-	return false
+	return false // no stream
 }

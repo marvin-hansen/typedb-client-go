@@ -19,7 +19,7 @@ func TestMatchQueryPerson(t *testing.T) {
 	utils.TestPrint("* Create Session: " + hex.EncodeToString(sessionID))
 
 	// TEST MATCH QUERY
-	query := utils.GetTestQueryPerson()
+	query := utils.GetTestQueryPersonPhone()
 
 	utils.TestPrint("* Query TypeDB")
 	options := v2.CreateNewRequestOptions()
