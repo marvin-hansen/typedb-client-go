@@ -74,6 +74,7 @@ func newTx(client *Client) (core.TypeDB_TransactionClient, error) {
 	}
 }
 
+// GetSessionId returns the unique ID of the session to which the tx belongs.
 func (c Transaction) GetSessionId() []byte {
 	return c.sessionId
 }
