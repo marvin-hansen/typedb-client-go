@@ -20,7 +20,7 @@ type TransactionManager struct {
 	client *Client
 }
 
-// NewTransaction creates one atomic transaction options with all methods
+// NewTransaction creates one atomic transaction with all methods
 // operating on that transaction. Each transaction must be opened & closed.
 // Notice, one session may run multiple transactions.
 //
@@ -100,18 +100,27 @@ func (c Transaction) OpenTransaction(sessionID []byte, options *common.Options, 
 
 // ExecuteTransaction needs to be called each time to send a request to the server.
 func (c *Transaction) ExecuteTransaction(req *common.Transaction_Req) error {
-	// Send request through
-	sendErr := c.tx.Send(requests.GetTransactionClient(req))
+
+	// create new Tx client to wrap req.
+	txCl := requests.GetTransactionClient(req)
+
+	// Send wrapped request to server
+	sendErr := c.tx.Send(txCl)
 	if sendErr != nil {
 		return fmt.Errorf("could not send transaction to server: %w", sendErr)
 	}
 
-	// check for return value error
-	_, recErr := c.tx.Recv()
-	if recErr != nil {
-		return fmt.Errorf("could not receive transaction response: %w", recErr)
-	}
 	return nil
+}
+
+func (c *Transaction) ReceiveResult() (recv *common.Transaction_Server, err error) {
+
+	recv, err = c.tx.Recv()
+	if err != nil {
+		return nil, err
+	}
+
+	return recv, nil
 }
 
 // CommitTransaction needs to be called only once to finalize all previous steps.

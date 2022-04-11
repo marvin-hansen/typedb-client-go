@@ -9,4 +9,14 @@ func GetTestQuery() string {
 	get
 		$x;
 	`
+
+}
+
+func GetTestQueryPerson() string {
+	return `
+	match
+		$x isa person;
+	get
+		$x;
+	`
 }

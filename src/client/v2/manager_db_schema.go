@@ -28,39 +28,14 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
 
-	tx, newTxErr := c.client.TransactionManager.NewTransaction(sessionID, TX_WRITE)
-	if newTxErr != nil {
-		return fmt.Errorf("could not create a new transaction: %w", newTxErr)
-	}
-
-	latencyMillis := int32(100)
 	options := &common.Options{}
-
-	openTxErr := tx.OpenTransaction(sessionID, options, latencyMillis)
-	if openTxErr != nil {
-		return fmt.Errorf("could not open transaction: %w", openTxErr)
-	}
 
 	req := requests.GetDefinedQueryReq(schema, options)
 
-	writeErr := tx.ExecuteTransaction(req)
-	if writeErr != nil {
-		return fmt.Errorf("could not write schema into DB: %w", writeErr)
-	}
-
-	commitErr := tx.CommitTransaction()
-	if commitErr != nil {
-		rollbackErr := tx.RollbackTransaction()
-		if rollbackErr != nil {
-			return fmt.Errorf("could commit schema into DB AND could NOT Rolled back transaction: %w", commitErr)
-		}
-
-		return fmt.Errorf("could commit schema into DB. Rolled back transaction: %w", commitErr)
-	}
-
-	closeTxErr := tx.CloseTransaction()
-	if closeTxErr != nil {
-		return fmt.Errorf("could not close transaction: %w", closeTxErr)
+	// dbgPrint(mtd, " RUN GetSchemaQuery")
+	_, err = c.client.RunStreamTx(sessionID, req, TX_WRITE, options, true)
+	if err != nil {
+		return err
 	}
 
 	closeErr := c.client.SessionManager.CloseSession(sessionID)
@@ -92,7 +67,7 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 	req := requests.GetMatchQueryReq(query, options)
 
 	dbgPrint(mtd, " RUN GetSchemaQuery")
-	stream, err := c.client.RunStreamTx(sessionID, req, TX_READ, options)
+	stream, err := c.client.RunStreamTx(sessionID, req, TX_READ, options, false)
 	if err != nil {
 		return nil, err
 	}

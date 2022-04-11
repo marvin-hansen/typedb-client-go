@@ -8,9 +8,9 @@ import (
 	"testing"
 )
 
-// TODO / FIXME: Timeout after 300 sec
-// Error: could not receive query response: rpc error: code =
-// Internal desc = [SRV28] Invalid Server Operation: Transaction exceeded maximum configured duration of '300' seconds.
+const verbose = false
+
+// TODO / FIXME: Nil results i.e. no insert
 func TestInsertQuery(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
@@ -31,6 +31,16 @@ func TestInsertQuery(t *testing.T) {
 
 	assert.NoError(t, insertError, "Should be no error")
 	assert.NotNil(t, insertResults, "Query should return some results")
+
+	if verbose {
+		// WHAT THE F...?
+		for _, res := range insertResults {
+			x := res.GetMap()
+			for _, r := range x {
+				println(r.String())
+			}
+		}
+	}
 
 	utils.TestPrint("* Close Session")
 	closeSessionErr := client.SessionManager.CloseSession(sessionID)

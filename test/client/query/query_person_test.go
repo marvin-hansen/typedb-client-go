@@ -1,20 +1,16 @@
-// Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
-
 package query
 
 import (
 	"encoding/hex"
 	"fmt"
 	"github.com/marvin-hansen/typedb-client-go/common"
-	"github.com/marvin-hansen/typedb-client-go/src/client/v2"
+	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-const verbose = true
-
-func TestMatchQuery(t *testing.T) {
+func TestMatchQueryPerson(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
 
@@ -23,7 +19,7 @@ func TestMatchQuery(t *testing.T) {
 	utils.TestPrint("* Create Session: " + hex.EncodeToString(sessionID))
 
 	// TEST MATCH QUERY
-	query := utils.GetTestQuery()
+	query := utils.GetTestQueryPerson()
 
 	utils.TestPrint("* Query TypeDB")
 	options := v2.CreateNewRequestOptions()
