@@ -9,15 +9,19 @@ func GetTestQuery() string {
 	get
 		$x;
 	`
-
 }
 
 func GetTestQueryPersonPhone() string {
 	return `
 	match
-	  $customer isa person, has phone-number $phone-number;
+	  $p isa person,
+	  has first-name $fName,	
+	  has last-name $lName,
+	  has phone-number $number;
 	get
-		$phone-number;
+		$fName,
+		$lName,
+		$number;
 	`
 }
 
