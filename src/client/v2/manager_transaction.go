@@ -96,8 +96,7 @@ func (c Transaction) OpenTransaction(sessionID []byte, options *common.Options, 
 	if execErr != nil {
 		return fmt.Errorf("could not open transaction: %w", execErr)
 	} else {
-
-		// we have to pull the OpenTX Ack here as confirmation from the server.
+		// we have to pull the ack here as confirmation from the server.
 		_, recErr := c.ReceiveResult()
 		if recErr != nil {
 			return fmt.Errorf("could not receive Tx Open response: %w", recErr)
@@ -139,6 +138,14 @@ func (c Transaction) CommitTransaction() error {
 	if commitErr != nil {
 		return fmt.Errorf("could not commit transaction: %w", commitErr)
 	} else {
+		// we have to pull the Ack here as confirmation from the server.
+		_, recErr := c.ReceiveResult()
+		if recErr != nil {
+			return fmt.Errorf("could not receive commit  response: %w", recErr)
+		}
+		//dbgPrint(mtd, " Receive commit  Ack for Tx: "+byteToString(recv.GetRes().ReqId))
+		// dbgPrint(mtd, " Get commit  Ack for Tx: "+(recv.String()))
+
 		return nil
 	}
 }
@@ -151,6 +158,14 @@ func (c Transaction) RollbackTransaction() error {
 	if rollbackErr != nil {
 		return fmt.Errorf("could not rollback transaction: %w", rollbackErr)
 	} else {
+		// we have to pull the ack here as confirmation from the server.
+		_, recErr := c.ReceiveResult()
+		if recErr != nil {
+			return fmt.Errorf("could not receive Rollback  response: %w", recErr)
+		}
+		//dbgPrint(mtd, " Receive Rollback  Ack for Tx: "+byteToString(recv.GetRes().ReqId))
+		// dbgPrint(mtd, " Get Rollback  Ack for Tx: "+(recv.String()))
+
 		return nil
 	}
 }
