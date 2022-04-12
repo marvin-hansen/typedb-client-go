@@ -28,7 +28,7 @@ Implementation & testing details in [status document](Status.md)
 
 For more detailed usage, see:
 
-* Example in [exa,ple folder](example)
+* Example in [example folder](example)
 * Tests in [test folder](test/client)
 
 ```Go
@@ -73,7 +73,7 @@ func main() {
 	printSchema(schema)
 
 	println("Load data")
-	gql, dataErr := data.GetPhoneCallsDataGql()
+	gql, dataErr := data.GetPhoneExampleData()
 	checkError("could not load data", dataErr)
 
 	println("Open session") // bundles transactions

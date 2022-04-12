@@ -39,7 +39,7 @@ func main() {
 	printSchema(schema)
 
 	println("Load data")
-	gql, dataErr := data.GetPhoneCallsDataGql()
+	gql, dataErr := data.GetPhoneExampleData()
 	checkError("could not load data", dataErr)
 
 	println("Open session") // bundles transactions

@@ -36,7 +36,7 @@ func TestInsertBulkQuery(t *testing.T) {
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	utils.TestPrint("* Get data to Insert")
-	gql, dataErr := data.GetPhoneCallsDataGql()
+	gql, dataErr := data.GetPhoneExampleData()
 	assert.NoError(t, dataErr, "Should be no data error")
 
 	utils.TestPrint("* Insert into TypeDB")

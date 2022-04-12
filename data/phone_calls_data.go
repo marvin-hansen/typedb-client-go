@@ -1,7 +1,6 @@
 package data
 
-func GetPhoneCallsDataGql() (gql []string, err error) {
-
+func GetPhoneExampleData() (gql []string, err error) {
 	gql = []string{}
 
 	companiesGql, err := GetCompaniesGql()
