@@ -69,12 +69,50 @@ func main() {
 	checkError("could not run query.", q3Err)
 	printResult(q3Results, verbose)
 
+	println("Query: Since September 14th, which customers called person X?")
+	q4 := data.GetQuerySept14()
+	q4Results, q4Err := client.Query.Match(sessionID, q4, newOptions())
+	checkError("could not run query.", q4Err)
+	printResult(q4Results, verbose)
+
+	println("Query: Who are the people who have received a call from a London customer aged over 50 who has previously called someone aged under 20??")
+	q5 := data.GetQueryLondon()
+	q5Results, q5Err := client.Query.Match(sessionID, q5, newOptions())
+	checkError("could not run query.", q5Err)
+	printResult(q5Results, verbose)
+
+	println("Query: Who are the common contacts of customers X and Y?")
+	q6 := data.GetQueryCommonContacts()
+	q6Results, q6Err := client.Query.Match(sessionID, q6, newOptions())
+	checkError("could not run query.", q6Err)
+	printResult(q6Results, verbose)
+
+	println("Query: Who are the customers who 1) have all called each other and 2) have all called person X at least once?\n")
+	q7 := data.GetQueryLead()
+	q7Results, q7Err := client.Query.Match(sessionID, q7, newOptions())
+	checkError("could not run query.", q7Err)
+	printResult(q7Results, verbose)
+
+	println("Query: How does the average call duration among customers aged under 20 compare with those aged over 40?")
+	println("Query A: Under 20")
+	q8 := data.GetQueryCallDurationUnder20()
+	q8Results, q8Err := client.Query.Match(sessionID, q8, newOptions())
+	checkError("could not run query.", q8Err)
+	printResult(q8Results, verbose)
+
+	println("Query B: Over 40")
+	q9 := data.GetQueryCallDurationOver40()
+	q9Results, q9Err := client.Query.Match(sessionID, q9, newOptions())
+	checkError("could not run query.", q9Err)
+	printResult(q9Results, verbose)
+
 	println("Close session")
 	closeSessionErr := client.Session.CloseSession(sessionID)
 	checkError("could not close session.", closeSessionErr)
 
-	// Delete DB, if exists. Uncomment to actually delete...
-	// ok, err := client.DBManager.DeleteDatabase(dbName)
+	println("Delete DB")
+	delErr := client.DBManager.DeleteDatabase(dbName)
+	checkError("could not delete DB.", delErr)
 
 	client.Close()
 }
