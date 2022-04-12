@@ -2,7 +2,7 @@
 
 Go client for [TypeDB](https://vaticle.com/typedb)
 
-Status: Early stage work in progress! 
+Status: Work in progress!
 
 Supported TypeDB versions:
 * [2.6](https://github.com/vaticle/typedb/releases/tag/2.6.4)
