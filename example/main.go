@@ -10,37 +10,30 @@ import (
 const dbName = utils.DBName
 
 func main() {
-	// Create new client with default localhost config
+	println("Create new client with default localhost config")
 	conf := typeDB.NewLocalConfig(dbName)
 	client, cancel := typeDB.NewClient(conf)
 	defer cancel()
 
-	// Create a new DB
-	_, err := client.DBManager.CreateDatabase(dbName)
+	println("Create a new DB")
+	createDBErr := client.DBManager.CreateDatabase(dbName)
+	checkError("Could not create DB: "+dbName, createDBErr)
 
-	// Check if DB has been created
-	_, err = client.DBManager.CheckDatabaseExists(dbName)
-	if err != nil {
-		log.Fatal("DB Doesn't exists", err)
-	}
+	println("Check if DB has been created")
+	checkDBErr := client.DBManager.CheckDatabaseExists(dbName)
+	checkError("DB Doesn't exists: "+dbName, checkDBErr)
 
-	// Delete DB if exists. Uncomment to actually delete...
-	// ok, err := client.DBManager.DeleteDatabase(dbName)
-
-	// Load a TypeDB schema. See data folder
+	// See data folder for schema & data definitions
+	println("Load a TypeDB schema.")
 	testSchema := data.GetPhoneCallsSchema()
 
-	// Write schema into TypeDB
-	err = client.DBManager.CreateDatabaseSchema(dbName, testSchema)
-	if err != nil {
-		log.Fatal("could not create DB schema", err)
-	}
+	println(" Write schema into TypeDB")
+	createSchemaErr := client.DBManager.CreateDatabaseSchema(dbName, testSchema)
+	checkError("could not create DB schema", createSchemaErr)
 
-	// Load the Schema from the DB
-	allEntries, err := client.DBManager.GetDatabaseSchema(dbName)
-	if err != nil {
-		log.Fatal("could not load schema from DB", err)
-	}
+	println("Load Schema from the DB & print to console")
+	allEntries, getSchemaErr := client.DBManager.GetDatabaseSchema(dbName)
+	checkError("could not load schema from DB", getSchemaErr)
 
 	// Print schema to console
 	if len(allEntries) > 0 {
@@ -50,4 +43,12 @@ func main() {
 		println()
 	}
 
+	// Delete DB if exists. Uncomment to actually delete...
+	// ok, err := client.DBManager.DeleteDatabase(dbName)
+}
+
+func checkError(errMsg string, err error) {
+	if err != nil {
+		log.Fatal(errMsg, err)
+	}
 }
