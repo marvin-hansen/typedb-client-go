@@ -11,6 +11,15 @@ func GetTestQuery() string {
 	`
 }
 
+func GetTestQueryAllPhone() string {
+	return `
+	match
+	  $p isa phone-number;
+	get
+		$p;
+	`
+}
+
 func GetTestQueryPersonPhone() string {
 	return `
 	match
