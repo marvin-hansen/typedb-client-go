@@ -43,8 +43,8 @@ For commercial projects that must perform 24/7 at scale, I most certainly prefer
 
 ### Security:
 
-* Non resolution of known security problems caused by old dependencies. Possibly worse due to lack of regular security
-  scanning. See [issue](https://github.com/vaticle/typedb/issues/6301)
+* Non resolution of known security problems caused by old dependencies. Possibly worse, but unknown.
+  See [issue](https://github.com/vaticle/typedb/issues/6301)
 * No information about Log4J vulnerability.
 * No disclosure if any code security actually happens.
 
@@ -59,15 +59,15 @@ For commercial projects that must perform 24/7 at scale, I most certainly prefer
   See [issue](https://github.com/vaticle/typedb/issues/6327)
 * Lack of all collection types i.e. List, array, map, set...
 
-### Reflections on TypeDB
+## Reflections
 
 After having implemented the Golang client, I was finally able to implement the call data demo in Golang, which also
 concluded my evaluation. The type based data modelling clearly elevates TypeDB and actually accelerates data engineering
-with only little training required. Query performance, and especially latency, however, remains pretty poor for all
-examples. For operations, well, the many open issues clearly speak for themselves.
+with only little training required. Query performance, and especially latency, however, remains poor for all examples.
+For operations, well, the many open issues clearly speak for themselves.
 
-It is incomprehensible to me which problem TypeDB actually solves that cannot be done with RDF graphs. According to
-their own words, they do all that RDF does,
+It is incomprehensible to me which problem TypeDB solves that cannot be done with RDF graphs. According to their own
+words, they do all that RDF does,
 but [mysteriously better](https://towardsdatascience.com/comparing-grakn-to-semantic-web-technologies-part-1-3-3558c447214a)
 . However, unlike mature RDF systems, like AnzoGraph, TypeDB doesn't work well, doesn't scale, doesn't come with machine
 learning, and can't even remotely compete on performance. To put things into perspective, the toy call data example
@@ -78,9 +78,9 @@ consistently below 100 ms when working on over 50 million data records, albeit i
 equally on sub second latency, but on [1 billion datasets](https://tech.marksblogg.com/benchmarks.html) even on a
 2019 [laptop](https://tech.marksblogg.com/omnisci-macos-macbookpro-mbp.html).
 
-In an attempt to summing up my experience of implementing TypeDB protocol, I couldn't help but thinking that this
-protocol is overly complex and error-prone relative to the very little expressiveness the query language offers.
-However, the truly nagging question really became what does TypeDB actually does that cannot be done otherwise?
+Summing up my experience of implementing TypeDB protocol, I couldn't help but thinking that this protocol is overly
+complex and error-prone relative to the very little expressiveness the query language offers. However, the truly nagging
+question really became what does TypeDB actually does that cannot be done otherwise?
 
 I was unable to answer that question.
 
@@ -91,4 +91,4 @@ clear to me, but ultimately I decided to evaluate TypeDB because of the type bas
 backed by a reasonable operational database. Speaking of TypeDB's primary application in life science, there is real
 value to model complex biological data as types and relations. Outside this very specialized domain, however, there is
 little that TypeDB brings to the table while adding a lot of troubles to operations. Looking back, it becomes an even
-greater mystery to me why Vaticle even attempts to reach people outside their primary market. 
+greater mystery to me why Vaticle even attempts to reach people outside their primary niche. 

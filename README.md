@@ -2,7 +2,7 @@
 
 Go client for [TypeDB](https://vaticle.com/typedb). TypeDB is an innovative database using a static type system over a
 graph DB. Life science research organization use TypeDB for drug discovery, genomic and protein data. In absence of a Go
-client, I decided to write one for evaluation purpose. My considerations have been documented [here](considerations.md)
+client, I decided to write one for evaluation purpose. My considerations have been documented [here](considerations.md).
 
 Supported TypeDB versions:
 * [2.6](https://github.com/vaticle/typedb/releases/tag/2.6.4)
@@ -175,12 +175,18 @@ Dev:
     make stats                  Shows the latest project stats. 
 ```
 
+## Acknowledgment
+
+I express my sincere gratefulness to [Frank Urbach](https://github.com/FrankUrbach), the author of the Julia client for
+TypeDB, for his in-depth technical support. Without his deep expertise of the protocol, the Golang client in its current
+form would not be possible.
+
 ## Author
 
-* Marvin Hansen 
+* Marvin Hansen
 * GPG key ID: 210D39BC
 * Github key ID: 369D5A0B210D39BC
-* GPG Fingerprint: 4B18 F7B2 04B9 7A72 967E  663E 369D 5A0B 210D 39BC 
+* GPG Fingerprint: 4B18 F7B2 04B9 7A72 967E 663E 369D 5A0B 210D 39BC
 * Public key: [key](pubkey.txt)
 
 ## Licence 
