@@ -23,7 +23,7 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 		return dbExistErr
 	}
 
-	sessionID, openErr := c.client.SessionManager.NewSession(dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.client.Session.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return fmt.Errorf("could not open schema session: %w", openErr)
 	}
@@ -33,12 +33,12 @@ func (c *DBManager) CreateDatabaseSchema(dbName, schema string) (err error) {
 	req := requests.GetDefinedQueryReq(schema, options)
 
 	// dbgPrint(mtd, " RUN GetSchemaQuery")
-	_, err = c.client.RunStreamTx(sessionID, req, TX_WRITE, options, true)
+	_, err = c.client.runStreamTx(sessionID, req, TX_WRITE, options, true)
 	if err != nil {
 		return err
 	}
 
-	closeErr := c.client.SessionManager.CloseSession(sessionID)
+	closeErr := c.client.Session.CloseSession(sessionID)
 	if closeErr != nil {
 		return fmt.Errorf("could not close session: %w", closeErr)
 	}
@@ -55,7 +55,7 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 		return nil, dbExistErr
 	}
 
-	sessionID, openErr := c.client.SessionManager.NewSession(dbName, common.Session_SCHEMA)
+	sessionID, openErr := c.client.Session.NewSession(dbName, common.Session_SCHEMA)
 	if openErr != nil {
 		return nil, fmt.Errorf("could not open schema session: %w", openErr)
 	}
@@ -67,12 +67,12 @@ func (c *DBManager) GetDatabaseSchema(dbName string) (allEntries []string, err e
 	req := requests.GetMatchQueryReq(query, options)
 
 	dbgPrint(mtd, " RUN GetSchemaQuery")
-	stream, err := c.client.RunStreamTx(sessionID, req, TX_READ, options, false)
+	stream, err := c.client.runStreamTx(sessionID, req, TX_READ, options, false)
 	if err != nil {
 		return nil, err
 	}
 
-	closeErr := c.client.SessionManager.CloseSession(sessionID)
+	closeErr := c.client.Session.CloseSession(sessionID)
 	if closeErr != nil {
 		return nil, fmt.Errorf("could not close session: %w", closeErr)
 	}

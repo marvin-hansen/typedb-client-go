@@ -13,7 +13,7 @@ import (
 func TestMatchQueryPerson(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 	utils.TestPrint("* Create Session: " + hex.EncodeToString(sessionID))
 
@@ -36,7 +36,7 @@ func TestMatchQueryPerson(t *testing.T) {
 	}
 
 	utils.TestPrint("* CloseSession Session: " + hex.EncodeToString(sessionID))
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 
 	client.Close() // close client

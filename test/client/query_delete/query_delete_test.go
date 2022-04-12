@@ -2,6 +2,7 @@ package query_delete
 
 import (
 	"github.com/marvin-hansen/typedb-client-go/common"
+	"github.com/marvin-hansen/typedb-client-go/data"
 	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
 	"github.com/marvin-hansen/typedb-client-go/test/client/utils"
 	"github.com/stretchr/testify/assert"
@@ -13,22 +14,24 @@ func TestDeleteQuery(t *testing.T) {
 	defer cancel()
 
 	utils.TestPrint("* Create Session")
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	gql := utils.GetPersonDelete()
+	gql := data.GetQueryDeletePerson()
 	utils.TestPrint("* Get Test Delete statement")
 	println(gql)
 
 	utils.TestPrint("* Delete entry from TypeDB")
 	options := v2.NewOptions()
 
-	deleteResult, deleteErr := client.RunDeleteQuery(sessionID, gql, options)
+	_, deleteErr := client.RunDeleteQuery(sessionID, gql, options)
+	if deleteErr != nil {
+		println(deleteErr.Error())
+	}
 	assert.NoError(t, deleteErr, "Should be no error")
-	assert.NotNil(t, deleteResult, "Query should return some results")
 
 	utils.TestPrint("* Close Session")
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 
 	utils.TestPrint("* Close Client")

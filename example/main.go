@@ -43,34 +43,34 @@ func main() {
 	checkError("could not load data", dataErr)
 
 	println("Open session") // bundles transactions
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	checkError("could not open session.", sessionOpenErr)
 
 	println("Insert data into TypeDB")
-	// for single insert, use RunInsertQuery instead.
-	insertError := client.RunInsertBulkQuery(sessionID, gql, typeDB.NewOptions())
+	// for single insert, use Insert instead.
+	insertError := client.Query.InsertBulk(sessionID, gql, typeDB.NewOptions())
 	checkError("could not insert data into TypeDB.", insertError)
 
 	println("Query TypeDB: Get all people")
 	q1 := data.GetQueryAllPeople()
-	q1Results, q1Err := client.RunMatchQuery(sessionID, q1, typeDB.NewOptions())
+	q1Results, q1Err := client.Query.Match(sessionID, q1, typeDB.NewOptions())
 	checkError("could not run query.", q1Err)
 	printResult(q1Results, verbose)
 
 	println("Query TypeDB: Get all phone numbers")
 	q2 := data.GetQueryAllPhoneNumbers()
-	q2Results, q2Err := client.RunMatchQuery(sessionID, q2, typeDB.NewOptions())
+	q2Results, q2Err := client.Query.Match(sessionID, q2, typeDB.NewOptions())
 	checkError("could not run query.", q2Err)
 	printResult(q2Results, verbose)
 
 	println("Query TypeDB: Get only people with a phone numbers")
 	q3 := data.GetQueryPersonWithPhone()
-	q3Results, q3Err := client.RunMatchQuery(sessionID, q3, typeDB.NewOptions())
+	q3Results, q3Err := client.Query.Match(sessionID, q3, typeDB.NewOptions())
 	checkError("could not run query.", q3Err)
 	printResult(q3Results, verbose)
 
 	println("Close session")
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	checkError("could not close session.", closeSessionErr)
 
 	// Delete DB, if exists. Uncomment to actually delete...

@@ -31,3 +31,16 @@ func GetQueryPersonWithPhone() string {
 		$number;
 	`
 }
+
+func GetQuerySinglePerson() string {
+	return `
+	match $p isa person, has phone-number "+54 398 559 0423";
+`
+}
+
+func GetQueryDeletePerson() string {
+	return `
+	match $p isa person, has phone-number "+54 398 559 0423";
+	delete $p isa person;
+`
+}

@@ -16,7 +16,7 @@ const verbose = true
 func TestMatchQuery(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 	utils.TestPrint("* Create Session ")
 
@@ -35,7 +35,7 @@ func TestMatchQuery(t *testing.T) {
 	printResult(queryResults, verbose)
 
 	utils.TestPrint("* CloseSession Session ")
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 	client.Close() // close client
 }
@@ -43,7 +43,7 @@ func TestMatchQuery(t *testing.T) {
 func TestMatchQueryAllPhoneNumbers(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 	utils.TestPrint("* Create Session ")
 
@@ -62,7 +62,7 @@ func TestMatchQueryAllPhoneNumbers(t *testing.T) {
 	printResult(queryResults, verbose)
 
 	utils.TestPrint("* CloseSession Session ")
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 	client.Close() // close client
 }

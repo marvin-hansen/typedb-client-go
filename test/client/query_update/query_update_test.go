@@ -13,7 +13,7 @@ func TestUpdateQuery(t *testing.T) {
 	defer cancel()
 
 	utils.TestPrint("* Create Session")
-	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, sessionOpenErr := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
 	gql := utils.GetPersonTelUpdate()
@@ -28,7 +28,7 @@ func TestUpdateQuery(t *testing.T) {
 	assert.NotNil(t, updateRes, "Query should return some results")
 
 	utils.TestPrint("* Close Session")
-	closeSessionErr := client.SessionManager.CloseSession(sessionID)
+	closeSessionErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeSessionErr, "Should be no error")
 
 	utils.TestPrint("* Close Client")

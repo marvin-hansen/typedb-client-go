@@ -21,7 +21,7 @@ func TestSingleSession(t *testing.T) {
 	assert.NotNil(t, client, utils.ClientError)
 
 	utils.TestPrint("Create session")
-	sessionID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionID, "Should not be nil")
 
@@ -31,7 +31,7 @@ func TestSingleSession(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 	utils.TestPrint("Close session")
-	closeErr := client.SessionManager.CloseSession(sessionID)
+	closeErr := client.Session.CloseSession(sessionID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	utils.TestPrint("Close client")
@@ -49,7 +49,7 @@ func TestMultiSession(t *testing.T) {
 	assert.NotNil(t, client, utils.ClientError)
 
 	utils.TestPrint("Create session 1")
-	sessionOneID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionOneID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionOneID, "Should not be nil")
 
@@ -59,7 +59,7 @@ func TestMultiSession(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	utils.TestPrint("Create session 2")
-	sessionTwoID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionTwoID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionTwoID, "Should not be nil")
 
@@ -69,7 +69,7 @@ func TestMultiSession(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	utils.TestPrint("Create session 3")
-	sessionThreeID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionThreeID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionThreeID, "Should not be nil")
 
@@ -79,15 +79,15 @@ func TestMultiSession(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	utils.TestPrint("Close session 1")
-	closeErr := client.SessionManager.CloseSession(sessionOneID)
+	closeErr := client.Session.CloseSession(sessionOneID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	utils.TestPrint("Close session 2")
-	closeErr = client.SessionManager.CloseSession(sessionTwoID)
+	closeErr = client.Session.CloseSession(sessionTwoID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	utils.TestPrint("Close session 3")
-	closeErr = client.SessionManager.CloseSession(sessionThreeID)
+	closeErr = client.Session.CloseSession(sessionThreeID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	utils.TestPrint("Close client")
@@ -106,7 +106,7 @@ func TestSessionNotClosed(t *testing.T) {
 	assert.NotNil(t, client, utils.ClientError)
 
 	utils.TestPrint("Create session 1")
-	sessionOneID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionOneID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionOneID, "Should not be nil")
 
@@ -116,7 +116,7 @@ func TestSessionNotClosed(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	utils.TestPrint("Create session 2")
-	sessionTwoID, err := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
+	sessionTwoID, err := client.Session.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, err, "Should be no session open error")
 	assert.NotNil(t, sessionTwoID, "Should not be nil")
 
@@ -126,7 +126,7 @@ func TestSessionNotClosed(t *testing.T) {
 	time.Sleep(time.Second * 1)
 
 	utils.TestPrint("Close session 1")
-	closeErr := client.SessionManager.CloseSession(sessionOneID)
+	closeErr := client.Session.CloseSession(sessionOneID)
 	assert.NoError(t, closeErr, "Should be no session close error")
 
 	utils.TestPrint("NOT closing session 2. Sits idle for now but still sends heartbeats")

@@ -4,18 +4,24 @@ package v2
 
 import (
 	"context"
+	"github.com/marvin-hansen/typedb-client-go/common"
 	pb "github.com/marvin-hansen/typedb-client-go/core"
 	"google.golang.org/grpc"
 	"log"
 )
 
 type Client struct {
-	client             pb.TypeDBClient
-	config             *Config
-	ctx                context.Context
-	DBManager          *DBManager
-	SessionManager     *SessionManager
-	TransactionManager *TransactionManager
+	client      pb.TypeDBClient
+	config      *Config
+	ctx         context.Context
+	DBManager   *DBManager
+	Session     *SessionManager
+	Transaction *TransactionManager
+	Query       *QueryManager
+}
+
+func NewOptions() *common.Options {
+	return &common.Options{}
 }
 
 func NewClient(conf *Config) (*Client, context.CancelFunc) {
@@ -53,27 +59,30 @@ func newClient(conn *grpc.ClientConn) (*Client, error) {
 	client := pb.NewTypeDBClient(conn)
 	ctx := context.Background()
 	typeDBClient := &Client{
-		client:         client,
-		ctx:            ctx,
-		SessionManager: nil,
+		client:  client,
+		ctx:     ctx,
+		Session: nil,
 	}
 
-	// create session manager
+	// construct session manager
 	sessionManager := NewSessionManager(typeDBClient)
-	typeDBClient.SessionManager = sessionManager
+	typeDBClient.Session = sessionManager
 
-	// create db manager
+	// construct db manager
 	dbManager := NewDBManager(typeDBClient)
 	typeDBClient.DBManager = dbManager
 
 	// create TX manager
 	txManager := NewTransactionManager(typeDBClient)
-	typeDBClient.TransactionManager = txManager
+	typeDBClient.Transaction = txManager
+
+	// construct query manager
+	qManager := newQueryManager(typeDBClient)
+	typeDBClient.Query = qManager
 
 	return typeDBClient, nil
 }
 
 func (c Client) Close() {
-	// Closes all remaining sessions
-	c.SessionManager.Shutdown()
+	c.Session.Shutdown() // Closes all remaining sessions
 }

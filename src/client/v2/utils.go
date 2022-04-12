@@ -5,7 +5,6 @@ package v2
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/marvin-hansen/typedb-client-go/common"
 	"google.golang.org/grpc"
 	"log"
 )
@@ -36,12 +35,7 @@ func (c *Client) dbCheck(dbName string) (err error) {
 	if dbExistErr != nil {
 		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
-
 	return nil
-}
-
-func NewOptions() *common.Options {
-	return &common.Options{}
 }
 
 func getSchemaQuery() string {
