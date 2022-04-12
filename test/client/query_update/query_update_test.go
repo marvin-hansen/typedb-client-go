@@ -8,7 +8,6 @@ import (
 	"testing"
 )
 
-// TODO / FIXME: Timeout after 300 sec
 func TestUpdateQuery(t *testing.T) {
 	client, cancel := utils.GetClient()
 	defer cancel()
@@ -24,7 +23,6 @@ func TestUpdateQuery(t *testing.T) {
 	utils.TestPrint("* Update into TypeDB")
 	options := v2.CreateNewRequestOptions()
 
-	// this one fails. Same as insert.
 	updateRes, updateErr := client.RunUpdateQuery(sessionID, gql, options)
 	assert.NoError(t, updateErr, "Should be no error")
 	assert.NotNil(t, updateRes, "Query should return some results")
