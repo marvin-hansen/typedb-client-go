@@ -23,7 +23,7 @@ func TestUpdateQuery(t *testing.T) {
 	utils.TestPrint("* Update into TypeDB")
 	options := v2.NewOptions()
 
-	updateRes, updateErr := client.RunUpdateQuery(sessionID, gql, options)
+	updateRes, updateErr := client.Query.Update(sessionID, gql, options)
 	assert.NoError(t, updateErr, "Should be no error")
 	assert.NotNil(t, updateRes, "Query should return some results")
 

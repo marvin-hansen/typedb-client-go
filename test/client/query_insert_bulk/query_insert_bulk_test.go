@@ -41,7 +41,7 @@ func TestInsertBulkQuery(t *testing.T) {
 
 	utils.TestPrint("* Insert into TypeDB")
 	options := v2.NewOptions()
-	insertError := client.RunInsertBulkQuery(sessionID, gql, options)
+	insertError := client.Query.InsertBulk(sessionID, gql, options)
 	assert.NoError(t, insertError, "Should be no error")
 
 	utils.TestPrint("* Close Session")

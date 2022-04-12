@@ -22,7 +22,7 @@ func TestInsertQuery(t *testing.T) {
 
 	utils.TestPrint("* Insert into TypeDB")
 	options := v2.NewOptions()
-	insertError := client.RunInsertQuery(sessionID, gql, options)
+	insertError := client.Query.Insert(sessionID, gql, options)
 	assert.NoError(t, insertError, "Should be no error")
 
 	utils.TestPrint("* Close Session")

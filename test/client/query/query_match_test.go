@@ -25,7 +25,7 @@ func TestMatchQuery(t *testing.T) {
 
 	utils.TestPrint("* Query TypeDB")
 	options := v2.NewOptions()
-	queryResults, queryErr := client.RunMatchQuery(sessionID, query, options)
+	queryResults, queryErr := client.Query.Match(sessionID, query, options)
 	if queryErr != nil {
 		println(fmt.Errorf("could not create transaction: %w", queryErr))
 	}
@@ -52,7 +52,7 @@ func TestMatchQueryAllPhoneNumbers(t *testing.T) {
 
 	utils.TestPrint("* Query TypeDB")
 	options := v2.NewOptions()
-	queryResults, queryErr := client.RunMatchQuery(sessionID, query, options)
+	queryResults, queryErr := client.Query.Match(sessionID, query, options)
 	if queryErr != nil {
 		println(fmt.Errorf("could not create transaction: %w", queryErr))
 	}

@@ -19,7 +19,7 @@ func TestExplainQuery(t *testing.T) {
 	explainableID := int64(42)
 	options := v2.NewOptions()
 
-	explainResult, err := client.RunExplainQuery(sessionID, explainableID, options)
+	explainResult, err := client.Query.Explain(sessionID, explainableID, options)
 	assert.NoError(t, err, "Should be no error")
 	assert.NotNil(t, explainResult, "Query should return some results")
 
