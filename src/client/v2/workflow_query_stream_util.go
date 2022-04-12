@@ -57,6 +57,10 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 				return nil, fmt.Errorf("could not receive query response: %w", recErr)
 			}
 
+			dbgPrint(mtd, " Collect results ")
+			part := recs.GetResPart().GetQueryManagerResPart()
+			queryResults = append(queryResults, part)
+
 			dbgPrint(mtd, " Determine if stream is done")
 			done := c.isStreamDone(recs.GetResPart(), true)
 			if done {
@@ -64,17 +68,13 @@ func (c *Client) RunStreamTx(sessionID []byte, req *common.Transaction_Req, tran
 				break // break loop when done
 			} else {
 				//
-				dbgPrint(mtd, " Continue. Send continue request")
+				dbgPrint(mtd, " Continue loop. Send continue request")
 				reqCont := requests.GetTransactionStreamReq()
 				sendErr := tx.tx.Send(requests.GetTransactionClient(reqCont))
 				if sendErr != nil {
 					return nil, fmt.Errorf("could not send query request iterator: %w", sendErr)
 				}
 			}
-
-			dbgPrint(mtd, " Collect results ")
-			part := recs.GetResPart().GetQueryManagerResPart()
-			queryResults = append(queryResults, part)
 		}
 	}
 
