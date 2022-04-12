@@ -6,12 +6,16 @@ go_library(
         "query_utils.go",
         "shared.go",
         "utils_convert.go",
-        "utils_delete.go",
+        "utils_db.go",
         "utils_insert.go",
         "utils_query.go",
+        "utils_schema.go",
         "utils_update.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/test/client/utils",
     visibility = ["//visibility:public"],
-    deps = ["//src/client/v2:client"],
+    deps = [
+        "//data",
+        "//src/client/v2:client",
+    ],
 )

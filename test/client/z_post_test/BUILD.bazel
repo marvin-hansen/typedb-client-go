@@ -11,10 +11,7 @@ filegroup(
 
 go_test(
     name = "z_post_test_test",
-    srcs = [
-        "post_test.go",
-        "utils_test.go",
-    ],
+    srcs = ["post_test.go"],
     deps = [
         "//src/client/v2:client",
         "//test/client/utils",

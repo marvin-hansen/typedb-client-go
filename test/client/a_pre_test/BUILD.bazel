@@ -11,10 +11,7 @@ filegroup(
 
 go_test(
     name = "a_pre_test_test",
-    srcs = [
-        "pre_test.go",
-        "utils_test.go",
-    ],
+    srcs = ["pre_test.go"],
     deps = [
         "//src/client/v2:client",
         "//test/client/utils",

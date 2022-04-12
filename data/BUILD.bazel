@@ -20,6 +20,7 @@ go_library(
         "person.go",
         "person_data.go",
         "phone_calls_data.go",
+        "queries.go",
         "schema.go",
     ],
     importpath = "github.com/marvin-hansen/typedb-client-go/data",

@@ -2,7 +2,6 @@ filegroup(
     name = "build",
     srcs = [
         "//src/client:build",
-        "//src/cmd:build",
         "//src/type:build",
         "//src/utils:build",
     ],

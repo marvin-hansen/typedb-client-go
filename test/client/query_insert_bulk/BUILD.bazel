@@ -1,8 +1,8 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_test")
 
 go_test(
-    name = "query_delete_test",
-    srcs = ["query_delete_test.go"],
+    name = "query_insert_bulk_test",
+    srcs = ["query_insert_bulk_test.go"],
     deps = [
         "//common",
         "//data",
