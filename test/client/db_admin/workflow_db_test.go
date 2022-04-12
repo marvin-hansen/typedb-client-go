@@ -12,13 +12,11 @@ import (
 const dbName = utils.DBName
 
 func TestNewClient(t *testing.T) {
-	// create new client with default localhost config
 	conf := v2.NewLocalConfig(dbName)
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
 
-	// close client
 	c.Close()
 }
 
@@ -27,12 +25,8 @@ func TestCreateDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-
-	ok, err := c.DBManager.CreateDatabase(dbName)
+	err := c.DBManager.CreateDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
-	assert.Equal(t, ok, true, "Should be true")
-
-	// close client
 	c.Close()
 }
 
@@ -41,14 +35,8 @@ func TestExistsDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-
-	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
+	err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
-	expected := true
-	actual := existsDatabase
-	assert.Equal(t, expected, actual, "Should be true i.e. exists")
-
-	// close client
 	c.Close()
 }
 
@@ -57,13 +45,8 @@ func TestDeleteDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-
-	// check if DB exists
-	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
+	err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
-	expected := true
-	actual := existsDatabase
-	assert.Equal(t, expected, actual, "Should be true i.e. exists")
 
 	// Delete DB if exists.
 	// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
@@ -71,13 +54,7 @@ func TestDeleteDatabase(t *testing.T) {
 	ok, err := c.DBManager.DeleteDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
 	assert.Equal(t, ok, true, "Should be true i.e. exists")
-
-	existsDatabase, err = c.DBManager.CheckDatabaseExists(dbName)
+	err = c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
-	expected = false
-	actual = existsDatabase
-	assert.Equal(t, expected, actual, "Should be true i.e. exists")
-
-	// close client
 	c.Close()
 }
