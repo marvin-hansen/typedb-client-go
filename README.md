@@ -178,8 +178,7 @@ Dev:
 ## Acknowledgment
 
 I express my sincere gratefulness to [Frank Urbach](https://github.com/FrankUrbach), the author of the Julia client for
-TypeDB, for his in-depth technical support. Without his deep expertise of the protocol, the Golang client in its current
-form would not be possible.
+TypeDB, for his in-depth technical support. Without his deep expertise of the protocol, this Golang client would not be possible.
 
 ## Author
 
