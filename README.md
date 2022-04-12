@@ -1,8 +1,8 @@
 # typedb-client-go
 
-Go client for [TypeDB](https://vaticle.com/typedb)
-
-Status: Work in progress!
+Go client for [TypeDB](https://vaticle.com/typedb). TypeDB is an innovative database using a static type system over a
+graph DB. Life science research organization use TypeDB for drug discovery, genomic and protein data. In absence of a Go
+client, I decided to write one for evaluation purpose. My considerations have been documented [here](considerations.md)
 
 Supported TypeDB versions:
 * [2.6](https://github.com/vaticle/typedb/releases/tag/2.6.4)
@@ -15,7 +15,7 @@ Protocol:
 NOT supported:
 * Cluster
 
-Current status: Active Development
+Status:
 
 * DBManager fully implemented
 * SessionManager fully implemented
@@ -47,8 +47,10 @@ docker run --name typedb -d -v /path/to/volume:/typedb-all-linux/server/data/ -p
 
 For more detailed usage, see:
 
-* Example in [example folder](example)
 * Tests in [test folder](test/client)
+* Example code in [example folder](example)
+* Example [schema](data/schema.go)
+* Example [data](data/phone_example_data.go)
 
 ```Go
 package main
