@@ -24,6 +24,25 @@ Current status: Active Development
 
 Implementation & testing details in [status document](Status.md)
 
+## Setup
+
+Ensure a TypeDB server is running on your local machine. Consult
+the [TypeDB documentation](https://docs.vaticle.com/docs/general/introduction) for details.
+
+For simple testing, run TypeDB locally without an external volume:
+
+```Bash
+docker run --name typedb -d -p 1729:1729 vaticle/typedb:latest
+```
+
+Notice, this instance does not store data on disk. All data will be lost when the instance ends.
+
+For development, run TypeDB with an external volume that stores data on disk.
+
+```Bash
+docker run --name typedb -d -v /path/to/volume:/typedb-all-linux/server/data/ -p 1729:1729 vaticle/typedb:latest
+```
+
 ## Usage
 
 For more detailed usage, see:
