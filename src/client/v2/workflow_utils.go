@@ -40,7 +40,7 @@ func (c *Client) dbCheck(dbName string) (err error) {
 	return nil
 }
 
-func CreateNewRequestOptions() *common.Options {
+func NewOptions() *common.Options {
 	return &common.Options{}
 }
 

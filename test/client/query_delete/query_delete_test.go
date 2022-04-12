@@ -21,7 +21,7 @@ func TestDeleteQuery(t *testing.T) {
 	println(gql)
 
 	utils.TestPrint("* Delete entry from TypeDB")
-	options := v2.CreateNewRequestOptions()
+	options := v2.NewOptions()
 
 	deleteResult, deleteErr := client.RunDeleteQuery(sessionID, gql, options)
 	assert.NoError(t, deleteErr, "Should be no error")

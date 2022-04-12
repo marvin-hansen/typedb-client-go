@@ -35,12 +35,12 @@ func TestInsertBulkQuery(t *testing.T) {
 	sessionID, sessionOpenErr := client.SessionManager.NewSession(utils.DbName, common.Session_DATA)
 	assert.NoError(t, sessionOpenErr, "Should be no error")
 
-	utils.TestPrint("* Get Bulk Insert")
+	utils.TestPrint("* Get data to Insert")
 	gql, dataErr := data.GetPhoneCallsDataGql()
 	assert.NoError(t, dataErr, "Should be no data error")
 
 	utils.TestPrint("* Insert into TypeDB")
-	options := v2.CreateNewRequestOptions()
+	options := v2.NewOptions()
 	insertError := client.RunInsertBulkQuery(sessionID, gql, options)
 	assert.NoError(t, insertError, "Should be no error")
 
