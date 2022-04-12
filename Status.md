@@ -3,6 +3,7 @@
 ##  Fully implemented & fully Tested
 
 DBManager
+
 - [x] GetAllDatabases
 - [x] CreateDatabase
 - [x] CheckDatabaseExists
@@ -13,6 +14,7 @@ DBManager
 ## Fully implemented & tested indirectly
 
 TransactionManager:
+
 - [x] NewTransaction
 - [x] OpenTransaction
 - [x] ExecuteTransaction
@@ -28,15 +30,14 @@ SessionManager:
 - [x] CloseSession
 - [x] MonitorSession (handles heartbeat automatically when open & close a session)
 
+## Implemented - Not fully tested yet
+
 QueryManager:
 
 - [x] RunInsertQuery
 - [x] RunInsertBulkQuery
 - [x] RunUpdateQuery
 - [x] RunMatchQuery
-
-## Implemented - Not tested yet
-
 - [x] RunDeleteQuery
 - [x] RunExplainQuery
 - [x] RunDefineQuery
