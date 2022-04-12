@@ -37,7 +37,7 @@ func (q *QueryManager) InsertBulk(sessionID []byte, queries []string, options *c
 	return nil
 }
 
-func (q *QueryManager) RunUpdateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
+func (q *QueryManager) Update(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
 	c := q.client
 	// Update is a sequence of match, delete & insert => TX_WRITE
 	req := requests.GetUpdateQueryReq(query, options)
@@ -118,7 +118,7 @@ func (q *QueryManager) MatchGroupAggregate(sessionID []byte, query string, optio
 	return queryResults, nil
 }
 
-func (q *QueryManager) RunDefineQuery(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
+func (q *QueryManager) Define(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Define_Res, err error) {
 	c := q.client
 	req := requests.GetDefinedQueryReq(query, options)
 	res, queryErr := c.runQuery(sessionID, req, TX_READ, options)
@@ -129,7 +129,7 @@ func (q *QueryManager) RunDefineQuery(sessionID []byte, query string, options *c
 	}
 }
 
-func (q *QueryManager) RunUndefineQuery(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
+func (q *QueryManager) Undefine(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Undefine_Res, err error) {
 	c := q.client
 	req := requests.GetUndefinedQueryReq(query, options)
 	res, queryErr := c.runQuery(sessionID, req, TX_READ, options)
@@ -140,7 +140,7 @@ func (q *QueryManager) RunUndefineQuery(sessionID []byte, query string, options 
 	}
 }
 
-func (q *QueryManager) RunMatchAggregateQuery(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
+func (q *QueryManager) MatchAggregate(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_MatchAggregate_Res, err error) {
 	c := q.client
 	req := requests.GetMatchAggregateQueryReq(query, options)
 	res, queryErr := c.runQuery(sessionID, req, TX_READ, options)
@@ -151,7 +151,7 @@ func (q *QueryManager) RunMatchAggregateQuery(sessionID []byte, query string, op
 	}
 }
 
-func (q *QueryManager) RunDeleteQuery(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
+func (q *QueryManager) Delete(sessionID []byte, query string, options *common.Options) (queryResponses *common.QueryManager_Delete_Res, err error) {
 	c := q.client
 	req := requests.GetDeleteQueryReq(query, options)
 	res, queryErr := c.runQuery(sessionID, req, TX_WRITE, options)
