@@ -21,28 +21,26 @@ TransactionManager:
 - [x] CloseTransaction
 
 SessionManager:
+
 - [x] NewSession
 - [x] GetSession
 - [x] ResetSession
 - [x] CloseSession
 - [x] MonitorSession (handles heartbeat automatically when open & close a session)
 
-## Broken
+QueryManager:
 
-- [x] RunInsertQuery = Timeout bug.
-
-## Implemented - needs more testing 
-
-Query:
+- [x] RunInsertQuery
+- [x] RunInsertBulkQuery
 - [x] RunUpdateQuery
+- [x] RunMatchQuery
 
-## Implemented - No testing / unknown working 
+## Implemented - Not tested yet
 
 - [x] RunDeleteQuery
 - [x] RunExplainQuery
 - [x] RunDefineQuery
 - [x] RunUnDefineQuery
-- [x] RunMatchQuery
 - [x] RunMatchGroupQuery
 - [x] RunMatchAggregateQuery
 - [x] RunMatchGroupAggregateQuery
