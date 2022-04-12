@@ -35,7 +35,7 @@ func TestExistsDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-	err := c.DBManager.CheckDatabaseExists(dbName)
+	_, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	c.Close()
 }
@@ -45,16 +45,15 @@ func TestDeleteDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-	err := c.DBManager.CheckDatabaseExists(dbName)
+	_, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 
 	// Delete DB if exists.
 	// Notice, DeleteDatabase returns true if the DB doesn't exist without being deleted b/c it's already gone
 	// AND returns true when the DB actually got deleted.
-	ok, err := c.DBManager.DeleteDatabase(dbName)
+	err = c.DBManager.DeleteDatabase(dbName)
 	assert.NoError(t, err, "Should be no error")
-	assert.Equal(t, ok, true, "Should be true i.e. exists")
-	err = c.DBManager.CheckDatabaseExists(dbName)
+	_, err = c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	c.Close()
 }

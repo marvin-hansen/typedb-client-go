@@ -14,6 +14,18 @@ func (c *Client) RunInsertQuery(sessionID []byte, query string, options *common.
 	return nil
 }
 
+func (c *Client) RunInsertBulkQuery(sessionID []byte, queries []string, options *common.Options) (err error) {
+	for _, query := range queries {
+		req := requests.GetInsertQueryReq(query, options)
+		_, queryErr := c.RunStreamTx(sessionID, req, TX_WRITE, options, true)
+		if queryErr != nil {
+			return queryErr
+		}
+	}
+
+	return nil
+}
+
 func (c *Client) RunUpdateQuery(sessionID []byte, query string, options *common.Options) (queryResults []*common.QueryManager_Update_ResPart, err error) {
 
 	// Update is a sequence of match, delete & insert => TX_WRITE

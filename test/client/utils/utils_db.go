@@ -1,6 +1,6 @@
 // Copyright (c) 2022. Marvin Hansen | marvin.hansen@gmail.com
 
-package a_pre_test
+package utils
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 func DBSetup(client *v2.Client, dbName string) error {
 	println("* Run DB setup")
 
-	dbExistErr := client.DBManager.CheckDatabaseExists(dbName)
+	_, dbExistErr := client.DBManager.CheckDatabaseExists(dbName)
 	if dbExistErr != nil {
 		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
@@ -23,5 +23,22 @@ func DBSetup(client *v2.Client, dbName string) error {
 		return err
 	} else {
 		return nil
+	}
+}
+
+func DBTeardown(client *v2.Client, dbName string) error {
+	println("* Run DB teardown")
+	_, dbExistErr := client.DBManager.CheckDatabaseExists(dbName)
+	if dbExistErr != nil {
+		log.Println(dbExistErr.Error())
+		return dbExistErr
+	} else {
+		err := client.DBManager.DeleteDatabase(dbName)
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		} else {
+			return nil
+		}
 	}
 }

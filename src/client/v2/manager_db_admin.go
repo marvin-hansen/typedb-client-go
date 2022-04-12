@@ -27,31 +27,28 @@ func (c *DBManager) CreateDatabase(dbName string) (err error) {
 	return nil
 }
 
-func (c *DBManager) CheckDatabaseExists(dbName string) (err error) {
+func (c *DBManager) CheckDatabaseExists(dbName string) (exists bool, err error) {
 	req := requests.GetContainsDBReq(dbName)
 	databaseExistsRes, dbExistErr := c.client.client.DatabasesContains(c.client.ctx, req)
 	if dbExistErr != nil {
-		return fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
+		return false, fmt.Errorf("could not check if database exists. Ensure DB connection works. Error: %w", dbExistErr)
 	}
 	if databaseExistsRes.Contains {
-		return fmt.Errorf("database does not exists. Create DB first. Error: %w", dbExistErr)
+		return true, nil
 	} else {
-		return nil
+		return false, nil
 	}
 }
 
-func (c *DBManager) DeleteDatabase(dbName string) (ok bool, err error) {
-	err = c.CheckDatabaseExists(dbName)
-	if err != nil {
-		return false, err
-	}
+func (c *DBManager) DeleteDatabase(dbName string) (err error) {
+
 	req := requests.GetDeleteDBReq(dbName)
 	databaseDeleteRes, dbDeleteErr := c.client.client.DatabaseDelete(c.client.ctx, req)
 	if dbDeleteErr != nil {
 		log.Println(databaseDeleteRes.String())
 		log.Println(dbDeleteErr.Error())
-		return false, fmt.Errorf("could not delete database. Error: %w", dbDeleteErr)
+		return fmt.Errorf("could not delete database. Error: %w", dbDeleteErr)
 	}
-	return true, nil
+	return nil
 
 }

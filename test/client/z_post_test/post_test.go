@@ -1,4 +1,4 @@
-package z_post_test
+package z_post
 
 import (
 	v2 "github.com/marvin-hansen/typedb-client-go/src/client/v2"
@@ -14,11 +14,8 @@ func TestDBDelete(t *testing.T) {
 	client, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, client, utils.ClientError)
-
-	teardownErr := DBTeardown(client, dbName)
+	teardownErr := utils.DBTeardown(client, dbName)
 	assert.NoError(t, teardownErr, "Should be no DB teardown error")
-
-	// close client
 	client.Close()
 }
 
@@ -27,13 +24,10 @@ func TestDoesNotExistsDatabase(t *testing.T) {
 	c, cancel := v2.NewClient(conf)
 	defer cancel()
 	assert.NotNil(t, c, utils.ClientError)
-
 	existsDatabase, err := c.DBManager.CheckDatabaseExists(dbName)
 	assert.NoError(t, err, "Should be no error")
 	expected := false
 	actual := existsDatabase
 	assert.Equal(t, expected, actual, "Should be true i.e. exists")
-
-	// close client
 	c.Close()
 }

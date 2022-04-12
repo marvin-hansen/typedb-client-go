@@ -20,7 +20,7 @@ func main() {
 	checkError("Could not create DB: "+dbName, createDBErr)
 
 	println("Check if DB has been created")
-	checkDBErr := client.DBManager.CheckDatabaseExists(dbName)
+	_, checkDBErr := client.DBManager.CheckDatabaseExists(dbName)
 	checkError("DB Doesn't exists: "+dbName, checkDBErr)
 
 	// See data folder for schema & data definitions
@@ -32,16 +32,9 @@ func main() {
 	checkError("could not create DB schema", createSchemaErr)
 
 	println("Load Schema from the DB & print to console")
-	allEntries, getSchemaErr := client.DBManager.GetDatabaseSchema(dbName)
+	schema, getSchemaErr := client.DBManager.GetDatabaseSchema(dbName)
 	checkError("could not load schema from DB", getSchemaErr)
-
-	// Print schema to console
-	if len(allEntries) > 0 {
-		for _, item := range allEntries {
-			println(item)
-		}
-		println()
-	}
+	printSchema(schema)
 
 	// Delete DB if exists. Uncomment to actually delete...
 	// ok, err := client.DBManager.DeleteDatabase(dbName)
@@ -50,5 +43,15 @@ func main() {
 func checkError(errMsg string, err error) {
 	if err != nil {
 		log.Fatal(errMsg, err)
+	}
+}
+
+func printSchema(schema []string) {
+	// Print schema to console
+	if len(schema) > 0 {
+		for _, item := range schema {
+			println(item)
+		}
+		println()
 	}
 }
