@@ -13,6 +13,22 @@ For commercial projects that must perform 24/7 at scale, I most certainly prefer
 * [Heavy.ai (Omnisci)](https://www.heavy.ai/product/overview)
 * [GridGain](https://www.gridgain.com/)
 
+For massive internet scale graphs, I would look into:
+
+* [FaunaDB](https://fauna.com/)
+* [MacroMeta GDN](https://macrometa.com/)
+
+For graph based machine learning, I would look into:
+
+* [Deep Graph Library](http://dgl.ai/)
+
+The project for which I've evaluated TypeDB, I ended up shortlisting FaunaDB & Macrometa. FaunaDB clearly has the more
+advanced product, but it's only available in Europe & the US. Macrometa, on the other hand, may not have GraphQL,  
+but it's globally available with an average P90 latency of under 50ms. Because my primary application serves South East
+Asia with a cluster colocated in Tokio, I ended up selecting the Macrometa GDN. In a simple benchmark, I actually got an
+average P90 latency of 20 ms for Tokio. At this point, the GDN data access over network was faster than my previous
+in-cluster database. For South East Asia, average latency was about one order of magnitude faster than FaunaDB.
+
 ## TypeDB strength:
 
 * Very innovative
