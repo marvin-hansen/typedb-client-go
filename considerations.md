@@ -78,17 +78,18 @@ consistently below 100 ms when working on over 50 million data records, albeit i
 equally on sub second latency, but on [1 billion data records](https://tech.marksblogg.com/benchmarks.html) even on a
 2019 [laptop](https://tech.marksblogg.com/omnisci-macos-macbookpro-mbp.html).
 
-Summing up my experience of implementing TypeDB protocol, I couldn't help but thinking that this protocol is overly
-complex and error-prone relative to the very little expressiveness the query language offers. However, the truly nagging
-question really became what does TypeDB actually does that cannot be done otherwise?
-
-I was unable to answer that question.
-
 ### Final thoughts
 
 When Vaticle reached out to me in March 2022, I was reluctant to even give TypeDB a try because the use-case wasn't
 clear to me, but ultimately I decided to evaluate TypeDB because of the type based data modelling assuming this would be
 backed by a reasonable operational database. Speaking of TypeDB's primary application in life science, there is real
 value to model complex biological data as types and relations. Outside this very specialized domain, however, there is
-little that TypeDB brings to the table while adding a lot of troubles to operations. Looking back, it becomes an even
-greater mystery to me why Vaticle even attempts to reach people outside their primary niche. 
+little that TypeDB brings to the table while adding a lot of troubles to operations.
+
+Summing up my experience of implementing TypeDB protocol and working with TypeDB for about a month, I couldn't help but
+realizing that this protocol is overly complex and error-prone relative to the very little expressiveness the query
+language offers. However, the truly nagging question really became what does TypeDB actually offers that cannot be done
+otherwise?
+
+I was unable to answer that question.
+
