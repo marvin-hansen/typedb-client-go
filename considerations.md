@@ -13,7 +13,7 @@ For commercial projects that must perform 24/7 at scale, I most certainly prefer
 * [Heavy.ai (Omnisci)](https://www.heavy.ai/product/overview)
 * [GridGain](https://www.gridgain.com/)
 
-For massive internet scale graphs, I would look into:
+For massive internet data that require multiple data models i.e. table, KV, Graph, I would look into:
 
 * [FaunaDB](https://fauna.com/)
 * [MacroMeta GDN](https://macrometa.com/)
