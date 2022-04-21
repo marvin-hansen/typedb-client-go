@@ -3,9 +3,7 @@
 Should you use TypeDB in a project instead of any other graph databases currently available?
 
 It depends on the nature of the project. For research projects that do not require 24/7 operations, but would benefit
-from the unique type system, then TypeDB might be a good idea.
-
-For commercial projects that must perform 24/7 at scale, I most certainly prefer any one of the following alternatives:
+from the unique type system, then TypeDB might be a good idea. However, for commercial projects that must perform 24/7 at scale, I most certainly prefer any one of the following alternatives:
 
 * [AnzoGraph](https://cambridgesemantics.com/anzograph/)
 * [ArangoDB](https://www.arangodb.com/)
@@ -22,9 +20,7 @@ For graph based machine learning, I would look into:
 
 * [Deep Graph Library](http://dgl.ai/)
 
-The project for which I've evaluated TypeDB, I ended up shortlisting FaunaDB & Macrometa. FaunaDB clearly has the more
-advanced product, but it's only available in Europe & the US. Macrometa, on the other hand, may not have GraphQL,  
-but it's globally available with an average P90 latency of under 50ms. Because my primary application serves South East
+I ended up shortlisting FaunaDB & Macrometa. FaunaDB clearly has the more advanced product, but it's only available in Europe & the US. Macrometa, on the other hand, may not have GraphQL, but it's globally available with an average P90 latency of under 50ms. Because my primary application serves South East
 Asia with a cluster colocated in Tokio, I ended up selecting the Macrometa GDN. In a simple benchmark, I actually got an
 average P90 latency of 20 ms for Tokio. At this point, the GDN data access over network was faster than my previous
 in-cluster database. For South East Asia, average latency was about one order of magnitude faster than FaunaDB.
@@ -83,9 +79,7 @@ with only little training required. Query performance, and especially latency, h
 For operations, well, the many open issues clearly speak for themselves.
 
 It is incomprehensible to me which problem TypeDB solves that cannot be done with RDF graphs. According to their own
-words, they do all that RDF does,
-but [mysteriously better](https://towardsdatascience.com/comparing-grakn-to-semantic-web-technologies-part-1-3-3558c447214a)
-. However, unlike mature RDF systems, like AnzoGraph, TypeDB doesn't work well, doesn't scale, doesn't come with machine
+words, they do all that RDF does, but [mysteriously better](https://towardsdatascience.com/comparing-grakn-to-semantic-web-technologies-part-1-3-3558c447214a). However, unlike mature RDF systems, like AnzoGraph, TypeDB doesn't work well, doesn't scale, doesn't come with machine
 learning, and can't even remotely compete on performance. To put things into perspective, the toy data example requires
 about 4 seconds to complete 8 queries from maybe 50 data records, which results in average latency of about 500ms per
 query. From my experience with TypeDB, 250 ms is a "good" latency of a trivial query. GridGain delivers about 50 ms latency on
