@@ -21,7 +21,7 @@ Status: Not maintained!
 * DBManager fully implemented
 * SessionManager fully implemented
 * TransactionManager fully implemented
-* QueryManager implemented
+* QueryManager implemented, but not fully tested. 
 
 Implementation & testing details in [status document](Status.md)
 
@@ -38,7 +38,7 @@ docker run --name typedb -d -p 1729:1729 vaticle/typedb:latest
 
 Notice, this instance does not store data on disk. All data will be lost when the instance ends.
 
-For development, run TypeDB with an external volume that stores data on disk.
+For development, run TypeDB with an external volume that stores data on the mounded folder on disk.
 
 ```Bash
 docker run --name typedb -d -v /path/to/volume:/typedb-all-linux/server/data/ -p 1729:1729 vaticle/typedb:latest
@@ -64,7 +64,7 @@ import (
 	"log"
 )
 
-const dbName = utils.DBName
+const dbName = "TestDB" 
 const verbose = true // prints out all query results. False disables printout
 
 func main() {
