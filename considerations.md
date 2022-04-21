@@ -88,10 +88,10 @@ but [mysteriously better](https://towardsdatascience.com/comparing-grakn-to-sema
 . However, unlike mature RDF systems, like AnzoGraph, TypeDB doesn't work well, doesn't scale, doesn't come with machine
 learning, and can't even remotely compete on performance. To put things into perspective, the toy data example requires
 about 4 seconds to complete 8 queries from maybe 50 data records, which results in average latency of about 500ms per
-query. from my own experience, 250 ms is a "good" latency of a trivial query. GridGain delivers about 50 ms latency on
+query. From my experience with TypeDB, 250 ms is a "good" latency of a trivial query. GridGain delivers about 50 ms latency on
 the exact same hardware when working on 1 million data records. AnzoGraph returns arbitrarily complex queries
 consistently below 100 ms when working on over 50 million data records, albeit in a 3 node GCP cluster. Omnisci performs
-equally on sub second latency, but on [1 billion data records](https://tech.marksblogg.com/benchmarks.html) even on a
+equally on sub second latency on [1 billion data records](https://tech.marksblogg.com/benchmarks.html) even on a
 2019 [laptop](https://tech.marksblogg.com/omnisci-macos-macbookpro-mbp.html).
 
 ### Final thoughts
