@@ -42,9 +42,9 @@ in-cluster database. For South East Asia, average latency was about one order of
 * No Helm package / Kubernetes deployment for OSS version. Only in paid enterprise cluster.
   See [issue](https://github.com/vaticle/typedb/issues/6455)
 * No RBAC. Not even in the cluster and no open issue...
-* No rolling updates. Not in the cluster...
+* No rolling updates. Not even in the enterprise cluster...
 
-### Determinism:
+### Non-Determinstic:
 
 * Identical query returns different answers. See [issue](https://github.com/vaticle/typedb/issues/6336)
 * Non-deterministic query results when using parallelization. See [issue](https://github.com/vaticle/typedb/issues/6349)
